@@ -24,7 +24,7 @@ import jp.tkgktyk.xposed.niwatori.app.util.Purchase;
  */
 public class SettingsActivity extends Activity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
-    private static final boolean PURCHASED = BuildConfig.DEBUG && false;
+    private static final boolean PURCHASED = BuildConfig.DEBUG && true;
 
     // (arbitrary) request code for the purchase flow
     private static final int RC_REQUEST = 10001;

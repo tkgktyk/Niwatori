@@ -152,29 +152,29 @@ public class FlyingHelper extends XposedModule {
         mFlyingLayout.addView(mContainer);
 
         // setup FlyingLayout
-        mFlyingLayout.setSpeed(mSettings.speed);
+        final FlyingLayout.Helper helper = mFlyingLayout.getHelper();
+        helper.setSpeed(mSettings.speed);
         final Context flyContext = context.createPackageContext(
                 NFW.PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
         final int padding = flyContext.getResources()
                 .getDimensionPixelSize(R.dimen.flying_view_padding);
-        mFlyingLayout.setHorizontalPadding(padding);
-        mFlyingLayout.setVerticalPadding(padding);
-        mFlyingLayout.setEnableTouchEventX(false);
-        mFlyingLayout.setEnableTouchEventY(false);
-        mFlyingLayout.setUseContainer(true);
-        mFlyingLayout.setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
+        helper.setHorizontalPadding(padding);
+        helper.setVerticalPadding(padding);
+        helper.setTouchEventEnabled(false);
+        helper.setUseContainer(true);
+        helper.setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
             @Override
-            public void onClickOutside(FlyingLayout v) {
+            public void onClickOutside(ViewGroup v) {
                 resetState();
             }
 
             @Override
-            public void onLongPressOutside(FlyingLayout v) {
+            public void onLongPressOutside(ViewGroup v) {
                 // nothing to do
             }
 
             @Override
-            public void onDoubleClickOutside(FlyingLayout v) {
+            public void onDoubleClickOutside(ViewGroup v) {
                 pin();
             }
         });
@@ -245,18 +245,16 @@ public class FlyingHelper extends XposedModule {
     }
 
     public boolean isFlying() {
-        return mFlyingLayout.getEnableTouchEventX() || mFlyingLayout.getEnableTouchEventY();
+        return mFlyingLayout.getHelper().getTouchEventEnabled();
     }
 
     private void disableFlying() {
-        mFlyingLayout.setEnableTouchEventX(false);
-        mFlyingLayout.setEnableTouchEventY(false);
+        mFlyingLayout.getHelper().setTouchEventEnabled(false);
         setBoundaryShown(false);
     }
 
     private void enableFlying() {
-        mFlyingLayout.setEnableTouchEventX(true);
-        mFlyingLayout.setEnableTouchEventY(true);
+        mFlyingLayout.getHelper().setTouchEventEnabled(true);
         setBoundaryShown(true);
     }
 
@@ -275,9 +273,9 @@ public class FlyingHelper extends XposedModule {
     private void toggle() {
         if (isFlying()) {
             disableFlying();
-            mFlyingLayout.goHome(mSettings.animation);
+            mFlyingLayout.getHelper().goHome(mSettings.animation);
         } else {
-            if (mFlyingLayout.staysHome()) {
+            if (mFlyingLayout.getHelper().staysHome()) {
                 moveToInitialPosition(false);
                 hideSoftInputMethod();
             }
@@ -286,7 +284,7 @@ public class FlyingHelper extends XposedModule {
     }
 
     private void pin() {
-        if (mFlyingLayout.staysHome()) {
+        if (mFlyingLayout.getHelper().staysHome()) {
             moveToInitialPosition(true);
             hideSoftInputMethod();
             disableFlying();
@@ -299,11 +297,11 @@ public class FlyingHelper extends XposedModule {
     }
 
     private void pinOrReset() {
-        if (mFlyingLayout.staysHome()) {
+        if (mFlyingLayout.getHelper().staysHome()) {
             moveToInitialPosition(true);
             hideSoftInputMethod();
         } else {
-            mFlyingLayout.goHome(mSettings.animation);
+            mFlyingLayout.getHelper().goHome(mSettings.animation);
         }
         disableFlying();
     }
@@ -320,17 +318,17 @@ public class FlyingHelper extends XposedModule {
         boolean moved = false;
         if (x != 0 || y != 0) {
             moved = true;
-            mFlyingLayout.moveWithoutSpeed(x, y, mSettings.animation);
+            mFlyingLayout.getHelper().moveWithoutSpeed(x, y, mSettings.animation);
         }
         return moved;
     }
 
     public void resetState() {
-        if (isFlying() || !mFlyingLayout.staysHome()) {
+        if (isFlying() || !mFlyingLayout.getHelper().staysHome()) {
             disableFlying();
             // goHome must be placed after pin() for "Reset when collapsed"
             // option.
-            mFlyingLayout.goHome(mSettings.animation);
+            mFlyingLayout.getHelper().goHome(mSettings.animation);
         }
     }
 

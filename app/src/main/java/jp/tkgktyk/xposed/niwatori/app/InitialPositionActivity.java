@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import jp.tkgktyk.flyinglayout.FlyingLayout;
@@ -29,8 +30,9 @@ public class InitialPositionActivity extends Activity {
         mInitialPosition = new InitialPosition(this);
 
         mFlyingLayout = (FlyingLayout) findViewById(R.id.flying);
+        final FlyingLayout.Helper helper = mFlyingLayout.getHelper();
         SharedPreferences pref = NFW.getSharedPreferences(this);
-        mFlyingLayout.setSpeed(Float.parseFloat(pref.getString(
+        helper.setSpeed(Float.parseFloat(pref.getString(
                 getString(R.string.key_speed), Float.toString(FlyingLayout.DEFAULT_SPEED))));
         mFlyingLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -38,10 +40,8 @@ public class InitialPositionActivity extends Activity {
                     @SuppressLint("NewApi")
                     @Override
                     public void onGlobalLayout() {
-                        mFlyingLayout.setOffsetX(mInitialPosition
-                                .getX(mFlyingLayout));
-                        mFlyingLayout.setOffsetY(mInitialPosition
-                                .getY(mFlyingLayout));
+                        helper.setOffsetX(mInitialPosition.getX(mFlyingLayout));
+                        helper.setOffsetY(mInitialPosition.getY(mFlyingLayout));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             mFlyingLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         } else {
@@ -49,15 +49,15 @@ public class InitialPositionActivity extends Activity {
                         }
                     }
                 });
-        mFlyingLayout.setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
+        helper.setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
             @Override
-            public void onDragFinished(FlyingLayout v) {
-                mInitialPosition.setXp(v, v.getOffsetX());
-                mInitialPosition.setYp(v, v.getOffsetY());
-                mInitialPosition.save(v.getContext());
-                v.setOffsetX(mInitialPosition.getX(v));
-                v.setOffsetY(mInitialPosition.getY(v));
-                v.requestLayout();
+            public void onDragFinished(ViewGroup v) {
+                mInitialPosition.setXp(mFlyingLayout, helper.getOffsetX());
+                mInitialPosition.setYp(mFlyingLayout, helper.getOffsetY());
+                mInitialPosition.save(mFlyingLayout.getContext());
+                helper.setOffsetX(mInitialPosition.getX(mFlyingLayout));
+                helper.setOffsetY(mInitialPosition.getY(mFlyingLayout));
+                mFlyingLayout.requestLayout();
             }
         });
     }

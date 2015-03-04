@@ -21,7 +21,6 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import jp.tkgktyk.flyinglayout.FlyingLayout;
 
 /**
  * Created by tkgktyk on 2015/02/12.
@@ -270,12 +269,11 @@ public class ModActivity extends XposedModule {
                             final Activity activity = (Activity) param.thisObject;
                             final FlyingHelper helper = FlyingHelper.getFrom(getDecorView(activity));
                             if (helper != null) {
-                                final FlyingLayout flyingLayout = helper.getFlyingLayout();
                                 final Configuration newConfig = (Configuration) param.args[0];
                                 if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                                    flyingLayout.rotate();
+                                    helper.getFlyingLayout().getHelper().rotate();
                                 } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                                    flyingLayout.rotate();
+                                    helper.getFlyingLayout().getHelper().rotate();
                                 }
                             } else {
                                 logD("FlyingHelper is not found.");

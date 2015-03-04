@@ -25,7 +25,7 @@ public class ModFlyingLayout extends XposedModule {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     final FlyingLayout flying = (FlyingLayout) param.thisObject;
                     NFW.Settings settings = newSettings(mPrefs);
-                    flying.setSpeed(settings.speed);
+                    flying.getHelper().setSpeed(settings.speed);
                 }
             });
         } catch (XposedHelpers.ClassNotFoundError e) {
