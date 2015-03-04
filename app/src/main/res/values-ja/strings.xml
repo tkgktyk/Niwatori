@@ -1,0 +1,20 @@
+<resources>
+    <!-- Displayed in Xposed framework -->
+    <string name="app_name">にわとり</string>
+    <string name="xposed_description">新しい片手モードを導入します</string>
+
+    <!-- Blacklist -->
+    <string name="black_list_activity_name">@string/title_black_list</string>
+    <string name="only_selected">選択のみ</string>
+
+    <!-- Shortcut name -->
+    <string name="shortcut_activity_name">にわとりのショートカット</string>
+    <string name="default_str">デフォルト</string>
+    <string name="reset">リセット</string>
+    <string name="toggle">トグル</string>
+    <string name="pin">ピン止め</string>
+    <string name="pin_or_reset">ピン止め or リセット</string>
+
+    <!-- About -->
+    <string name="about_activity_name">@string/title_about</string>
+</resources>

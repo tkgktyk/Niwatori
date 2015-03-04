@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Displayed in launcher -->
+    <string name="settings_activity_name">Niwatori - Режим управления одной рукой</string>
+    
+    <!-- Instructions -->
+    <string name="title_instructions">Инструкция</string>
+    <string name="summary_instructions">Niwatori перемещает положение приложений путём изменения режима окна. Вы можете выбрать нужный режим в Niwatori.</string>
+    <!-- Shortcuts -->
+    <string name="title_shortcuts">Ярлыки [NFW действие]</string>
+    <string name="summary_shortcuts">- \"Toggle\" режим между плавающим и стабильным положением.\n- \"Pin\" смещение вниз, а при повторном - плавающее положение.\n- \"Pin или Сброс\" смещение вниз, а при повторном - сброс положения.\n- \"Сброс\" для возвращения окна на стандартное приложение.\nРегистрация нажатия происходит при помощи клавиш панели навигации, ярлыков навигационного кольца и т.д.</string>
+    <!-- Note -->
+    <string name="title_notes">Примечания</string>
+    <string name="summary_notes">- Нажмите на пустое место, чтобы сбросить положение.\n- Дважды нажмите пустое место, чтобы закрепить.\n- Открыть окно заново, чтобы изменения вступили в силу.</string>
+    
+    <!-- Settings -->
+    <string name="title_settings">Настройки</string>ч
+    <string name="current_s1">Состояние: %1$s</string>
+    
+    <!-- Speed -->
+    <string name="title_speed">Скорость</string>
+    <string name="note_speed">Рекомендуемое значение:\n - около 2 для смартфона</string>
+    <!-- Blask list -->
+    <string name="title_black_list">Черный список</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">Исходное положение</string>
+    <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>
+    <string name="usage_of_initial_position">Перетащите, чтобы изменить положение.\nНажмите клавишу возврата, чтобы сохранить.</string>
+    <!-- Animation -->
+    <string name="title_animation">Анимация</string>
+    <string name="summary_animation_on">Плавное движение</string>
+    <string name="summary_animation_off">Немедленный переход</string>
+    <!-- Notify flying -->
+    <string name="title_notify_flying">Сообщение о включении</string>
+    <string name="summary_notify_flying_on">Отображать границу</string>
+    <string name="summary_notify_flying_off">Без границ</string>
+    
+    <!-- Others -->
+    <string name="title_others">Другое</string>
+    
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="title_purchase_premium_settings">Премиум настройки</string>
+    <string name="summary_purchase_premium_settings">Пожертвуйте, чтобы разблокировать все параметры</string>
+    <string name="summary_unavailable_premium_settings">\"In-app Billing\" is not available on your phone.</string>
+    
+    <!-- Links -->
+    <string name="title_google_play">Получить Google Play версию</string>
+    <string name="summary_google_play">Нажмите, чтобы перейти в Google Play</string>
+    
+    <!-- Test -->
+    <string name="title_test">Тестирование</string>
+    <string name="summary_test">Простой интерфейс(в данном приложении) для быстрого просмотра изменений\n(Требуется перезагрузка)</string>
+    <!-- Reset automatically -->
+    <string name="title_reset_automatically">Сброс автоматически</string>
+    <string name="summary_reset_automatically_on">Отключить, если вы используете ярлыки</string>
+    <string name="summary_reset_automatically_off">Удерживать состояние окна, если это возможно</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_on_recents">Нажатие на недавние приложения (программная)</string>
+    <string name="title_action_when_long_press_on_recents">Долгое нажатие на недавние приложения (программная)</string>
+    <string name="title_action_when_double_tap_on_recents">Двойное нажатие на недавние приложения (программная)</string>
+    
+    <!-- About -->
+    <string name="title_about">О приложении</string>
+</resources>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Instructions -->
+    <Preference
+        android:summary="@string/summary_instructions"
+        android:title="@string/title_instructions"/>
+    <!-- Shortcuts -->
+    <Preference
+        android:summary="@string/summary_shortcuts"
+        android:title="@string/title_shortcuts"/>
+    <!-- Notes -->
+    <Preference
+        android:summary="@string/summary_notes"
+        android:title="@string/title_notes"/>
+
+    <PreferenceScreen
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="@string/title_settings">
+        <!-- Speed -->
+        <EditTextPreference
+            android:defaultValue="1.5"
+            android:dialogMessage="@string/note_speed"
+            android:inputType="numberDecimal"
+            android:key="@string/key_speed"
+            android:selectAllOnFocus="true"
+            android:title="@string/title_speed"/>
+        <!-- Black List -->
+        <Preference
+            android:key="@string/key_black_list"
+            android:title="@string/title_black_list"/>
+
+        <!-- Premium Settings -->
+        <!-- Initial Position -->
+        <Preference
+            android:key="@string/key_initial_position"
+            android:summary="@string/summary_initial_position"
+            android:title="@string/title_initial_position"/>
+        <!-- Animation -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_animation"
+            android:summaryOff="@string/summary_animation_off"
+            android:summaryOn="@string/summary_animation_on"
+            android:title="@string/title_animation"/>
+        <!-- Notify Flying -->
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_notify_flying"
+            android:summaryOff="@string/summary_notify_flying_off"
+            android:summaryOn="@string/summary_notify_flying_on"
+            android:title="@string/title_notify_flying"/>
+
+        <!-- Others -->
+        <PreferenceCategory
+            android:title="@string/title_others">
+            <!-- Purchases -->
+            <Preference
+                android:key="@string/key_purchase_premium_settings"
+                android:summary="@string/summary_purchase_premium_settings"
+                android:title="@string/title_purchase_premium_settings"/>
+
+            <!-- Links -->
+            <Preference
+                android:key="@string/key_google_play"
+                android:summary="@string/summary_google_play"
+                android:title="@string/title_google_play">
+                <intent
+                    android:action="android.intent.action.VIEW"
+                    android:data="market://details?id=jp.tkgktyk.xposed.niwatori"/>
+            </Preference>
+
+        </PreferenceCategory>
+
+        <!-- Test -->
+        <PreferenceCategory
+            android:title="@string/title_test">
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="@string/key_test_feature"
+                android:summary="@string/summary_test"/>
+            <!-- Reset Automatically -->
+            <SwitchPreference
+                android:defaultValue="false"
+                android:dependency="@string/key_test_feature"
+                android:key="@string/key_reset_automatically"
+                android:summaryOff="@string/summary_reset_automatically_off"
+                android:summaryOn="@string/summary_reset_automatically_on"
+                android:title="@string/title_reset_automatically"/>
+            <!-- Actions -->
+            <ListPreference
+                android:defaultValue=""
+                android:dependency="@string/key_test_feature"
+                android:entries="@array/nfw_actions"
+                android:entryValues="@array/nfw_action_values"
+                android:key="@string/key_action_when_tap_on_recents"
+                android:title="@string/title_action_when_tap_on_recents"/>
+            <ListPreference
+                android:defaultValue=""
+                android:dependency="@string/key_test_feature"
+                android:entries="@array/nfw_actions"
+                android:entryValues="@array/nfw_action_values"
+                android:key="@string/key_action_when_long_press_on_recents"
+                android:title="@string/title_action_when_long_press_on_recents"/>
+            <ListPreference
+                android:defaultValue=""
+                android:dependency="@string/key_test_feature"
+                android:entries="@array/nfw_actions"
+                android:entryValues="@array/nfw_action_values"
+                android:key="@string/key_action_when_double_tap_on_recents"
+                android:title="@string/title_action_when_double_tap_on_recents"/>
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+    <!-- About -->
+    <Preference
+        android:key="@string/key_about"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/title_about"/>
+</PreferenceScreen>

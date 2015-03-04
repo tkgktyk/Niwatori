@@ -1,0 +1,20 @@
+<resources>
+    <!-- Displayed in Xposed framework -->
+    <string name="app_name">Niwatori</string>
+    <string name="xposed_description">Режим управления одной рукой.</string>
+    
+    <!-- Blacklist -->
+    <string name="black_list_activity_name">@string/title_black_list</string>
+    <string name="only_selected">Только выбранные</string>
+    
+    <!-- Shortcut name -->
+    <string name="shortcut_activity_name">NFW действия</string>
+    <string name="default_str">По умолчанию </string>
+    <string name="reset">Сбросить</string>
+    <string name="toggle">Toggle</string>
+    <string name="pin">Pin</string>
+    <string name="pin_or_reset">Pin или Сброс</string>
+    
+    <!-- About -->
+    <string name="about_activity_name">@string/title_about</string>
+</resources>

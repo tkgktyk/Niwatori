@@ -1,0 +1,20 @@
+<resources>
+    <!-- Displayed in Xposed framework -->
+    <string name="app_name">Niwatori</string>
+    <string name="xposed_description">Another one-handed mode.</string>
+
+    <!-- Blacklist -->
+    <string name="black_list_activity_name">@string/title_black_list</string>
+    <string name="only_selected">Only selected</string>
+
+    <!-- Shortcut name -->
+    <string name="shortcut_activity_name">NFW Actions</string>
+    <string name="default_str">Default</string>
+    <string name="reset">Reset</string>
+    <string name="toggle">Toggle</string>
+    <string name="pin">Pin</string>
+    <string name="pin_or_reset">Pin or Reset</string>
+
+    <!-- About -->
+    <string name="about_activity_name">@string/title_about</string>
+</resources>

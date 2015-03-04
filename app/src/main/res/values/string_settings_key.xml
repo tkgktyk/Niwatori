@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Speed -->
+    <string name="key_speed" translatable="false">key_speed</string>
+    <!-- Blask list -->
+    <string name="key_black_list" translatable="false">key_black_list</string>
+    <!-- Initial position -->
+    <string name="key_initial_position" translatable="false">key_initial_position</string>
+    <string name="key_initial_x_percent" translatable="false">key_initial_x_percent</string>
+    <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
+    <!-- Animation -->
+    <string name="key_animation" translatable="false">key_animation</string>
+    <!-- Notify flying -->
+    <string name="key_notify_flying" translatable="false">key_notify_flying</string>
+
+    <!-- Test -->
+    <string name="key_test_feature" translatable="false">key_test_feature</string>
+    <!-- Reset automatically -->
+    <string name="key_reset_automatically" translatable="false">key_reset_automatically</string>
+    <!-- Actions -->
+    <string name="key_action_when_tap_on_recents" translatable="false">key_action_when_tap_on_recents</string>
+    <string name="key_action_when_long_press_on_recents" translatable="false">key_action_when_long_press_on_recents</string>
+    <string name="key_action_when_double_tap_on_recents" translatable="false">key_action_when_double_tap_on_recents</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="key_purchase_premium_settings" translatable="false">key_purchase_premium_settings</string>
+
+    <!-- Links -->
+    <string name="key_google_play" translatable="false">key_google_play</string>
+
+    <!-- About -->
+    <string name="key_about" translatable="false">key_about</string>
+</resources>

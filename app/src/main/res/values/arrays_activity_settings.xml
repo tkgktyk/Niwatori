@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Test Action -->
+    <string-array name="nfw_actions">
+        <item>@string/default_str</item>
+        <item>@string/toggle</item>
+        <item>@string/pin</item>
+        <item>@string/pin_or_reset</item>
+        <item>@string/reset</item>
+    </string-array>
+    <string-array name="nfw_action_values" translatable="false">
+        <item></item>
+        <item>jp.tkgktyk.xposed.niwatori.intent.action.TOGGLE</item>
+        <item>jp.tkgktyk.xposed.niwatori.intent.action.PIN</item>
+        <item>jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</item>
+        <item>jp.tkgktyk.xposed.niwatori.intent.action.RESET</item>
+    </string-array>
+</resources>

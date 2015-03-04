@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Displayed in launcher -->
+    <string name="settings_activity_name">にわとり - 新しい片手モード</string>
+
+    <!-- Instructions -->
+    <string name="title_instructions">概要</string>
+    <string name="summary_instructions">にわとりが導入するウィンドウモードを切り替えることによって、他のアプリの表示位置を変更できます。ウィンドウモードはにわとりのショートカットから制御してください。ショートカットはあなたが普段使用しているランチャーから起動してください。</string>
+    <!-- Shortcuts -->
+    <string name="title_shortcuts">にわとりのショートカット</string>
+    <string name="summary_shortcuts">「トグル」: 片手モードと通常モードを切り替えます。\n「ピン止め」: 表示位置を保ったままウィンドウを固定します。\n「ピン止め or リセット」: 状態に応じてピン止めかリセットを行います。\n「リセット」: 通常モードに戻します。\nナビゲーションキーのアクションやリングターゲットなどに登録して使用してください。</string>
+    <!-- Note -->
+    <string name="title_notes">その他</string>
+    <string name="summary_notes">・アプリの外側をタップするとリセットされます。\n・外側をダブルタップするとピン止めします。\n・変更した設定を反映するにはウィンドウの再作成が必要です。</string>
+
+    <!-- Settings -->
+    <string name="title_settings">設定</string>
+    <string name="current_s1">現在値: %1$s</string>
+
+    <!-- Speed -->
+    <string name="title_speed">スピード</string>
+    <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
+    <!-- Blask list -->
+    <string name="title_black_list">除外リスト</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">初期位置</string>
+    <string name="summary_initial_position">ウィンドウモード変更後にこの場所へ移動します</string>
+    <string name="usage_of_initial_position">ドラッグで位置を変更。\n戻ると自動でセーブされます。</string>
+    <!-- Animation -->
+    <string name="title_animation">アニメーション</string>
+    <string name="summary_animation_on">なめらかな移動</string>
+    <string name="summary_animation_off">すぐに移動</string>
+    <!-- Notify flying -->
+    <string name="title_notify_flying">ウィンドウモードの通知</string>
+    <string name="summary_notify_flying_on">境界線を描画します</string>
+    <string name="summary_notify_flying_off">境界線を描画しません</string>
+
+    <!-- Others -->
+    <string name="title_others">その他</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="title_purchase_premium_settings">プレミアム設定</string>
+    <string name="summary_purchase_premium_settings">すべての設定をアンロックするには購入してください</string>
+    <string name="summary_unavailable_premium_settings">アプリ内課金が利用できません</string>
+
+    <!-- Links -->
+    <string name="title_google_play">Google Playバージョンのアプリ</string>
+    <string name="summary_google_play">Google Playに移動します</string>
+
+    <!-- Test -->
+    <string name="title_test">テスト</string>
+    <string name="summary_test">ショートカットを介さず直接制御するためのインターフェースです。複雑な制御をするには他のアプリからショートカットを使用してください。\n（要再起動）</string>
+    <!-- Reset automatically -->
+    <string name="title_reset_automatically">自動的にリセット</string>
+    <string name="summary_reset_automatically_on">ショートカットを使用する場合はオフにしてください</string>
+    <string name="summary_reset_automatically_off">バックグラウンドでもウィンドウモードが保持されます</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_on_recents">最近のアプリをタップ（ソフトウェアキー）</string>
+    <string name="title_action_when_long_press_on_recents">最近のアプリを長押し（ソフトウェアキー）</string>
+    <string name="title_action_when_double_tap_on_recents">最近のアプリをダブルタップ（ソフトウェアキー）</string>
+
+    <!-- About -->
+    <string name="title_about">このアプリについて</string>
+</resources>
