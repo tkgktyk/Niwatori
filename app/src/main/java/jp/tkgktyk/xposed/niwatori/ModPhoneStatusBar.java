@@ -67,7 +67,8 @@ public class ModPhoneStatusBar extends XposedModule {
                                     mPhoneStatusBar, "mStatusBarView");
                             try {
                                 // install
-//                                installFlyingLayout();
+                                // need for before Lollipop
+                                installFlyingLayout();
                             } catch (Throwable t) {
                                 logE(t);
                             }
