@@ -15,7 +15,7 @@ public class ModFlyingLayout extends XposedModule {
 
     public static void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam,
                                          XSharedPreferences prefs) {
-        mPrefs = prefs;
+        mPrefs = prefs;mPrefs = prefs;
         try {
             // fetch local FlyingLayout
             final Class<?> classFlyingLayout = XposedHelpers.findClass(
