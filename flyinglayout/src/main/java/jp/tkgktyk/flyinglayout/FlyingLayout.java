@@ -157,9 +157,9 @@ public class FlyingLayout extends FrameLayout {
         private int mOffsetY;
         private OnFlyingEventListener mOnFlyingEventListener = new SimpleOnFlyingEventListener();
 
-        private FrameLayout mView;
+        private ViewGroup mView;
 
-        public Helper(FrameLayout view) {
+        public Helper(ViewGroup view) {
             mView = view;
             mTouchSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
             mGestureDetector = new GestureDetector(mView.getContext(), new GestureDetector.SimpleOnGestureListener() {
@@ -196,7 +196,7 @@ public class FlyingLayout extends FrameLayout {
             setUseContainer(DEFAULT_USE_CONTAINER);
         }
 
-        public FrameLayout getAttachedView() {
+        public ViewGroup getAttachedView() {
             return mView;
         }
 
@@ -447,9 +447,7 @@ public class FlyingLayout extends FrameLayout {
                     mLastMotionY = (int) ev.getY(ev.findPointerIndex(mActivePointerId));
                     break;
             }
-            mGestureDetector.onTouchEvent(ev);
-            return true;
-//            return mGestureDetector.onTouchEvent(ev) || mIsBeingDragged;
+            return mGestureDetector.onTouchEvent(ev) || mIsBeingDragged || mTouchEventEnabled || !staysHome();
         }
 
         private void onSecondaryPointerUp(MotionEvent ev) {
