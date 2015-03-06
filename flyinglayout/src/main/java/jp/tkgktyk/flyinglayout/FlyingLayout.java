@@ -44,12 +44,6 @@ public class FlyingLayout extends FrameLayout {
 
     public FlyingLayout(Context context) {
         super(context);
-
-        mHelper.setSpeed(DEFAULT_SPEED);
-        mHelper.setHorizontalPadding(DEFAULT_HORIZONTAL_PADDING);
-        mHelper.setVerticalPadding(DEFAULT_VERTICAL_PADDING);
-        mHelper.setTouchEventEnabled(DEFAULT_TOUCH_EVENT_ENABLED);
-        mHelper.setUseContainer(DEFAULT_USE_CONTAINER);
     }
 
     private void fetchAttribute(Context context, AttributeSet attrs,
@@ -133,13 +127,16 @@ public class FlyingLayout extends FrameLayout {
          * {@link #mActivePointerId}.
          */
         private static final int INVALID_POINTER = -1;
-        private static int DEFAULT_CHILD_GRAVITY = Gravity.TOP | Gravity.START;
+        protected static int DEFAULT_CHILD_GRAVITY = Gravity.TOP | Gravity.START;
+        private final int mTouchSlop;
+        private final Rect mChildRect = new Rect();
+        private final Rect mBoundaryRect = new Rect();
+        private final GestureDetector mGestureDetector;
         /**
          * ID of the active pointer. This is used to retain consistency during
          * drags/flings if multiple pointers are used.
          */
         private int mActivePointerId = INVALID_POINTER;
-        private int mTouchSlop;
         /**
          * True if the user is currently dragging this ScrollView around. This is
          * not the same as 'is being flinged', which can be checked by
@@ -151,34 +148,20 @@ public class FlyingLayout extends FrameLayout {
          */
         private int mLastMotionX;
         private int mLastMotionY;
-
         private float mSpeed;
         private int mHorizontalPadding;
         private int mVerticalPadding;
         private boolean mTouchEventEnabled;
-        private float mSlopScale;
         private boolean mUseContainer;
         private int mOffsetX;
         private int mOffsetY;
-
-        private Rect mChildRect;
-        private Rect mBoundaryRect;
         private OnFlyingEventListener mOnFlyingEventListener = new SimpleOnFlyingEventListener();
-        private GestureDetector mGestureDetector;
 
-        private ViewGroup mView;
+        private FrameLayout mView;
 
-        private Helper(ViewGroup view) {
+        public Helper(FrameLayout view) {
             mView = view;
-
-            initialize();
-        }
-
-        private void initialize() {
             mTouchSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
-            mChildRect = new Rect();
-            mBoundaryRect = new Rect();
-
             mGestureDetector = new GestureDetector(mView.getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
@@ -206,6 +189,15 @@ public class FlyingLayout extends FrameLayout {
                 }
 
             });
+            setSpeed(DEFAULT_SPEED);
+            setHorizontalPadding(DEFAULT_HORIZONTAL_PADDING);
+            setVerticalPadding(DEFAULT_VERTICAL_PADDING);
+            setTouchEventEnabled(DEFAULT_TOUCH_EVENT_ENABLED);
+            setUseContainer(DEFAULT_USE_CONTAINER);
+        }
+
+        public FrameLayout getAttachedView() {
+            return mView;
         }
 
         public float getSpeed() {
@@ -457,6 +449,7 @@ public class FlyingLayout extends FrameLayout {
             }
             mGestureDetector.onTouchEvent(ev);
             return true;
+//            return mGestureDetector.onTouchEvent(ev) || mIsBeingDragged;
         }
 
         private void onSecondaryPointerUp(MotionEvent ev) {
@@ -474,8 +467,8 @@ public class FlyingLayout extends FrameLayout {
         }
 
         @SuppressLint("NewApi")
-        protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-            boolean forceLeftGravity = false;
+        public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+            final boolean forceLeftGravity = false;
             final int count = mView.getChildCount();
 
             final int parentLeft = mView.getPaddingLeft();
@@ -504,15 +497,13 @@ public class FlyingLayout extends FrameLayout {
                     final int layoutDirection =
                             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
                                     mView.getLayoutDirection() : 0;
-                    final int absoluteGravity = Gravity.getAbsoluteGravity(gravity,
-                            layoutDirection);
-                    final int verticalGravity = gravity
-                            & Gravity.VERTICAL_GRAVITY_MASK;
+                    final int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
+                    final int verticalGravity = gravity & Gravity.VERTICAL_GRAVITY_MASK;
 
                     switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
                         case Gravity.CENTER_HORIZONTAL:
-                            childLeft = parentLeft + (parentRight - parentLeft - width)
-                                    / 2 + lp.leftMargin - lp.rightMargin;
+                            childLeft = parentLeft + (parentRight - parentLeft - width) / 2
+                                    + lp.leftMargin - lp.rightMargin;
                             break;
                         case Gravity.RIGHT:
                             if (!forceLeftGravity) {
@@ -529,8 +520,8 @@ public class FlyingLayout extends FrameLayout {
                             childTop = parentTop + lp.topMargin;
                             break;
                         case Gravity.CENTER_VERTICAL:
-                            childTop = parentTop + (parentBottom - parentTop - height)
-                                    / 2 + lp.topMargin - lp.bottomMargin;
+                            childTop = parentTop + (parentBottom - parentTop - height) / 2
+                                    + lp.topMargin - lp.bottomMargin;
                             break;
                         case Gravity.BOTTOM:
                             childTop = parentBottom - height - lp.bottomMargin;
@@ -539,14 +530,12 @@ public class FlyingLayout extends FrameLayout {
                             childTop = parentTop + lp.topMargin;
                     }
 
-                    mChildRect.set(childLeft, childTop, childLeft + width, childTop
-                            + height);
+                    mChildRect.set(childLeft, childTop, childLeft + width, childTop + height);
                     if (!getUseContainer() || i == 0) {
                         mChildRect.offset(mOffsetX, mOffsetY);
                         mBoundaryRect.union(mChildRect);
                     }
-                    child.layout(mChildRect.left, mChildRect.top, mChildRect.right,
-                            mChildRect.bottom);
+                    child.layout(mChildRect.left, mChildRect.top, mChildRect.right, mChildRect.bottom);
                 }
             }
         }
@@ -618,6 +607,10 @@ public class FlyingLayout extends FrameLayout {
             final int y = (int) ev.getY();
 
             return mBoundaryRect.contains(x, y);
+        }
+
+        protected Rect getBoundaryRect() {
+            return mBoundaryRect;
         }
 
         public OnFlyingEventListener getOnFlyingEventListener() {
