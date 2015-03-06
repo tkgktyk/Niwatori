@@ -3,13 +3,16 @@ package jp.tkgktyk.xposed.niwatori;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.graphics.Canvas;
+import android.support.annotation.NonNull;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
@@ -17,14 +20,17 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  * Created by tkgktyk on 2015/02/13.
  */
 public class ModPhoneStatusBar extends XposedModule {
-    private static final String CLASS_PHONE_STATUS_BAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
     private static final String CLASS_PHONE_STATUS_BAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
+    private static final String CLASS_PANEL_HOLDER = "com.android.systemui.statusbar.phone.PanelHolder";
+
+    private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private static XSharedPreferences mPrefs;
+    private static NFW.Settings mSettings;
 
-    private static Object mPhoneStatusBar;
+    private static FlyingHelper mHelper;
+
     private static View mPhoneStatusBarView;
-    private static View mHelperHolder;
     private static final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -34,166 +40,144 @@ public class ModPhoneStatusBar extends XposedModule {
                 return;
             }
             // target is status bar
-            final FlyingHelper helper = FlyingHelper.getFromHelperHolder(mHelperHolder);
-            if (helper != null) {
-                final String action = intent.getAction();
-                helper.performAction(action);
-                abortBroadcast();
-                logD("consumed: " + action);
-            } else {
-                logD("FlyingHelper is not found.");
-            }
+            final String action = intent.getAction();
+            mHelper.performAction(action);
+            abortBroadcast();
+            logD("consumed: " + action);
         }
     };
 
     public static void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam,
                                          XSharedPreferences prefs) {
         mPrefs = prefs;
+        mSettings = newSettings(mPrefs);
         if (!loadPackageParam.packageName.equals("com.android.systemui")) {
             return;
         }
         try {
-            //
-            // Install FlyingLayout
-            //
-            final ClassLoader classLoader = loadPackageParam.classLoader;
-            XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUS_BAR, classLoader,
-                    "makeStatusBarView", new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            logD("makeStatusBarView");
-                            mPhoneStatusBar = param.thisObject;
-                            mPhoneStatusBarView = (View) XposedHelpers.getObjectField(
-                                    mPhoneStatusBar, "mStatusBarView");
-                            try {
-                                // install
-//                                installFlyingLayout();
-                            } catch (Throwable t) {
-                                logE(t);
-                            }
-                        }
-
-                    });
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUS_BAR, classLoader,
-                        "showKeyguard", new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                logD("showKeyguard");
-                                try {
-                                    uninstallFlyingLayout();
-                                } catch (Throwable t) {
-                                    logE(t);
-                                }
-                            }
-                        });
-                XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUS_BAR, classLoader,
-                        "hideKeyguard", new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                logD("hideKeyguard");
-                                try {
-                                    // install
-                                    installFlyingLayout();
-                                } catch (Throwable t) {
-                                    logE(t);
-                                }
-                            }
-                        });
-            }
-            //
-            // Reset state when status bar collapsed
-            //
-            try {
-                XposedHelpers.findAndHookMethod(CLASS_PHONE_STATUS_BAR_VIEW, classLoader,
-                        "onAllPanelsCollapsed", new XC_MethodHook() {
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                                try {
-                                    final FlyingHelper helper = FlyingHelper
-                                            .getFrom((View) param.thisObject);
-                                    if (helper != null) {
-                                        helper.resetState();
-                                    } else {
-                                        logD("FlyingHelper is not found.");
-                                    }
-                                } catch (Throwable t) {
-                                    logE(t);
-                                }
-                            }
-                        });
-            } catch (NoSuchMethodError e) {
-                log("PhoneStatusBarView#onAllPanelsCollapsed is not found.");
-            }
+            installToStatusBar(loadPackageParam.classLoader);
         } catch (Throwable t) {
             logE(t);
         }
     }
 
-    private static void installFlyingLayout() throws Throwable {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // before Lollipop
-            final ScrollView scrollView = (ScrollView) XposedHelpers.getObjectField(
-                    mPhoneStatusBar, "mScrollView");
-            final ViewGroup target = (ViewGroup) scrollView.getParent();
-            FlyingHelper helper = FlyingHelper.getFrom(target);
-            if (helper == null) {
-                setHeightToMatchParent((View) target.getParent());
-                setHeightToMatchParent(target);
-                helper = new FlyingHelper(newSettings(mPrefs));
-                mHelperHolder = helper.install(target);
+    private static void installToStatusBar(ClassLoader classLoader) {
+        final Class<?> classPanelHolder = XposedHelpers.findClass(CLASS_PANEL_HOLDER, classLoader);
+        logD(CLASS_PANEL_HOLDER + " is found");
+        XposedBridge.hookAllConstructors(classPanelHolder, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    final ViewGroup panelHolder = (ViewGroup) param.thisObject;
+                    mHelper = new FlyingHelper(panelHolder, 1, mSettings);
+                    XposedHelpers.setAdditionalInstanceField(panelHolder,
+                            FIELD_FLYING_HELPER, mHelper);
+
+                    panelHolder.getContext().registerReceiver(mGlobalReceiver, NFW.STATUS_BAR_FILTER);
+                    logD("attached to status bar");
+                } catch (Throwable t) {
+                    logE(t);
+                }
             }
-        } else {
-            // Lollipop or later
-            // NotificationPanel includes top menu.
-            final ViewGroup notificationPanel = (ViewGroup) XposedHelpers.getObjectField(
-                    mPhoneStatusBar, "mNotificationPanel");
-            FlyingHelper helper = FlyingHelper.getFrom(notificationPanel);
-            if (helper == null) {
-                helper = new FlyingHelper(newSettings(mPrefs));
-                mHelperHolder = helper.install(notificationPanel);
+        });
+        XposedHelpers.findAndHookMethod(classPanelHolder, "onTouchEvent", MotionEvent.class,
+                new XC_MethodReplacement() {
+                    @Override
+                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                        try {
+                            final MotionEvent event = (MotionEvent) methodHookParam.args[0];
+                            if (mHelper.onTouchEvent(event)) {
+                                return true;
+                            }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                        return invokeOriginalMethod(methodHookParam);
+                    }
+                });
+        final Class<?> classFrameLayout = classPanelHolder.getSuperclass();
+        XposedHelpers.findAndHookMethod(classFrameLayout, "draw", Canvas.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            final Canvas canvas = (Canvas) param.args[0];
+                            final FlyingHelper helper = getHelper(param.thisObject);
+                            if (helper != null) {
+                                mHelper.draw(canvas);
+                            }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                    }
+                });
+        XposedHelpers.findAndHookMethod(classFrameLayout, "onLayout", boolean.class,
+                int.class, int.class, int.class, int.class, new XC_MethodReplacement() {
+                    @Override
+                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                        try {
+                            final FlyingHelper helper = getHelper(methodHookParam.thisObject);
+                            if (helper != null) {
+                                final boolean changed = (Boolean) methodHookParam.args[0];
+                                final int left = (Integer) methodHookParam.args[1];
+                                final int top = (Integer) methodHookParam.args[2];
+                                final int right = (Integer) methodHookParam.args[3];
+                                final int bottom = (Integer) methodHookParam.args[4];
+                                helper.onLayout(changed, left, top, right, bottom);
+                                return null;
+                            }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                        return invokeOriginalMethod(methodHookParam);
+                    }
+                });
+        final Class<?> classViewGroup = classFrameLayout.getSuperclass();
+        XposedHelpers.findAndHookMethod(classViewGroup, "onInterceptTouchEvent", MotionEvent.class,
+                new XC_MethodReplacement() {
+                    @Override
+                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                        try {
+                            final MotionEvent event = (MotionEvent) methodHookParam.args[0];
+                            final FlyingHelper helper = getHelper(methodHookParam.thisObject);
+                            if (helper != null && helper.onInterceptTouchEvent(event)) {
+                                return true;
+                            }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                        return invokeOriginalMethod(methodHookParam);
+                    }
+                });
+        final Class<?> classPhoneStatusBarView = XposedHelpers.findClass(
+                CLASS_PHONE_STATUS_BAR_VIEW, classLoader);
+        XposedBridge.hookAllConstructors(classPhoneStatusBarView, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                mPhoneStatusBarView = (View) param.thisObject;
             }
+        });
+        //
+        // Reset state when status bar collapsed
+        //
+        try {
+            XposedHelpers.findAndHookMethod(classPhoneStatusBarView, "onAllPanelsCollapsed",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            try {
+                                mHelper.resetState();
+                            } catch (Throwable t) {
+                                logE(t);
+                            }
+                        }
+                    });
+        } catch (NoSuchMethodError e) {
+            log("PhoneStatusBarView#onAllPanelsCollapsed is not found.");
         }
-        // register broadcast for shortcut
-        if (mHelperHolder == null) {
-            log("could not attach to status bar");
-            return;
-        }
-        final Context context = (Context) XposedHelpers.getObjectField(
-                mPhoneStatusBar, "mContext");
-        context.registerReceiver(mGlobalReceiver, NFW.STATUS_BAR_FILTER);
-        logD("attached to status bar");
     }
 
-    private static void setHeightToMatchParent(View view) {
-        final ViewGroup.LayoutParams lp = view.getLayoutParams();
-        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        view.setLayoutParams(lp);
-    }
-
-    private static void uninstallFlyingLayout() throws Throwable {
-        if (mHelperHolder == null) {
-            logD("not installed");
-            return;
-        }
-        FlyingHelper helper = null;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            // before Lollipop
-            final ScrollView scrollView = (ScrollView) XposedHelpers.getObjectField(
-                    mPhoneStatusBar, "mScrollView");
-            final ViewGroup target = (ViewGroup) scrollView.getParent();
-            helper = FlyingHelper.getFrom(target);
-        } else {
-            // Lollipop or later
-            // NotificationPanel includes top menu.
-            final ViewGroup notificationPanel = (ViewGroup) XposedHelpers.getObjectField(
-                    mPhoneStatusBar, "mNotificationPanel");
-            helper = FlyingHelper.getFrom(notificationPanel);
-        }
-        if (helper == null) {
-            logD("FlyingHelper is not found.");
-            return;
-        }
-        helper.uninstall();
+    private static FlyingHelper getHelper(@NonNull Object obj) {
+        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(obj, FIELD_FLYING_HELPER);
     }
 }
