@@ -6,6 +6,7 @@
     
     <!-- Flying Layout -->
     <dimen name="flying_view_padding">64dp</dimen>
+    <dimen name="boundary_width">2dp</dimen>
 
     <!-- About -->
     <dimen name="about_text_margin">8dp</dimen>
