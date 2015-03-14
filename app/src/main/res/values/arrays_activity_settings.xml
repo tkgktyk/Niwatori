@@ -65,7 +65,7 @@
         <item>@string/layout_adjustment_center</item>
         <item>@string/layout_adjustment_right</item>
     </string-array>
-    <string name="default_layout_adjustment" translatable="false">0</string>
+    <string name="default_layout_adjustment" translatable="false">3</string>
     <string-array name="layout_adjustment_values" translatable="false">
         <item>3</item>
         <item>17</item>
