@@ -1,39 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Displayed in launcher -->
-    <string name="settings_activity_name">にわとり - 新しい片手モード</string>
+    <string name="settings_activity_name">@string/app_name</string>
 
     <!-- Instructions -->
     <string name="title_instructions">概要</string>
-    <string name="summary_instructions">にわとりが導入するウィンドウモードを切り替えることによって、他のアプリの表示位置を変更できます。ウィンドウモードはにわとりのショートカットから制御してください。ショートカットはあなたが普段使用しているランチャーから起動してください。</string>
+    <string name="summary_instructions">このModはいくつかの片手モードを提供します：\n・Movable Screen\n・Slide Down\n・Small Screen\nショートカットから片手モードを開始できます。ショートカットはあなたが普段使用しているランチャーから起動してください。</string>
     <!-- Shortcuts -->
-    <string name="title_shortcuts">にわとりのショートカット</string>
-    <string name="summary_shortcuts">「トグル」: 片手モードと通常モードを切り替えます。\n「ピン止め」: 表示位置を保ったままウィンドウを固定します。\n「ピン止め or リセット」: 状態に応じてピン止めかリセットを行います。\n「リセット」: 通常モードに戻します。\nナビゲーションキーのアクションやリングターゲットなどに登録して使用してください。</string>
+    <string name="title_shortcuts">ショートカット（片手モード）</string>
+    <string name="summary_shortcuts">・Movable Screen: 表示位置を動かせるようになります。\n・Pin: 表示位置を固定します。\n・Slide Down: 表示位置を変更します。\n・Small Screen: 表示サイズを変更します。\nナビゲーションキーのアクションやリングターゲットなどに登録して使用してください。</string>
     <!-- Note -->
     <string name="title_notes">その他</string>
-    <string name="summary_notes">・アプリの外側をタップするとリセットされます。\n・外側をダブルタップするとピン止めします。\n・変更した設定を反映するにはウィンドウの再作成が必要です。</string>
+    <string name="summary_notes">・アプリの外側をタップするとリセットされます。\n・外側をダブルタップするとピン止めします。\n・設定の変更が反映されるまで数秒かかります。</string>
 
     <!-- Settings -->
     <string name="title_settings">設定</string>
     <string name="current_s1">現在値: %1$s</string>
 
-    <!-- Speed -->
-    <string name="title_speed">スピード</string>
-    <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
+    <!-- General -->
+    <string name="general">General</string>
     <!-- Blask list -->
-    <string name="title_black_list">除外リスト</string>
-    <!-- Initial position -->
-    <string name="title_initial_position">初期位置</string>
-    <string name="summary_initial_position">ウィンドウモード変更後にこの場所へ移動します</string>
-    <string name="usage_of_initial_position">ドラッグで位置を変更。\n戻ると自動でセーブされます。</string>
+    <string name="title_black_list">@string/black_list_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">アニメーション</string>
     <string name="summary_animation_on">なめらかな移動</string>
     <string name="summary_animation_off">すぐに移動</string>
-    <!-- Notify flying -->
-    <string name="title_notify_flying">ウィンドウモードの通知</string>
-    <string name="summary_notify_flying_on">境界線を描画します</string>
-    <string name="summary_notify_flying_off">境界線を描画しません</string>
+    <!-- Draw Boundary -->
+    <string name="title_draw_boundary">境界線の描画</string>
+    <string name="summary_draw_boundary">片手モードの時に描画</string>
+    <!-- Boundary Color -->
+    <string name="title_boundary_color">境界線の色</string>
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="lime">Lime</string>
+    <string name="yellow">Yellow</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="grey">Grey</string>
+    <string name="blue_grey">Blue Grey</string>
+
+    <!-- Movable Screen -->
+    <string name="movable_screen">Movable Screen</string>
+    <!-- Speed -->
+    <string name="title_speed">スピード</string>
+    <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">初期位置*</string>
+    <string name="summary_initial_position">Slide Down時にこの場所へ移動します。</string>
+    <string name="usage_of_initial_position">ドラッグで位置を変更。\n戻ると自動でセーブされます。</string>
+
+    <!-- Small Screen -->
+    <string name="small_screen">Small Screen</string>
+    <!-- Layout Adjustment -->
+    <string name="title_layout_adjustment">左右寄せ</string>
+    <string name="layout_adjustment_left">左寄せ</string>
+    <string name="layout_adjustment_center">中央</string>
+    <string name="layout_adjustment_right">右寄せ</string>
+    <!-- Small Screen Size -->
+    <string name="title_small_screen_size">サイズ*</string>
+    <string name="note_small_screen_size">単位は%です。</string>
 
     <!-- Others -->
     <string name="title_others">その他</string>
@@ -41,7 +77,7 @@
     <!-- Purchases -->
     <!-- Premium Settings -->
     <string name="title_purchase_premium_settings">プレミアム設定</string>
-    <string name="summary_purchase_premium_settings">すべての設定をアンロックするには購入してください</string>
+    <string name="summary_purchase_premium_settings">すべての設定（*印）をアンロックするには購入してください</string>
     <string name="summary_unavailable_premium_settings">アプリ内課金が利用できません</string>
 
     <!-- Links -->
@@ -50,7 +86,7 @@
 
     <!-- Test -->
     <string name="title_test">テスト</string>
-    <string name="summary_test">ショートカットを介さず直接制御するためのインターフェースです。複雑な制御をするには他のアプリからショートカットを使用してください。\n（要再起動）</string>
+    <string name="summary_test">ショートカットを介さず直接制御するためのインターフェースです。複雑な制御をするには他のアプリからショートカットを使用してください。</string>
     <!-- Reset automatically -->
     <string name="title_reset_automatically">自動的にリセット</string>
     <string name="summary_reset_automatically_on">ショートカットを使用する場合はオフにしてください</string>
@@ -61,5 +97,5 @@
     <string name="title_action_when_double_tap_on_recents">最近のアプリをダブルタップ（ソフトウェアキー）</string>
 
     <!-- About -->
-    <string name="title_about">このアプリについて</string>
+    <string name="title_about">@string/about_activity_name</string>
 </resources>

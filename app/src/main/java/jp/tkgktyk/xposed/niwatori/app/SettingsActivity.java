@@ -1,15 +1,24 @@
 package jp.tkgktyk.xposed.niwatori.app;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
+import android.view.Window;
+
+import com.google.common.base.Strings;
 
 import jp.tkgktyk.xposed.niwatori.BuildConfig;
 import jp.tkgktyk.xposed.niwatori.NFW;
@@ -24,7 +33,7 @@ import jp.tkgktyk.xposed.niwatori.app.util.Purchase;
  */
 public class SettingsActivity extends Activity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
-    private static final boolean PURCHASED = BuildConfig.DEBUG && true;
+    private static final boolean PURCHASED = BuildConfig.DEBUG && false;
 
     // (arbitrary) request code for the purchase flow
     private static final int RC_REQUEST = 10001;
@@ -55,6 +64,8 @@ public class SettingsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setProgressBarIndeterminateVisibility(true);
 
         if (BuildConfig.DEBUG) {
             setTitle("[DEBUG] " + getTitle());
@@ -171,11 +182,30 @@ public class SettingsActivity extends Activity {
     }
 
     public static class BaseFragment extends PreferenceFragment {
+        private final SharedPreferences.OnSharedPreferenceChangeListener mChangeListener
+                = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                getActivity().setProgressBarIndeterminateVisibility(true);
+                getActivity().sendBroadcast(new Intent(NFW.ACTION_SETTINGS_CHANGED));
+                Log.d(TAG, "sent setting changed");
+            }
+        };
+
         @SuppressWarnings("deprecation")
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesMode(PreferenceActivity.MODE_WORLD_READABLE);
+            getPreferenceManager().getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(mChangeListener);
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            getPreferenceManager().getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(mChangeListener);
         }
 
         protected Preference findPreference(@StringRes int id) {
@@ -183,15 +213,24 @@ public class SettingsActivity extends Activity {
         }
 
         protected void showListSummary(@StringRes int id) {
+            showListSummary(id, null);
+        }
+
+        protected void showListSummary(@StringRes int id,
+                                       @Nullable final Preference.OnPreferenceChangeListener extraListener) {
             ListPreference list = (ListPreference) findPreference(id);
             list.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     setListSummary((ListPreference) preference, (String) newValue);
+                    if (extraListener != null) {
+                        return extraListener.onPreferenceChange(preference, newValue);
+                    }
                     return true;
                 }
             });
-            setListSummary(list, list.getValue());
+            // pre-perform
+            list.getOnPreferenceChangeListener().onPreferenceChange(list, list.getValue());
         }
 
         private void setListSummary(ListPreference pref, String value) {
@@ -206,11 +245,19 @@ public class SettingsActivity extends Activity {
         }
 
         protected void showTextSummary(@StringRes int id) {
+            showTextSummary(id, null);
+        }
+
+        protected void showTextSummary(@StringRes int id, @Nullable final String suffix) {
             EditTextPreference et = (EditTextPreference) findPreference(id);
             et.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    preference.setSummary(getString(R.string.current_s1, (String) newValue));
+                    String value = (String) newValue;
+                    if (!Strings.isNullOrEmpty(suffix)) {
+                        value += suffix;
+                    }
+                    preference.setSummary(getString(R.string.current_s1, value));
                     return true;
                 }
             });
@@ -248,14 +295,20 @@ public class SettingsActivity extends Activity {
     public static class SettingsFragment extends BaseFragment {
         private static final int mPremiumSettings[] = {
                 R.string.key_initial_position,
-                R.string.key_animation,
-                R.string.key_notify_flying
+                R.string.key_small_screen_size
         };
         private static final int mPurchasePremiumSettings = R.string.key_purchase_premium_settings;
         private static String ARG_HAS_PREMIUM_SETTINGS = NFW.PACKAGE_NAME + ".HAS_PREMIUM_SETTINGS";
 
         private SettingsActivity mSettingsActivity;
         private boolean mHasPremiumSettings;
+
+        private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                getActivity().setProgressBarIndeterminateVisibility(false);
+            }
+        };
 
         public static SettingsFragment newInstance(boolean hasPremiumSettings) {
             Bundle args = new Bundle();
@@ -269,11 +322,16 @@ public class SettingsActivity extends Activity {
         public void onAttach(Activity activity) {
             super.onAttach(activity);
             mSettingsActivity = (SettingsActivity) activity;
+
+            mSettingsActivity.registerReceiver(mReceiver, NFW.SETTINGS_CHANGED_FILTER);
         }
 
         @Override
         public void onDetach() {
             super.onDetach();
+
+            mSettingsActivity.unregisterReceiver(mReceiver);
+
             mSettingsActivity = null;
         }
 
@@ -298,10 +356,24 @@ public class SettingsActivity extends Activity {
             // Settings
             showTextSummary(R.string.key_speed);
             openSelectorOnClick(R.string.key_black_list, R.string.black_list_activity_name);
+            showListSummary(R.string.key_layout_adjustment);
             //
             // Premium Settings
             //
             openActivity(R.string.key_initial_position, InitialPositionActivity.class);
+            showListSummary(R.string.key_boundary_color, new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final int width = Math.round(getResources().getDimension(R.dimen.boundary_width));
+                    final int color = Color.parseColor((String) newValue);
+                    final GradientDrawable drawable = NFW.makeBoundaryDrawable(width, color);
+                    final int size = Math.round(getResources().getDimension(android.R.dimen.app_icon_size));
+                    drawable.setSize(size, size);
+                    preference.setIcon(drawable);
+                    return true;
+                }
+            });
+            showTextSummary(R.string.key_small_screen_size, "%");
             // Test
             showListSummary(R.string.key_action_when_tap_on_recents);
             showListSummary(R.string.key_action_when_long_press_on_recents);

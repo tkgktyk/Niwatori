@@ -10,8 +10,15 @@
     <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
     <!-- Animation -->
     <string name="key_animation" translatable="false">key_animation</string>
-    <!-- Notify flying -->
-    <string name="key_notify_flying" translatable="false">key_notify_flying</string>
+    <!-- Draw Boundary -->
+    <string name="key_draw_boundary" translatable="false">key_draw_boundary</string>
+    <!-- Boundary Color -->
+    <string name="key_boundary_color" translatable="false">key_boundary_color</string>
+
+    <!-- Layout Adjustment -->
+    <string name="key_layout_adjustment" translatable="false">key_layout_adjustment</string>
+    <!-- Small Screen Size -->
+    <string name="key_small_screen_size" translatable="false">key_small_screen_size</string>
 
     <!-- Test -->
     <string name="key_test_feature" translatable="false">key_test_feature</string>

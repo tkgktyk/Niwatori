@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Displayed in launcher -->
-    <string name="settings_activity_name">Niwatori - Режим управления одной рукой</string>
+    <string name="settings_activity_name">@string/app_name</string>
     
     <!-- Instructions -->
     <string name="title_instructions">Инструкция</string>
@@ -14,27 +14,63 @@
     <string name="summary_notes">- Нажмите на пустое место, чтобы сбросить положение.\n- Дважды нажмите пустое место, чтобы закрепить.\n- Открыть окно заново, чтобы изменения вступили в силу.</string>
     
     <!-- Settings -->
-    <string name="title_settings">Настройки</string>ч
+    <string name="title_settings">Настройки</string>
     <string name="current_s1">Состояние: %1$s</string>
-    
-    <!-- Speed -->
-    <string name="title_speed">Скорость</string>
-    <string name="note_speed">Рекомендуемое значение:\n - около 2 для смартфона</string>
+
+    <!-- General -->
+    <string name="general">General</string>
     <!-- Blask list -->
-    <string name="title_black_list">Черный список</string>
-    <!-- Initial position -->
-    <string name="title_initial_position">Исходное положение</string>
-    <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>
-    <string name="usage_of_initial_position">Перетащите, чтобы изменить положение.\nНажмите клавишу возврата, чтобы сохранить.</string>
+    <string name="title_black_list">@string/black_list_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">Анимация</string>
     <string name="summary_animation_on">Плавное движение</string>
     <string name="summary_animation_off">Немедленный переход</string>
-    <!-- Notify flying -->
-    <string name="title_notify_flying">Сообщение о включении</string>
-    <string name="summary_notify_flying_on">Отображать границу</string>
-    <string name="summary_notify_flying_off">Без границ</string>
-    
+    <!-- Draw Boundary -->
+    <string name="title_draw_boundary">Draw Boundary</string>
+    <string name="summary_draw_boundary">During one-handed mode</string>
+    <!-- Boundary Color -->
+    <string name="title_boundary_color">Boundary Color</string>
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="lime">Lime</string>
+    <string name="yellow">Yellow</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="grey">Grey</string>
+    <string name="blue_grey">Blue Grey</string>
+
+    <!-- Movable Screen -->
+    <string name="movable_screen">Movable Screen</string>
+    <!-- Speed -->
+    <string name="title_speed">Скорость</string>
+    <string name="note_speed">Рекомендуемое значение:\n - около 2 для смартфона</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">Исходное положение</string>
+    <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>
+    <string name="usage_of_initial_position">Перетащите, чтобы изменить положение.\nНажмите клавишу возврата, чтобы сохранить.</string>
+
+    <!-- Small Screen -->
+    <string name="small_screen">Small Screen</string>
+    <!-- Layout Adjustment -->
+    <string name="title_layout_adjustment">Layout Adjustment</string>
+    <string name="layout_adjustment_left">Left</string>
+    <string name="layout_adjustment_center">Center</string>
+    <string name="layout_adjustment_right">Right</string>
+    <!-- Small Screen Size -->
+    <string name="title_small_screen_size">Size*</string>
+    <string name="note_small_screen_size">Unit is percent(%).</string>
+
     <!-- Others -->
     <string name="title_others">Другое</string>
     
@@ -61,5 +97,5 @@
     <string name="title_action_when_double_tap_on_recents">Двойное нажатие на недавние приложения (программная)</string>
     
     <!-- About -->
-    <string name="title_about">О приложении</string>
+    <string name="title_about">@string/about_activity_name</string>
 </resources>

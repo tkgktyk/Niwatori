@@ -10,9 +10,18 @@ import de.robv.android.xposed.XposedBridge;
  * Created by tkgktyk on 2015/02/08.
  */
 public class XposedModule {
+    private static XSharedPreferences mPrefs;
+    protected static NFW.Settings mSettings;
 
-    protected static NFW.Settings newSettings(XSharedPreferences prefs) {
-        return new NFW.Settings(prefs);
+    public static void initializePreferences() {
+        final XSharedPreferences prefs = new XSharedPreferences(NFW.PACKAGE_NAME);
+        prefs.makeWorldReadable();
+        mSettings = new NFW.Settings(prefs);
+        mPrefs = prefs;
+    }
+
+    public static void reloadPreferences() {
+        mSettings = new NFW.Settings(mPrefs);
     }
 
     private static String prefix() {
@@ -23,27 +32,27 @@ public class XposedModule {
         return NFW.NAME + "(" + method + ")";
     }
 
-    protected static void logD() {
+    public static void logD() {
         if (BuildConfig.DEBUG) {
             XposedBridge.log(prefix() + " [DEBUG]");
         }
     }
 
-    protected static void logD(String text) {
+    public static void logD(String text) {
         if (BuildConfig.DEBUG) {
             XposedBridge.log(prefix() + " [DEBUG]: " + text);
         }
     }
 
-    protected static void log(String text) {
+    public static void log(String text) {
         XposedBridge.log(prefix() + ": " + text);
     }
 
-    protected static void logE(Throwable t) {
+    public static void logE(Throwable t) {
         XposedBridge.log(t);
     }
 
-    protected static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam methodHookParam)
+    public static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam methodHookParam)
             throws InvocationTargetException, IllegalAccessException {
         return XposedBridge.invokeOriginalMethod(methodHookParam.method,
                 methodHookParam.thisObject, methodHookParam.args);

@@ -22,13 +22,13 @@ public class ShortcutActivity extends ListActivity {
             NFW.ACTION_TOGGLE,
             NFW.ACTION_PIN,
             NFW.ACTION_PIN_OR_RESET,
-            NFW.ACTION_RESET
+            NFW.ACTION_RESIZE
     };
     private static final int mShortcutNameIdList[] = {
-            R.string.toggle,
-            R.string.pin,
-            R.string.pin_or_reset,
-            R.string.reset
+            R.string.action_toggle,
+            R.string.action_pin,
+            R.string.action_pin_or_reset,
+            R.string.action_resize
     };
     private List<String> mShortcutNameList;
 

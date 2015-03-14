@@ -7,21 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.TabHost;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -31,6 +26,8 @@ import de.robv.android.xposed.XposedHelpers;
 public class ModActivity extends XposedModule {
     private static final String CLASS_DECOR_VIEW = "com.android.internal.policy.impl.PhoneWindow$DecorView";
     private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
+
+    private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private static final String FIELD_RECEIVER_REGISTERED = NFW.NAME + "_receiverRegistered";
     private static final String FIELD_HAS_FOCUS = NFW.NAME + "_hasFocus";
@@ -56,14 +53,9 @@ public class ModActivity extends XposedModule {
         }
     };
 
-    private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
+    private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
 
-    private static XSharedPreferences mPrefs;
-    private static NFW.Settings mSettings;
-
-    public static void initZygote(XSharedPreferences prefs) {
-        mPrefs = prefs;
-        mSettings = newSettings(mPrefs);
+    public static void initZygote() {
         try {
 //            forceSetBackground();
             installToDecorView();
@@ -78,16 +70,17 @@ public class ModActivity extends XposedModule {
     private static void installToDecorView() {
         try {
             final Class<?> classDecorView = XposedHelpers.findClass(CLASS_DECOR_VIEW, null);
-            logD(CLASS_DECOR_VIEW + " is found");
             XposedBridge.hookAllConstructors(classDecorView, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     try {
                         final FrameLayout decorView = (FrameLayout) param.thisObject;
-                        logD(decorView.getContext().getPackageName() + ": DecorView");
-                        final FlyingHelper helper = new FlyingHelper(decorView, 1, mSettings);
+                        // need to reload on each package?
+                        mSettings.reload();
+                        final FlyingHelper helper = new FlyingHelper(decorView, 1, true, mSettings);
                         XposedHelpers.setAdditionalInstanceField(decorView,
                                 FIELD_FLYING_HELPER, helper);
+                        setBackground(decorView);
                     } catch (Throwable t) {
                         logE(t);
                     }
@@ -164,28 +157,79 @@ public class ModActivity extends XposedModule {
                             return invokeOriginalMethod(methodHookParam);
                         }
                     });
+
+            XposedHelpers.findAndHookMethod(classDecorView, "onAttachedToWindow", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        final FrameLayout decorView = (FrameLayout) param.thisObject;
+                        final BroadcastReceiver settingsLoadedReceiver = new BroadcastReceiver() {
+                            @Override
+                            public void onReceive(Context context, Intent intent) {
+                                logD(decorView.getContext().getPackageName() + ": reload settings");
+                                // need to reload on each package?
+                                mSettings.reload();
+                                getHelper(decorView).onSettingsLoaded();
+                            }
+                        };
+                        XposedHelpers.setAdditionalInstanceField(decorView,
+                                FIELD_SETTINGS_CHANGED_RECEIVER, settingsLoadedReceiver);
+                        decorView.getContext().registerReceiver(settingsLoadedReceiver,
+                                NFW.SETTINGS_CHANGED_FILTER);
+                    } catch (Throwable t) {
+                        logE(t);
+                    }
+                }
+            });
+            XposedHelpers.findAndHookMethod(classDecorView, "onDetachedFromWindow", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    try {
+                        final FrameLayout decorView = (FrameLayout) param.thisObject;
+                        final BroadcastReceiver settingsLoadedReceiver =
+                                (BroadcastReceiver) XposedHelpers.getAdditionalInstanceField(decorView,
+                                        FIELD_SETTINGS_CHANGED_RECEIVER);
+                        if (settingsLoadedReceiver != null) {
+                            decorView.getContext().unregisterReceiver(settingsLoadedReceiver);
+                        }
+                    } catch (Throwable t) {
+                        logE(t);
+                    }
+                }
+            });
         } catch (Throwable t) {
             logE(t);
         }
     }
 
-    private static void forceSetBackground(View decorView) {
-                final Drawable d = decorView.getBackground();
-                final Context context = v.getContext();
-                final Drawable dark = context.getResources().getDrawable(
-                        android.R.drawable.screen_background_dark);
-                if (d == null) {
-                    helper.getFlyingLayout().setBackground(dark);
-                    // API 15
-//                                        helper.getFlyingLayout().setBackgroundDrawable(dark);
-                } else if (d.getOpacity() == PixelFormat.OPAQUE) {
-                    helper.getFlyingLayout().setBackground(d);
-                    // API 15
-//                                        helper.getFlyingLayout().setBackgroundDrawable(d);
-                } else {
-                    helper.getFlyingLayout().setBackgroundColor(Color.TRANSPARENT);
-                }
-//                                    args = new Object[]{dark};
+    private static void setBackground(View decorView) {
+//        Drawable drawable = decorView.getBackground();
+//        if (drawable == null) {
+//            final TypedValue a = new TypedValue();
+//            if (decorView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true)) {
+//                if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+//                    // color
+//                    final int color = a.data;
+//                    logD("background color: " + String.format("#%08X", color));
+//                    if (Color.alpha(color) == 0xFF) {
+//                        // opaque
+//                        logD("set opaque background color");
+//                        decorView.setBackgroundColor(color);
+//                    }
+//                } else {
+//                    final Drawable d = decorView.getResources().getDrawable(a.resourceId);
+//                    logD("background drawable opacity: " + d.getOpacity());
+//                    if (d.getOpacity() == PixelFormat.OPAQUE) {
+//                        // opaque
+//                        logD("set opaque background drawable");
+//                        decorView.setBackground(d);
+//                    }
+//                }
+//            }
+//        } else if (drawable.getOpacity() == PixelFormat.OPAQUE) {
+//            logD("decorView has opaque background drawable");
+//            decorView.setBackground(drawable);
+//        }
     }
 
     @Nullable
@@ -387,7 +431,7 @@ public class ModActivity extends XposedModule {
                 logD("DecorView is null");
                 return;
             }
-            helper.resetState();
+            helper.resetState(true);
         }
     }
 
@@ -502,8 +546,7 @@ public class ModActivity extends XposedModule {
                 logD("DecorView is null");
                 return;
             }
-            helper.resetState();
+            helper.resetState(true);
         }
     }
-
 }

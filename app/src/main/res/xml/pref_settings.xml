@@ -16,39 +16,74 @@
     <PreferenceScreen
         android:icon="@android:drawable/ic_menu_manage"
         android:title="@string/title_settings">
-        <!-- Speed -->
-        <EditTextPreference
-            android:defaultValue="1.5"
-            android:dialogMessage="@string/note_speed"
-            android:inputType="numberDecimal"
-            android:key="@string/key_speed"
-            android:selectAllOnFocus="true"
-            android:title="@string/title_speed"/>
-        <!-- Black List -->
-        <Preference
-            android:key="@string/key_black_list"
-            android:title="@string/title_black_list"/>
+        <!-- General -->
+        <PreferenceCategory
+            android:title="@string/general">
+            <!-- Black List -->
+            <Preference
+                android:key="@string/key_black_list"
+                android:title="@string/title_black_list"/>
+            <!-- Animation -->
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+                android:defaultValue="true"
+                android:key="@string/key_animation"
+                android:summaryOff="@string/summary_animation_off"
+                android:summaryOn="@string/summary_animation_on"
+                android:title="@string/title_animation"/>
+            <!-- Draw Boundary -->
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+                android:defaultValue="true"
+                android:key="@string/key_draw_boundary"
+                android:summary="@string/summary_draw_boundary"
+                android:title="@string/title_draw_boundary"/>
+            <!-- Boundary Color -->
+            <ListPreference
+                android:defaultValue="@string/default_boundary_color"
+                android:dependency="@string/key_draw_boundary"
+                android:entries="@array/boundary_colors"
+                android:entryValues="@array/boundary_color_values"
+                android:key="@string/key_boundary_color"
+                android:title="@string/title_boundary_color"/>
+        </PreferenceCategory>
 
-        <!-- Premium Settings -->
-        <!-- Initial Position -->
-        <Preference
-            android:key="@string/key_initial_position"
-            android:summary="@string/summary_initial_position"
-            android:title="@string/title_initial_position"/>
-        <!-- Animation -->
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_animation"
-            android:summaryOff="@string/summary_animation_off"
-            android:summaryOn="@string/summary_animation_on"
-            android:title="@string/title_animation"/>
-        <!-- Notify Flying -->
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_notify_flying"
-            android:summaryOff="@string/summary_notify_flying_off"
-            android:summaryOn="@string/summary_notify_flying_on"
-            android:title="@string/title_notify_flying"/>
+        <!-- Movable Screen -->
+        <PreferenceCategory
+            android:title="@string/movable_screen">
+            <!-- Speed -->
+            <EditTextPreference
+                android:defaultValue="1.5"
+                android:dialogMessage="@string/note_speed"
+                android:inputType="numberDecimal"
+                android:key="@string/key_speed"
+                android:selectAllOnFocus="true"
+                android:title="@string/title_speed"/>
+            <!-- Initial Position -->
+            <Preference
+                android:key="@string/key_initial_position"
+                android:summary="@string/summary_initial_position"
+                android:title="@string/title_initial_position"/>
+        </PreferenceCategory>
+
+        <!-- Small Screen -->
+        <PreferenceCategory
+            android:title="@string/small_screen">
+            <!-- Layout Adjustment -->
+            <ListPreference
+                android:defaultValue="@string/default_layout_adjustment"
+                android:entries="@array/layout_adjustments"
+                android:entryValues="@array/layout_adjustment_values"
+                android:key="@string/key_layout_adjustment"
+                android:title="@string/title_layout_adjustment"/>
+            <!-- Size -->
+            <EditTextPreference
+                android:defaultValue="@string/default_small_screen_size"
+                android:dialogMessage="@string/note_small_screen_size"
+                android:inputType="number"
+                android:key="@string/key_small_screen_size"
+                android:maxLength="2"
+                android:selectAllOnFocus="true"
+                android:title="@string/title_small_screen_size"/>
+        </PreferenceCategory>
 
         <!-- Others -->
         <PreferenceCategory
@@ -74,12 +109,12 @@
         <!-- Test -->
         <PreferenceCategory
             android:title="@string/title_test">
-            <SwitchPreference
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
                 android:key="@string/key_test_feature"
                 android:summary="@string/summary_test"/>
             <!-- Reset Automatically -->
-            <SwitchPreference
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
                 android:dependency="@string/key_test_feature"
                 android:key="@string/key_reset_automatically"
@@ -113,7 +148,7 @@
 
     <!-- About -->
     <Preference
-        android:key="@string/key_about"
         android:icon="@android:drawable/ic_menu_info_details"
+        android:key="@string/key_about"
         android:title="@string/title_about"/>
 </PreferenceScreen>

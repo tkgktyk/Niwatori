@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -26,10 +28,22 @@ public class NFW {
 
     public static final String ACTION_DEFAULT = "";
     public static final String ACTION_RESET = PACKAGE_NAME + ".intent.action.RESET";
+    public static final String ACTION_SOFT_RESET = PACKAGE_NAME + ".intent.action.SOFT_RESET";
     public static final String ACTION_TOGGLE = PACKAGE_NAME + ".intent.action.TOGGLE";
     public static final String ACTION_PIN = PACKAGE_NAME + ".intent.action.PIN";
     public static final String ACTION_PIN_OR_RESET = PACKAGE_NAME + ".intent.action.PIN_OR_RESET";
+    public static final String ACTION_RESIZE = PACKAGE_NAME + ".intent.action.RESIZE";
 
+    public static final String ACTION_SETTINGS_CHANGED = PACKAGE_NAME + ".intent.action.SETTINGS_CHANGED";
+
+    /**
+     * Static IntentFilters
+     */
+    public static final IntentFilter STATUS_BAR_FILTER;
+    public static final IntentFilter FOCUSED_DIALOG_FILTER;
+    public static final IntentFilter FOCUSED_ACTIVITY_FILTER;
+    public static final IntentFilter ACTIVITY_FILTER;
+    public static final IntentFilter SETTINGS_CHANGED_FILTER = new IntentFilter(ACTION_SETTINGS_CHANGED);
     /**
      * Receivers are set priority.
      * 1. Status bar
@@ -43,30 +57,24 @@ public class NFW {
     private static final int PRIORITY_FOCUSED_ACTIVITY = IntentFilter.SYSTEM_HIGH_PRIORITY / 100;
     private static final int PRIORITY_ACTIVITY = IntentFilter.SYSTEM_HIGH_PRIORITY / 1000;
 
-    public static final IntentFilter STATUS_BAR_FILTER = new IntentFilter();
-    public static final IntentFilter FOCUSED_DIALOG_FILTER = new IntentFilter();
-    public static final IntentFilter FOCUSED_ACTIVITY_FILTER = new IntentFilter();
-    public static final IntentFilter ACTIVITY_FILTER = new IntentFilter();
+    /**
+     * IntentFilters initialization
+     */
     static {
+        STATUS_BAR_FILTER = new IntentFilter();
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_SOFT_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_TOGGLE);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
-        STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_RESIZE);
+        FOCUSED_DIALOG_FILTER = new IntentFilter(STATUS_BAR_FILTER);
+        FOCUSED_ACTIVITY_FILTER = new IntentFilter(STATUS_BAR_FILTER);
+        ACTIVITY_FILTER = new IntentFilter(STATUS_BAR_FILTER);
+        // Priority
         STATUS_BAR_FILTER.setPriority(NFW.PRIORITY_STATUS_BAR);
-        FOCUSED_DIALOG_FILTER.addAction(NFW.ACTION_TOGGLE);
-        FOCUSED_DIALOG_FILTER.addAction(NFW.ACTION_PIN);
-        FOCUSED_DIALOG_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
-        FOCUSED_DIALOG_FILTER.addAction(NFW.ACTION_RESET);
         FOCUSED_DIALOG_FILTER.setPriority(NFW.PRIORITY_FOCUSED_DIALOG);
-        FOCUSED_ACTIVITY_FILTER.addAction(NFW.ACTION_TOGGLE);
-        FOCUSED_ACTIVITY_FILTER.addAction(NFW.ACTION_PIN);
-        FOCUSED_ACTIVITY_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
-        FOCUSED_ACTIVITY_FILTER.addAction(NFW.ACTION_RESET);
         FOCUSED_ACTIVITY_FILTER.setPriority(NFW.PRIORITY_FOCUSED_ACTIVITY);
-        ACTIVITY_FILTER.addAction(NFW.ACTION_TOGGLE);
-        ACTIVITY_FILTER.addAction(NFW.ACTION_PIN);
-        ACTIVITY_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
-        ACTIVITY_FILTER.addAction(NFW.ACTION_RESET);
         ACTIVITY_FILTER.setPriority(NFW.PRIORITY_ACTIVITY);
     }
 
@@ -86,13 +94,37 @@ public class NFW {
         return Strings.isNullOrEmpty(action);
     }
 
+    public static Context getNiwatoriContext(Context context) {
+        Context niwatoriContext = null;
+        try {
+            niwatoriContext = context.createPackageContext(
+                    NFW.PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+        } catch (Throwable t) {
+            XposedModule.logE(t);
+        }
+        return niwatoriContext;
+    }
+
+    public static GradientDrawable makeBoundaryDrawable(int width, int color) {
+        final GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(Color.TRANSPARENT);
+        drawable.setStroke(width, color);
+        return drawable;
+    }
+
     public static class Settings {
+        private final XSharedPreferences mPrefs;
+
         public float speed;
         public int initialXp;
         public int initialYp;
         public boolean animation;
-        public boolean notifyFlying;
+        public boolean drawBoundary;
+        public int boundaryColor;
         public Set<String> blackSet;
+
+        public int layoutAdjustment;
+        public float smallScreenSize;
 
         public boolean testFeature;
         public boolean resetAutomatically;
@@ -100,22 +132,33 @@ public class NFW {
         public String actionWhenLongPressOnRecents;
         public String actionWhenDoubleTapOnRecents;
 
-        public Settings(XSharedPreferences pref) {
-            pref.reload();
-            // for flying
-            speed = Float.parseFloat(pref.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
-            initialXp = pref.getInt("key_initial_x_percent", InitialPosition.DEFAULT_X_PERCENT);
-            initialYp = pref.getInt("key_initial_y_percent", InitialPosition.DEFAULT_Y_PERCENT);
-            animation = pref.getBoolean("key_animation", true);
-            notifyFlying = pref.getBoolean("key_notify_flying", true);
-            blackSet = pref.getStringSet("key_black_list", Collections.<String>emptySet());
+        public Settings(XSharedPreferences prefs) {
+            mPrefs = prefs;
+            reload();
+        }
 
-            testFeature = pref.getBoolean("key_test_feature", false);
+        public void reload() {
+            mPrefs.reload();
+            // for flying
+            speed = Float.parseFloat(mPrefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
+            initialXp = mPrefs.getInt("key_initial_x_percent", InitialPosition.DEFAULT_X_PERCENT);
+            initialYp = mPrefs.getInt("key_initial_y_percent", InitialPosition.DEFAULT_Y_PERCENT);
+            animation = mPrefs.getBoolean("key_animation", true);
+            drawBoundary = mPrefs.getBoolean("key_draw_boundary", true);
+            boundaryColor = Color.parseColor(mPrefs.getString("key_boundary_color", "#689F38")); // default is Green
+            blackSet = mPrefs.getStringSet("key_black_list", Collections.<String>emptySet());
+
+            layoutAdjustment = Integer.parseInt(
+                    mPrefs.getString("key_layout_adjustment", Integer.toString(FlyingLayout.DEFAULT_LAYOUT_ADJUSTMENT))
+            );
+            smallScreenSize = Float.parseFloat(mPrefs.getString("key_small_screen_size", "70")) / 100f;
+
+            testFeature = mPrefs.getBoolean("key_test_feature", false);
             if (testFeature) {
-                resetAutomatically = pref.getBoolean("key_reset_automatically", false);
-                actionWhenTapOnRecents = pref.getString("key_action_when_tap_on_recents", ACTION_DEFAULT);
-                actionWhenLongPressOnRecents = pref.getString("key_action_when_long_press_on_recents", ACTION_DEFAULT);
-                actionWhenDoubleTapOnRecents = pref.getString("key_action_when_double_tap_on_recents", ACTION_DEFAULT);
+                resetAutomatically = mPrefs.getBoolean("key_reset_automatically", false);
+                actionWhenTapOnRecents = mPrefs.getString("key_action_when_tap_on_recents", ACTION_DEFAULT);
+                actionWhenLongPressOnRecents = mPrefs.getString("key_action_when_long_press_on_recents", ACTION_DEFAULT);
+                actionWhenDoubleTapOnRecents = mPrefs.getString("key_action_when_double_tap_on_recents", ACTION_DEFAULT);
             } else {
                 resetAutomatically = false;
                 actionWhenTapOnRecents = ACTION_DEFAULT;
