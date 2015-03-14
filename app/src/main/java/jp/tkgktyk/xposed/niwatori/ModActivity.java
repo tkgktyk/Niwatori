@@ -7,8 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
@@ -57,7 +62,6 @@ public class ModActivity extends XposedModule {
 
     public static void initZygote() {
         try {
-//            forceSetBackground();
             installToDecorView();
             installToActivity();
             installToDialog();
@@ -80,12 +84,21 @@ public class ModActivity extends XposedModule {
                         final FlyingHelper helper = new FlyingHelper(decorView, 1, true, mSettings);
                         XposedHelpers.setAdditionalInstanceField(decorView,
                                 FIELD_FLYING_HELPER, helper);
-                        setBackground(decorView);
+//                        setBackground(decorView);
                     } catch (Throwable t) {
                         logE(t);
                     }
                 }
             });
+            XposedHelpers.findAndHookMethod(classDecorView, "setBackgroundDrawable", Drawable.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            final FrameLayout decorView = (FrameLayout) param.thisObject;
+                            final Drawable drawable = (Drawable) param.args[0];
+                            param.args[0] = checkDrawable(decorView, drawable);
+                        }
+                    });
             XposedHelpers.findAndHookMethod(classDecorView, "onInterceptTouchEvent", MotionEvent.class,
                     new XC_MethodReplacement() {
                         @Override
@@ -203,33 +216,37 @@ public class ModActivity extends XposedModule {
     }
 
     private static void setBackground(View decorView) {
-//        Drawable drawable = decorView.getBackground();
-//        if (drawable == null) {
-//            final TypedValue a = new TypedValue();
-//            if (decorView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true)) {
-//                if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-//                    // color
-//                    final int color = a.data;
-//                    logD("background color: " + String.format("#%08X", color));
-//                    if (Color.alpha(color) == 0xFF) {
-//                        // opaque
-//                        logD("set opaque background color");
-//                        decorView.setBackgroundColor(color);
-//                    }
-//                } else {
-//                    final Drawable d = decorView.getResources().getDrawable(a.resourceId);
-//                    logD("background drawable opacity: " + d.getOpacity());
-//                    if (d.getOpacity() == PixelFormat.OPAQUE) {
-//                        // opaque
-//                        logD("set opaque background drawable");
-//                        decorView.setBackground(d);
-//                    }
-//                }
-//            }
+        decorView.setBackground(checkDrawable(decorView, decorView.getBackground()));
+    }
+
+    private static Drawable checkDrawable(View decorView, Drawable drawable) {
+        if (drawable == null) {
+            final TypedValue a = new TypedValue();
+            if (decorView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true)) {
+                if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+                    // color
+                    final int color = a.data;
+                    logD("background color: " + String.format("#%08X", color));
+                    if (Color.alpha(color) == 0xFF) {
+                        // opaque
+                        logD("set opaque background color");
+                        drawable = new ColorDrawable(color);
+                    }
+                } else {
+                    final Drawable d = decorView.getResources().getDrawable(a.resourceId);
+                    logD("background drawable opacity: " + d.getOpacity());
+                    if (d.getOpacity() == PixelFormat.OPAQUE) {
+                        // opaque
+                        logD("set opaque background drawable");
+                        drawable = d;
+                    }
+                }
+            }
 //        } else if (drawable.getOpacity() == PixelFormat.OPAQUE) {
 //            logD("decorView has opaque background drawable");
 //            decorView.setBackground(drawable);
-//        }
+        }
+        return drawable;
     }
 
     @Nullable
