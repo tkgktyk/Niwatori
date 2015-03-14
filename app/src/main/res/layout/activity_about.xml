@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/about_text_margin"
         android:layout_marginTop="@dimen/about_text_margin"
-        android:text="Niwatori is developed by tkgktyk.\nThis is a module of Xposed framework made by rovo89. This mod doesn\'t exist without him."
+        android:text="Niwatori is developed by tkgktyk.\nThis is a module of Xposed framework made by rovo89. This mod doesn\'t exist without them."
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <!-- Translation -->
