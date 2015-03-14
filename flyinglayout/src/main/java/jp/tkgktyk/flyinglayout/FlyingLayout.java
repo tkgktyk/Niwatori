@@ -501,7 +501,7 @@ public class FlyingLayout extends FrameLayout {
                 return true;
             }
 
-            boolean locallyDrag = false;
+            boolean dragLocally = false;
 
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_MOVE: {
@@ -529,26 +529,19 @@ public class FlyingLayout extends FrameLayout {
                         break;
                     }
 
-                    boolean isBeingDraggedX = false;
-                    boolean isBeingDraggedY = false;
                     final int x = (int) ev.getX(pointerIndex);
-                    final int xDiff = Math.abs(x - mLastMotionX);
+                    final int deltaX = x - mLastMotionX;
                     final int y = (int) ev.getY(pointerIndex);
-                    final int yDiff = Math.abs(y - mLastMotionY);
+                    final int deltaY = y - mLastMotionY;
                     if (mTouchEventEnabled) {
-                        if (xDiff > mTouchSlop) {
-                            isBeingDraggedX = true;
+                        final double delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                        if (delta > mTouchSlop) {
+                            final ViewParent parent = mView.getParent();
+                            if (parent != null) {
+                                parent.requestDisallowInterceptTouchEvent(true);
+                            }
+                            dragLocally = true;
                         }
-                        if (yDiff > mTouchSlop) {
-                            isBeingDraggedY = true;
-                        }
-                    }
-                    if (isBeingDraggedX || isBeingDraggedY) {
-                        final ViewParent parent = mView.getParent();
-                        if (parent != null) {
-                            parent.requestDisallowInterceptTouchEvent(true);
-                        }
-                        locallyDrag = true;
                     }
                     break;
                 }
@@ -582,7 +575,7 @@ public class FlyingLayout extends FrameLayout {
              * The only time we want to intercept motion events is if we are in the
              * drag mode.
              */
-            return mIsBeingDragged || locallyDrag;
+            return mIsBeingDragged || dragLocally;
         }
 
         public boolean onTouchEvent(@NonNull MotionEvent ev) {
@@ -608,27 +601,20 @@ public class FlyingLayout extends FrameLayout {
                     }
 
                     final int x = (int) ev.getX(activePointerIndex);
-                    int deltaX = x - mLastMotionX;
+                    final int deltaX = x - mLastMotionX;
                     final int y = (int) ev.getY(activePointerIndex);
-                    int deltaY = y - mLastMotionY;
+                    final int deltaY = y - mLastMotionY;
                     if (!mIsBeingDragged) {
-                        boolean isBeingDraggedX = false;
-                        boolean isBeingDraggedY = false;
                         if (mTouchEventEnabled) {
-                            if (Math.abs(deltaX) > mTouchSlop) {
-                                isBeingDraggedX = true;
+                            final double delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                            if (delta > mTouchSlop) {
+                                final ViewParent parent = mView.getParent();
+                                if (parent != null) {
+                                    parent.requestDisallowInterceptTouchEvent(true);
+                                }
+                                mIsBeingDragged = true;
+                                mOnFlyingEventListener.onDragStarted(mView);
                             }
-                            if (Math.abs(deltaY) > mTouchSlop) {
-                                isBeingDraggedY = true;
-                            }
-                        }
-                        if (isBeingDraggedX || isBeingDraggedY) {
-                            final ViewParent parent = mView.getParent();
-                            if (parent != null) {
-                                parent.requestDisallowInterceptTouchEvent(true);
-                            }
-                            mIsBeingDragged = true;
-                            mOnFlyingEventListener.onDragStarted(mView);
                         }
                     }
                     if (mIsBeingDragged) {
