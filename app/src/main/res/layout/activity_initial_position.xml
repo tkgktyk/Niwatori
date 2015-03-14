@@ -12,6 +12,7 @@
     tools:context=".app.InitialPosition">
 
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:drawable/screen_background_dark_transparent">
@@ -22,11 +23,6 @@
             android:gravity="center"
             android:text="@string/usage_of_initial_position"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/notify_flying"/>
     </FrameLayout>
 
 </jp.tkgktyk.xposed.niwatori.app.GridLinedFlyingLayout>

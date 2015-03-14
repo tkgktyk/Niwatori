@@ -3,10 +3,13 @@ package jp.tkgktyk.xposed.niwatori.app;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
 import jp.tkgktyk.flyinglayout.FlyingLayout;
 import jp.tkgktyk.xposed.niwatori.InitialPosition;
@@ -19,6 +22,7 @@ import jp.tkgktyk.xposed.niwatori.R;
 public class InitialPositionActivity extends Activity {
 
     private FlyingLayout mFlyingLayout;
+    private FrameLayout mContainer;
 
     private InitialPosition mInitialPosition;
 
@@ -30,8 +34,18 @@ public class InitialPositionActivity extends Activity {
         mInitialPosition = new InitialPosition(this);
 
         mFlyingLayout = (FlyingLayout) findViewById(R.id.flying);
+        mContainer = (FrameLayout) findViewById(R.id.container);
+
+        final SharedPreferences pref = NFW.getSharedPreferences(this);
+
+        final int width = Math.round(getResources().getDimension(R.dimen.boundary_width));
+        final int color = Color.parseColor(pref.getString(
+                getString(R.string.key_boundary_color),
+                getString(R.string.default_boundary_color)));
+        final GradientDrawable drawable = NFW.makeBoundaryDrawable(width, color);
+        mContainer.setForeground(drawable);
+
         final FlyingLayout.Helper helper = mFlyingLayout.getHelper();
-        SharedPreferences pref = NFW.getSharedPreferences(this);
         helper.setSpeed(Float.parseFloat(pref.getString(
                 getString(R.string.key_speed), Float.toString(FlyingLayout.DEFAULT_SPEED))));
         mFlyingLayout.getViewTreeObserver().addOnGlobalLayoutListener(
