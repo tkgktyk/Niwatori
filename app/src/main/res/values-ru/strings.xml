@@ -9,10 +9,10 @@
     
     <!-- Shortcut name -->
     <string name="shortcut_activity_name">NFW действия</string>
-    <string name="default_str">По умолчанию </string>
-    <string name="toggle">Toggle</string>
-    <string name="pin">Pin</string>
-    <string name="pin_or_reset">Pin или Сброс</string>
+    <string name="action_default">По умолчанию </string>
+    <string name="action_toggle">Toggle</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_pin_or_reset">Pin или Сброс</string>
     <string name="action_resize">Small Screen</string>
     
     <!-- About -->
