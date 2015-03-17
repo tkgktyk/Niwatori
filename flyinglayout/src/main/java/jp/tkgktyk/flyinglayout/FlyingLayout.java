@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -31,7 +32,6 @@ import java.util.ArrayList;
  * Created by tkgktyk on 2014/01/01.
  */
 public class FlyingLayout extends FrameLayout {
-    public static final int LAYOUT_ADJUSTMENT_CENTER = Gravity.CENTER;
     public static final int LAYOUT_ADJUSTMENT_LEFT = Gravity.LEFT;
     public static final int LAYOUT_ADJUSTMENT_RIGHT = Gravity.RIGHT;
 
@@ -183,6 +183,13 @@ public class FlyingLayout extends FrameLayout {
                         Math.round(startValue.y + (endValue.y - startValue.y) * fraction));
             }
         };
+        private final TypeEvaluator<PointF> mPointFEvaluator = new TypeEvaluator<PointF>() {
+            @Override
+            public PointF evaluate(float fraction, PointF startValue, PointF endValue) {
+                return new PointF(startValue.x + (endValue.x - startValue.x) * fraction,
+                        startValue.y + (endValue.y - startValue.y) * fraction);
+            }
+        };
         private final ValueAnimator.AnimatorUpdateListener mMoveAnimatorUpdateListener
                 = new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -191,7 +198,15 @@ public class FlyingLayout extends FrameLayout {
                 setOffset(offset.x, offset.y);
             }
         };
-        private final ValueAnimator.AnimatorUpdateListener mScaleAnimatorUpdateListner
+        private final ValueAnimator.AnimatorUpdateListener mChangePivotAnimatorUpdateListener
+                = new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                PointF pivot = (PointF) animation.getAnimatedValue();
+                changePivot(pivot.x, pivot.y);
+            }
+        };
+        private final ValueAnimator.AnimatorUpdateListener mScaleAnimatorUpdateListener
                 = new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -199,6 +214,7 @@ public class FlyingLayout extends FrameLayout {
                 setScale(scale);
             }
         };
+        private boolean mUpdatePivotOnLayout;
 
         /**
          * ID of the active pointer. This is used to retain consistency during
@@ -256,8 +272,22 @@ public class FlyingLayout extends FrameLayout {
                     }
                     return false;
                 }
-
             });
+
+            mView.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    // recalculate
+                    mUpdatePivotOnLayout = true;
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+                    // recalculate
+                    mUpdatePivotOnLayout = true;
+                }
+            });
+
             setSpeed(DEFAULT_SPEED);
             setHorizontalPadding(DEFAULT_HORIZONTAL_PADDING);
             setVerticalPadding(DEFAULT_VERTICAL_PADDING);
@@ -461,28 +491,50 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public void setLayoutAdjustment(int layoutAdjustment) {
+            setLayoutAdjustment(layoutAdjustment, false);
+        }
+
+        public void setLayoutAdjustment(int layoutAdjustment, boolean animation) {
             mLayoutAdjustment = layoutAdjustment;
+            if (mView.getChildCount() == 0) {
+                return;
+            }
+            final View view = getUseContainer() ? mView.getChildAt(0) : mView;
+            float pivotX;
+            switch (layoutAdjustment) {
+                case LAYOUT_ADJUSTMENT_RIGHT:
+                    pivotX = view.getWidth();
+                    break;
+                case LAYOUT_ADJUSTMENT_LEFT:
+                default:
+                    pivotX = 0.0f;
+                    break;
+            }
+            final float pivotY = view.getHeight();
+            if (animation) {
+                final View child = mView.getChildAt(0);
+                final PointF start = new PointF(child.getPivotX(), child.getPivotY());
+                final PointF end = new PointF(pivotX, pivotY);
+                final ValueAnimator animator = ValueAnimator.ofObject(mPointFEvaluator, start, end);
+                animator.addUpdateListener(mChangePivotAnimatorUpdateListener);
+                animator.start();
+            } else {
+                changePivot(pivotX, pivotY);
+            }
+        }
+
+        private void changePivot(float x, float y) {
             final int count = getUseContainer() ? 1 : mView.getChildCount();
             for (int i = 0; i < count; ++i) {
                 final View child = mView.getChildAt(i);
-                float pivotX;
-                switch (layoutAdjustment) {
-                    case LAYOUT_ADJUSTMENT_CENTER:
-                        pivotX = child.getWidth() / 2.0f;
-                        break;
-                    case LAYOUT_ADJUSTMENT_RIGHT:
-                        pivotX = child.getWidth();
-                        break;
-                    case LAYOUT_ADJUSTMENT_LEFT:
-                    default:
-                        pivotX = 0.0f;
-                        break;
-                }
-                final float pivotY = child.getHeight();
-                child.setPivotX(pivotX);
-                child.setPivotY(pivotY);
+                child.setPivotX(x);
+                child.setPivotY(y);
             }
             mView.requestLayout();
+        }
+
+        private void updatePivotOnLayout() {
+            setLayoutAdjustment(mLayoutAdjustment);
         }
 
         public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -755,9 +807,6 @@ public class FlyingLayout extends FrameLayout {
                 float dx, dy;
                 dy = mBoundaryRect.height() * (1 - mScale);
                 switch (mLayoutAdjustment) {
-                    case LAYOUT_ADJUSTMENT_CENTER:
-                        dx = mBoundaryRect.width() / 2.0f * (1 - mScale);
-                        break;
                     case LAYOUT_ADJUSTMENT_RIGHT:
                         dx = mBoundaryRect.width() * (1 - mScale);
                         break;
@@ -773,6 +822,10 @@ public class FlyingLayout extends FrameLayout {
                         Math.round(mBoundaryRect.top * mScale + dy),
                         Math.round(mBoundaryRect.right * mScale + dx),
                         Math.round(mBoundaryRect.bottom * mScale + dy));
+            }
+            if (mUpdatePivotOnLayout) {
+                updatePivotOnLayout();
+                mUpdatePivotOnLayout = false;
             }
         }
 
@@ -801,11 +854,9 @@ public class FlyingLayout extends FrameLayout {
             } else {
                 final Point start = new Point(mOffsetX, mOffsetY);
                 final Point end = new Point(newX, newY);
-                final ValueAnimator anim = ValueAnimator.ofObject(mPointEvaluator, start, end);
-                // removed: use default duration=300
-//                anim.setDuration(250);
-                anim.addUpdateListener(mMoveAnimatorUpdateListener);
-                anim.start();
+                final ValueAnimator move = ValueAnimator.ofObject(mPointEvaluator, start, end);
+                move.addUpdateListener(mMoveAnimatorUpdateListener);
+                move.start();
             }
         }
 
@@ -832,7 +883,7 @@ public class FlyingLayout extends FrameLayout {
         public void resize(float scale, boolean animation) {
             if (animation) {
                 final ValueAnimator scaleDown = ValueAnimator.ofFloat(mScale, scale);
-                scaleDown.addUpdateListener(mScaleAnimatorUpdateListner);
+                scaleDown.addUpdateListener(mScaleAnimatorUpdateListener);
                 scaleDown.start();
             } else {
                 setScale(scale);

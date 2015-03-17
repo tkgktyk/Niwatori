@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.ServiceConnection;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -206,6 +207,19 @@ public class IabHelper {
         if (mSetupDone) throw new IllegalStateException("IAB helper is already set up.");
 
         // Connection to IAB service
+        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        List<ResolveInfo> intentServices = mContext.getPackageManager().queryIntentServices(serviceIntent, 0);
+        if (intentServices == null || intentServices.isEmpty()) {
+            // no service available to handle that Intent
+            if (listener != null) {
+                listener.onIabSetupFinished(
+                        new IabResult(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE,
+                                "Billing service unavailable on device."));
+            }
+            return;
+        }
+        // service available to handle that Intent
         logDebug("Starting in-app billing setup.");
         mServiceConn = new ServiceConnection() {
             @Override
@@ -261,21 +275,7 @@ public class IabHelper {
                 }
             }
         };
-
-        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
-        serviceIntent.setPackage("com.android.vending");
-        if (!mContext.getPackageManager().queryIntentServices(serviceIntent, 0).isEmpty()) {
-            // service available to handle that Intent
-            mContext.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
-        }
-        else {
-            // no service available to handle that Intent
-            if (listener != null) {
-                listener.onIabSetupFinished(
-                        new IabResult(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE,
-                        "Billing service unavailable on device."));
-            }
-        }
+        mContext.bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
 
     /**

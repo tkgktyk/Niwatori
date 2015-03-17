@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Speed -->
-    <string name="key_speed" translatable="false">key_speed</string>
     <!-- Blask list -->
     <string name="key_black_list" translatable="false">key_black_list</string>
-    <!-- Initial position -->
-    <string name="key_initial_position" translatable="false">key_initial_position</string>
-    <string name="key_initial_x_percent" translatable="false">key_initial_x_percent</string>
-    <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
     <!-- Animation -->
     <string name="key_animation" translatable="false">key_animation</string>
+    <!-- Actions -->
+    <string name="key_action_when_tap_outside" translatable="false">key_action_when_tap_outside</string>
+    <string name="key_action_when_long_press_outside" translatable="false">key_action_when_long_press_outside</string>
+    <string name="key_action_when_double_tap_outside" translatable="false">key_action_when_double_tap_outside</string>
+
+    <!-- Speed -->
+    <string name="key_speed" translatable="false">key_speed</string>
     <!-- Draw Boundary -->
     <string name="key_draw_boundary" translatable="false">key_draw_boundary</string>
     <!-- Boundary Color -->
     <string name="key_boundary_color" translatable="false">key_boundary_color</string>
+    <!-- Initial position -->
+    <string name="key_initial_position" translatable="false">key_initial_position</string>
+    <string name="key_initial_x_percent" translatable="false">key_initial_x_percent</string>
+    <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
 
     <!-- Layout Adjustment -->
     <string name="key_layout_adjustment" translatable="false">key_layout_adjustment</string>

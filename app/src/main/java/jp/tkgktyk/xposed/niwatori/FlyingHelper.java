@@ -2,6 +2,7 @@ package jp.tkgktyk.xposed.niwatori;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable;
 import android.view.ViewGroup;
@@ -51,19 +52,30 @@ public class FlyingHelper extends FlyingLayout.Helper {
         setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
             @Override
             public void onClickOutside(ViewGroup v) {
-                resetState(false);
+                if (!NFW.isDefaultAction(mSettings.actionWhenTapOutside)) {
+                    performAction(mSettings.actionWhenTapOutside);
+                }
+            }
+
+            @Override
+            public void onLongPressOutside(ViewGroup v) {
+                if (!NFW.isDefaultAction(mSettings.actionWhenLongPressOutside)) {
+                    performAction(mSettings.actionWhenLongPressOutside);
+                }
             }
 
             @Override
             public void onDoubleClickOutside(ViewGroup v) {
-                pin();
+                if (!NFW.isDefaultAction(mSettings.actionWhenDoubleTapOutside)) {
+                    performAction(mSettings.actionWhenDoubleTapOutside);
+                }
             }
         });
     }
 
     public void onSettingsLoaded() {
         setSpeed(mSettings.speed);
-        setLayoutAdjustment(mSettings.layoutAdjustment);
+        setLayoutAdjustment(mSettings.layoutAdjustment, true);
         mBoundaryDrawable.setStroke(mBoundaryWidth, mSettings.boundaryColor);
         getAttachedView().requestLayout();
         getAttachedView().invalidate();
@@ -102,6 +114,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
             pinOrReset();
         } else if (action.equals(NFW.ACTION_RESIZE)) {
             resize();
+        } else if (action.equals(NFW.ACTION_ADJUST_LAYOUT)) {
+            if (isResized()) {
+                getAttachedView().getContext().sendBroadcast(new Intent(NFW.ACTION_ADJUST_LAYOUT));
+            }
         }
     }
 
@@ -142,7 +158,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void resize() {
-        setLayoutAdjustment(mSettings.layoutAdjustment);
         if (isResized()) {
             super.resize(FlyingLayout.DEFAULT_SCALE, mSettings.animation);
 //            updateBoundaryShown(isFlying());

@@ -16,7 +16,6 @@ import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
-import android.view.Window;
 
 import com.google.common.base.Strings;
 
@@ -33,7 +32,7 @@ import jp.tkgktyk.xposed.niwatori.app.util.Purchase;
  */
 public class SettingsActivity extends Activity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
-    private static final boolean PURCHASED = BuildConfig.DEBUG && false;
+    private static final boolean PURCHASED = BuildConfig.DEBUG && true;
 
     // (arbitrary) request code for the purchase flow
     private static final int RC_REQUEST = 10001;
@@ -64,8 +63,6 @@ public class SettingsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setProgressBarIndeterminateVisibility(true);
 
         if (BuildConfig.DEBUG) {
             setTitle("[DEBUG] " + getTitle());
@@ -150,7 +147,7 @@ public class SettingsActivity extends Activity {
                 .edit()
                 .putBoolean(getString(R.string.key_purchase_premium_settings), purchased)
                 .apply();
-        if (mSettingsFragment != null) {
+        if (mSettingsFragment != null && mSettingsFragment.isVisible()) {
             mSettingsFragment.setHasPremiumSettings(mHasPremiumSettings);
         }
     }
@@ -161,7 +158,7 @@ public class SettingsActivity extends Activity {
                 .edit()
                 .putBoolean(getString(R.string.key_purchase_premium_settings), false)
                 .apply();
-        if (mSettingsFragment != null) {
+        if (mSettingsFragment != null && mSettingsFragment.isVisible()) {
             mSettingsFragment.disablePremiumSettings();
         }
     }
@@ -306,7 +303,7 @@ public class SettingsActivity extends Activity {
         private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                getActivity().setProgressBarIndeterminateVisibility(false);
+                updatePreferences();
             }
         };
 
@@ -342,6 +339,14 @@ public class SettingsActivity extends Activity {
 
             setHasPremiumSettings(getArguments().getBoolean(ARG_HAS_PREMIUM_SETTINGS, false));
 
+            updatePreferences();
+        }
+
+        private void updatePreferences() {
+            if (mSettingsActivity != null && !mSettingsActivity.isBillingSupported()) {
+                disablePremiumSettings();
+            }
+
             findPreference(R.string.key_purchase_premium_settings)
                     .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                         @Override
@@ -354,13 +359,12 @@ public class SettingsActivity extends Activity {
                     });
 
             // Settings
-            showTextSummary(R.string.key_speed);
             openSelectorOnClick(R.string.key_black_list, R.string.black_list_activity_name);
-            showListSummary(R.string.key_layout_adjustment);
-            //
-            // Premium Settings
-            //
-            openActivity(R.string.key_initial_position, InitialPositionActivity.class);
+            showListSummary(R.string.key_action_when_tap_outside);
+            showListSummary(R.string.key_action_when_long_press_outside);
+            showListSummary(R.string.key_action_when_double_tap_outside);
+            // movable screen
+            showTextSummary(R.string.key_speed);
             showListSummary(R.string.key_boundary_color, new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -373,6 +377,9 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
+            openActivity(R.string.key_initial_position, InitialPositionActivity.class);
+            // small screen
+            showListSummary(R.string.key_layout_adjustment);
             showTextSummary(R.string.key_small_screen_size, "%");
             // Test
             showListSummary(R.string.key_action_when_tap_on_recents);

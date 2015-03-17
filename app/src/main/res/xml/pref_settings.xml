@@ -30,6 +30,38 @@
                 android:summaryOff="@string/summary_animation_off"
                 android:summaryOn="@string/summary_animation_on"
                 android:title="@string/title_animation"/>
+            <!-- Actions at Outside -->
+            <ListPreference
+                android:defaultValue="@string/intent_action_soft_reset"
+                android:entries="@array/nfw_actions"
+                android:entryValues="@array/nfw_action_values"
+                android:key="@string/key_action_when_tap_outside"
+                android:title="@string/title_action_when_tap_outside" />
+            <ListPreference
+                android:defaultValue="@string/intent_action_adjust_layout"
+                android:entries="@array/nfw_actions"
+                android:entryValues="@array/nfw_action_values"
+                android:key="@string/key_action_when_long_press_outside"
+                android:title="@string/title_action_when_long_press_outside" />
+            <ListPreference
+                android:defaultValue="@string/intent_action_pin"
+                android:entries="@array/nfw_actions"
+                android:entryValues="@array/nfw_action_values"
+                android:key="@string/key_action_when_double_tap_outside"
+                android:title="@string/title_action_when_double_tap_outside" />
+        </PreferenceCategory>
+
+        <!-- Movable Screen -->
+        <PreferenceCategory
+            android:title="@string/movable_screen">
+            <!-- Speed -->
+            <EditTextPreference
+                android:defaultValue="1.5"
+                android:dialogMessage="@string/note_speed"
+                android:inputType="numberDecimal"
+                android:key="@string/key_speed"
+                android:selectAllOnFocus="true"
+                android:title="@string/title_speed"/>
             <!-- Draw Boundary -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="true"
@@ -44,19 +76,6 @@
                 android:entryValues="@array/boundary_color_values"
                 android:key="@string/key_boundary_color"
                 android:title="@string/title_boundary_color"/>
-        </PreferenceCategory>
-
-        <!-- Movable Screen -->
-        <PreferenceCategory
-            android:title="@string/movable_screen">
-            <!-- Speed -->
-            <EditTextPreference
-                android:defaultValue="1.5"
-                android:dialogMessage="@string/note_speed"
-                android:inputType="numberDecimal"
-                android:key="@string/key_speed"
-                android:selectAllOnFocus="true"
-                android:title="@string/title_speed"/>
             <!-- Initial Position -->
             <Preference
                 android:key="@string/key_initial_position"

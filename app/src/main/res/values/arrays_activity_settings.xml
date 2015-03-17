@@ -7,13 +7,27 @@
         <item>@string/action_pin</item>
         <item>@string/action_pin_or_reset</item>
         <item>@string/action_resize</item>
+        <item>@string/action_adjust_layout</item>
+        <item>@string/action_reset</item>
+        <item>@string/action_soft_reset</item>
     </string-array>
+    <string name="intent_action_default" translatable="false"></string>
+    <string name="intent_action_toggle" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.TOGGLE</string>
+    <string name="intent_action_pin" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN</string>
+    <string name="intent_action_pin_or_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</string>
+    <string name="intent_action_resize" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.RESIZE</string>
+    <string name="intent_action_adjust_layout" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.ADJUST_LAYOUT</string>
+    <string name="intent_action_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.RESET</string>
+    <string name="intent_action_soft_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SOFT_RESET</string>
     <string-array name="nfw_action_values" translatable="false">
-        <item></item>
-        <item>jp.tkgktyk.xposed.niwatori.intent.action.TOGGLE</item>
-        <item>jp.tkgktyk.xposed.niwatori.intent.action.PIN</item>
-        <item>jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</item>
-        <item>jp.tkgktyk.xposed.niwatori.intent.action.RESIZE</item>
+        <item>@string/intent_action_default</item>
+        <item>@string/intent_action_toggle</item>
+        <item>@string/intent_action_pin</item>
+        <item>@string/intent_action_pin_or_reset</item>
+        <item>@string/intent_action_resize</item>
+        <item>@string/intent_action_adjust_layout</item>
+        <item>@string/intent_action_reset</item>
+        <item>@string/intent_action_soft_reset</item>
     </string-array>
     <!-- Boundary Color -->
     <string-array name="boundary_colors">
@@ -62,13 +76,11 @@
     <!-- Layout Adjustment -->
     <string-array name="layout_adjustments" translatable="false">
         <item>@string/layout_adjustment_left</item>
-        <item>@string/layout_adjustment_center</item>
         <item>@string/layout_adjustment_right</item>
     </string-array>
     <string name="default_layout_adjustment" translatable="false">3</string>
     <string-array name="layout_adjustment_values" translatable="false">
         <item>3</item>
-        <item>17</item>
         <item>5</item>
     </string-array>
     <!-- Small Screen Size -->

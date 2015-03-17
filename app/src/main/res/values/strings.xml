@@ -8,12 +8,15 @@
     <string name="only_selected">Only selected</string>
 
     <!-- Shortcut name -->
-    <string name="shortcut_activity_name">Actions</string>
+    <string name="shortcut_activity_name">One-handed Mode</string>
     <string name="action_default">Default</string>
     <string name="action_toggle">Movable Screen</string>
     <string name="action_pin">Pin</string>
     <string name="action_pin_or_reset">Slide Down</string>
     <string name="action_resize">Small Screen</string>
+    <string name="action_adjust_layout">Adjust Layout</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_soft_reset">Soft Reset</string>
 
     <!-- About -->
     <string name="about_activity_name">About</string>

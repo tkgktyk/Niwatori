@@ -8,10 +8,10 @@
     <string name="summary_instructions">This mod is a collection of one-handed mode:\n- Movable Screen\n- Slide Down\n- Small Screen\nYou can start one-handed mode by shortcuts. Launch them from your launcher.</string>
     <!-- Shortcuts -->
     <string name="title_shortcuts">Shortcuts [One-handed mode]</string>
-    <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Pin: fixes the display position.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
+    <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
     <!-- Note -->
     <string name="title_notes">Notes</string>
-    <string name="summary_notes">- Tap the outside to reset.\n- Double tap the outside to pin.\n- Wait for several seconds for changes to take effect.</string>
+    <string name="summary_notes">- Adjust Layout and Resets are for outside.\n- Soft Reset resets one-handed mode step by step.\n- Wait for several seconds for changes to take effect.</string>
 
     <!-- Settings -->
     <string name="title_settings">Settings</string>
@@ -25,6 +25,16 @@
     <string name="title_animation">Animation</string>
     <string name="summary_animation_on">Smooth movement</string>
     <string name="summary_animation_off">Move immediately</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">Tap Outside</string>
+    <string name="title_action_when_long_press_outside">Long Press Outside</string>
+    <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
+
+    <!-- Movable Screen -->
+    <string name="movable_screen">Movable Screen</string>
+    <!-- Speed -->
+    <string name="title_speed">Speed</string>
+    <string name="note_speed">Recommended value:\n  - around 2 for smartphones.</string>
     <!-- Draw Boundary -->
     <string name="title_draw_boundary">Draw Boundary</string>
     <string name="summary_draw_boundary">During one-handed mode</string>
@@ -49,12 +59,6 @@
     <string name="brown">Brown</string>
     <string name="grey">Grey</string>
     <string name="blue_grey">Blue Grey</string>
-
-    <!-- Movable Screen -->
-    <string name="movable_screen">Movable Screen</string>
-    <!-- Speed -->
-    <string name="title_speed">Speed</string>
-    <string name="note_speed">Recommended value:\n  - around 2 for smartphones.</string>
     <!-- Initial position -->
     <string name="title_initial_position">Initial Position*</string>
     <string name="summary_initial_position">Slide down to here</string>
@@ -65,7 +69,6 @@
     <!-- Layout Adjustment -->
     <string name="title_layout_adjustment">Layout Adjustment</string>
     <string name="layout_adjustment_left">Left</string>
-    <string name="layout_adjustment_center">Center</string>
     <string name="layout_adjustment_right">Right</string>
     <!-- Small Screen Size -->
     <string name="title_small_screen_size">Size*</string>
@@ -86,7 +89,7 @@
 
     <!-- Test -->
     <string name="title_test">Test</string>
-    <string name="summary_test">Simple interface to fire actions. Use other apps to more customize.</string>
+    <string name="summary_test">Simple interface to fire actions. Use other apps to more customize. (requires to rotate or lock the screen)</string>
     <!-- Reset automatically -->
     <string name="title_reset_automatically">Reset Automatically</string>
     <string name="summary_reset_automatically_on">Be sure to turn off if you use shortcuts.</string>

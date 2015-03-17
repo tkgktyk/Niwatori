@@ -2,23 +2,23 @@
 <resources>
     <!-- Displayed in launcher -->
     <string name="settings_activity_name">@string/app_name</string>
-    
+
     <!-- Instructions -->
     <string name="title_instructions">Инструкция</string>
-    <string name="summary_instructions">Niwatori перемещает положение приложений путём изменения режима окна. Вы можете выбрать нужный режим в Niwatori.</string>
+    <string name="summary_instructions">Приложение перемещает положение приложений путём изменения режима окна.</string>
     <!-- Shortcuts -->
     <string name="title_shortcuts">Ярлыки [NFW действие]</string>
-    <string name="summary_shortcuts">- \"Toggle\" режим между плавающим и стабильным положением.\n- \"Pin\" смещение вниз, а при повторном - плавающее положение.\n- \"Pin или Сброс\" смещение вниз, а при повторном - сброс положения.\n- \"Сброс\" для возвращения окна на стандартное приложение.\nРегистрация нажатия происходит при помощи клавиш панели навигации, ярлыков навигационного кольца и т.д.</string>
+    <string name="summary_shortcuts">- \"Toggle\" режим между плавающим и стабильным положением.\n- \"Pin\" смещение вниз, а при повторном - плавающее положение.\n- \"Pin или Сброс\" смещение вниз, а при повторном - сброс положения.\n- \"Небольшой экран\" уменьшение окна приложения, повторно - сброс.\nРегистрация нажатия происходит при помощи клавиш панели навигации, ярлыков навигационного кольца и т.д.</string>
     <!-- Note -->
     <string name="title_notes">Примечания</string>
     <string name="summary_notes">- Нажмите на пустое место, чтобы сбросить положение.\n- Дважды нажмите пустое место, чтобы закрепить.\n- Открыть окно заново, чтобы изменения вступили в силу.</string>
-    
+
     <!-- Settings -->
     <string name="title_settings">Настройки</string>
     <string name="current_s1">Состояние: %1$s</string>
 
     <!-- General -->
-    <string name="general">General</string>
+    <string name="general">Основное</string>
     <!-- Blask list -->
     <string name="title_black_list">@string/black_list_activity_name</string>
     <!-- Animation -->
@@ -26,67 +26,67 @@
     <string name="summary_animation_on">Плавное движение</string>
     <string name="summary_animation_off">Немедленный переход</string>
     <!-- Draw Boundary -->
-    <string name="title_draw_boundary">Draw Boundary</string>
-    <string name="summary_draw_boundary">During one-handed mode</string>
+    <string name="title_draw_boundary">Граница окна</string>
+    <string name="summary_draw_boundary">При режиме управления одной рукой</string>
     <!-- Boundary Color -->
-    <string name="title_boundary_color">Boundary Color</string>
-    <string name="red">Red</string>
-    <string name="pink">Pink</string>
-    <string name="purple">Purple</string>
-    <string name="deep_purple">Deep Purple</string>
-    <string name="indigo">Indigo</string>
-    <string name="blue">Blue</string>
-    <string name="light_blue">Light Blue</string>
-    <string name="cyan">Cyan</string>
-    <string name="teal">Teal</string>
-    <string name="green">Green</string>
-    <string name="light_green">Light Green</string>
-    <string name="lime">Lime</string>
-    <string name="yellow">Yellow</string>
-    <string name="amber">Amber</string>
-    <string name="orange">Orange</string>
-    <string name="deep_orange">Deep Orange</string>
-    <string name="brown">Brown</string>
-    <string name="grey">Grey</string>
-    <string name="blue_grey">Blue Grey</string>
+    <string name="title_boundary_color">Цвет границы</string>
+    <string name="red">Красный</string>
+    <string name="pink">Розовый</string>
+    <string name="purple">Фиолетовый</string>
+    <string name="deep_purple">Тёмно-фиолетовый</string>
+    <string name="indigo">Индиго</string>
+    <string name="blue">Синий</string>
+    <string name="light_blue">Голубой</string>
+    <string name="cyan">Сине-зелёный</string>
+    <string name="teal">Зеленовато-голубой</string>
+    <string name="green">Зелёный</string>
+    <string name="light_green">Светло-зеленый</string>
+    <string name="lime">Лайм</string>
+    <string name="yellow">Жёлтый</string>
+    <string name="amber">Янтарь</string>
+    <string name="orange">Оранжевый</string>
+    <string name="deep_orange">Тёмно оранжевый</string>
+    <string name="brown">Коричневый</string>
+    <string name="grey">Серый</string>
+    <string name="blue_grey">Тёмно-синий</string>
 
     <!-- Movable Screen -->
-    <string name="movable_screen">Movable Screen</string>
+    <string name="movable_screen">Передвигаемый экран</string>
     <!-- Speed -->
     <string name="title_speed">Скорость</string>
-    <string name="note_speed">Рекомендуемое значение:\n - около 2 для смартфона</string>
+    <string name="note_speed">Рекомендуемое значение:\n - около 2-ух для смартфона</string>
     <!-- Initial position -->
     <string name="title_initial_position">Исходное положение</string>
     <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>
     <string name="usage_of_initial_position">Перетащите, чтобы изменить положение.\nНажмите клавишу возврата, чтобы сохранить.</string>
 
     <!-- Small Screen -->
-    <string name="small_screen">Small Screen</string>
+    <string name="small_screen">Небольшой экран</string>
     <!-- Layout Adjustment -->
-    <string name="title_layout_adjustment">Layout Adjustment</string>
-    <string name="layout_adjustment_left">Left</string>
-    <string name="layout_adjustment_center">Center</string>
-    <string name="layout_adjustment_right">Right</string>
+    <string name="title_layout_adjustment">Регулировка положения</string>
+    <string name="layout_adjustment_left">Слева</string>
+    <string name="layout_adjustment_center">По центру</string>
+    <string name="layout_adjustment_right">Справа</string>
     <!-- Small Screen Size -->
-    <string name="title_small_screen_size">Size*</string>
-    <string name="note_small_screen_size">Unit is percent(%).</string>
+    <string name="title_small_screen_size">Размер</string>
+    <string name="note_small_screen_size">Значение(%).</string>
 
     <!-- Others -->
     <string name="title_others">Другое</string>
-    
+
     <!-- Purchases -->
     <!-- Premium Settings -->
     <string name="title_purchase_premium_settings">Премиум настройки</string>
     <string name="summary_purchase_premium_settings">Пожертвуйте, чтобы разблокировать все параметры</string>
-    <string name="summary_unavailable_premium_settings">\"In-app Billing\" is not available on your phone.</string>
-    
+    <string name="summary_unavailable_premium_settings">\"Внутрипрограммные покупки\" недоступены на вашем телефоне.</string>
+
     <!-- Links -->
     <string name="title_google_play">Получить Google Play версию</string>
     <string name="summary_google_play">Нажмите, чтобы перейти в Google Play</string>
-    
+
     <!-- Test -->
     <string name="title_test">Тестирование</string>
-    <string name="summary_test">Простой интерфейс(в данном приложении) для быстрого просмотра изменений\n(Требуется перезагрузка)</string>
+    <string name="summary_test">Простой интерфейс (в данном приложении) для быстрого просмотра изменений\n(Требуется перезагрузка)</string>
     <!-- Reset automatically -->
     <string name="title_reset_automatically">Сброс автоматически</string>
     <string name="summary_reset_automatically_on">Отключить, если вы используете ярлыки</string>
@@ -95,7 +95,7 @@
     <string name="title_action_when_tap_on_recents">Нажатие на недавние приложения (программная)</string>
     <string name="title_action_when_long_press_on_recents">Долгое нажатие на недавние приложения (программная)</string>
     <string name="title_action_when_double_tap_on_recents">Двойное нажатие на недавние приложения (программная)</string>
-    
+
     <!-- About -->
-    <string name="title_about">@string/about_activity_name</string>
+    <string name="title_about">О приложении</string>
 </resources>
