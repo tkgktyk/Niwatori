@@ -25,6 +25,16 @@
     <string name="title_animation">Анимация</string>
     <string name="summary_animation_on">Плавное движение</string>
     <string name="summary_animation_off">Немедленный переход</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">Tap Outside</string>
+    <string name="title_action_when_long_press_outside">Long Press Outside</string>
+    <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
+
+    <!-- Movable Screen -->
+    <string name="movable_screen">Передвигаемый экран</string>
+    <!-- Speed -->
+    <string name="title_speed">Скорость</string>
+    <string name="note_speed">Рекомендуемое значение:\n - около 2-ух для смартфона</string>
     <!-- Draw Boundary -->
     <string name="title_draw_boundary">Граница окна</string>
     <string name="summary_draw_boundary">При режиме управления одной рукой</string>
@@ -49,12 +59,6 @@
     <string name="brown">Коричневый</string>
     <string name="grey">Серый</string>
     <string name="blue_grey">Тёмно-синий</string>
-
-    <!-- Movable Screen -->
-    <string name="movable_screen">Передвигаемый экран</string>
-    <!-- Speed -->
-    <string name="title_speed">Скорость</string>
-    <string name="note_speed">Рекомендуемое значение:\n - около 2-ух для смартфона</string>
     <!-- Initial position -->
     <string name="title_initial_position">Исходное положение</string>
     <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>

@@ -13,7 +13,10 @@
     <string name="action_toggle">Toggle</string>
     <string name="action_pin">Pin</string>
     <string name="action_pin_or_reset">Pin или Сброс</string>
-    <string name="action_action_resize">Небольшой экран</string>
+    <string name="action_resize">Небольшой экран</string>
+    <string name="action_adjust_layout">Adjust Layout</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_soft_reset">Soft Reset</string>
 
     <!-- About -->
     <string name="about_activity_name">О приложении</string>

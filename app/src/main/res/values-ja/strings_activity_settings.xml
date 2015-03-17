@@ -25,6 +25,16 @@
     <string name="title_animation">アニメーション</string>
     <string name="summary_animation_on">なめらかな移動</string>
     <string name="summary_animation_off">すぐに移動</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">Tap Outside</string>
+    <string name="title_action_when_long_press_outside">Long Press Outside</string>
+    <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
+
+    <!-- Movable Screen -->
+    <string name="movable_screen">Movable Screen</string>
+    <!-- Speed -->
+    <string name="title_speed">スピード</string>
+    <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
     <!-- Draw Boundary -->
     <string name="title_draw_boundary">境界線の描画</string>
     <string name="summary_draw_boundary">片手モードの時に描画</string>
@@ -49,12 +59,6 @@
     <string name="brown">Brown</string>
     <string name="grey">Grey</string>
     <string name="blue_grey">Blue Grey</string>
-
-    <!-- Movable Screen -->
-    <string name="movable_screen">Movable Screen</string>
-    <!-- Speed -->
-    <string name="title_speed">スピード</string>
-    <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
     <!-- Initial position -->
     <string name="title_initial_position">初期位置*</string>
     <string name="summary_initial_position">Slide Down時にこの場所へ移動します。</string>
