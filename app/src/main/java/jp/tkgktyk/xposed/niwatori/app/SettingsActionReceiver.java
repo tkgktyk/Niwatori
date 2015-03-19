@@ -16,27 +16,25 @@ import jp.tkgktyk.xposed.niwatori.R;
 public class SettingsActionReceiver extends BroadcastReceiver {
     private static final String TAG = SettingsActionReceiver.class.getSimpleName();
 
+    public static final String EXTRA_LAYOUT_ADJUSTMENT = NFW.PACKAGE_NAME + ".intent.extra.LAYOUT_ADJUSTMENT";
+
+    public static void sendBroadcast(Context context, int layoutAdjustment) {
+        Intent intent = new Intent(NFW.ACTION_ADJUST_LAYOUT);
+        intent.putExtra(EXTRA_LAYOUT_ADJUSTMENT, layoutAdjustment);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
         Log.d(TAG, action);
         if (action.equals(NFW.ACTION_ADJUST_LAYOUT)) {
             final SharedPreferences prefs = NFW.getSharedPreferences(context);
-            final String key = context.getString(R.string.key_layout_adjustment);
-            int layoutAdjustment = Integer.parseInt(
-                    prefs.getString(key, Integer.toString(FlyingLayout.DEFAULT_LAYOUT_ADJUSTMENT))
-            );
-            switch (layoutAdjustment) {
-                case FlyingLayout.LAYOUT_ADJUSTMENT_LEFT:
-                    layoutAdjustment = FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT;
-                    break;
-                case FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT:
-                default:
-                    layoutAdjustment = FlyingLayout.LAYOUT_ADJUSTMENT_LEFT;
-                    break;
-            }
+            int layoutAdjustment = intent.getIntExtra(EXTRA_LAYOUT_ADJUSTMENT,
+                    FlyingLayout.DEFAULT_LAYOUT_ADJUSTMENT);
             prefs.edit()
-                    .putString(key, Integer.toString(layoutAdjustment))
+                    .putString(context.getString(R.string.key_layout_adjustment),
+                            Integer.toString(layoutAdjustment))
                     .commit();
             context.sendBroadcast(new Intent(NFW.ACTION_SETTINGS_CHANGED));
         }

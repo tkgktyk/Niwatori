@@ -33,6 +33,8 @@ public class NFW {
     public static final String ACTION_PIN_OR_RESET = PACKAGE_NAME + ".intent.action.PIN_OR_RESET";
     public static final String ACTION_RESIZE = PACKAGE_NAME + ".intent.action.RESIZE";
     public static final String ACTION_ADJUST_LAYOUT = PACKAGE_NAME + ".intent.action.ADJUST_LAYOUT";
+    public static final String ACTION_SMALL_SCREEN_LEFT = PACKAGE_NAME + ".intent.action.ACTION_SMALL_SCREEN_LEFT";
+    public static final String ACTION_SMALL_SCREEN_RIGHT = PACKAGE_NAME + ".intent.action.ACTION_SMALL_SCREEN_RIGHT";
     public static final String ACTION_RESET = PACKAGE_NAME + ".intent.action.RESET";
     public static final String ACTION_SOFT_RESET = PACKAGE_NAME + ".intent.action.SOFT_RESET";
 
@@ -71,6 +73,8 @@ public class NFW {
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_RESIZE);
 //        STATUS_BAR_FILTER.addAction(NFW.ACTION_ADJUST_LAYOUT);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN_LEFT);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN_RIGHT);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SOFT_RESET);
         FOCUSED_DIALOG_FILTER = new IntentFilter(STATUS_BAR_FILTER);

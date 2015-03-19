@@ -2,15 +2,16 @@ package jp.tkgktyk.xposed.niwatori;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable;
+import android.view.HapticFeedbackConstants;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
+import jp.tkgktyk.xposed.niwatori.app.SettingsActionReceiver;
 
 /**
  * Created by tkgktyk on 2015/02/13.
@@ -54,6 +55,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             public void onClickOutside(ViewGroup v) {
                 if (!NFW.isDefaultAction(mSettings.actionWhenTapOutside)) {
                     performAction(mSettings.actionWhenTapOutside);
+                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
             }
 
@@ -61,6 +63,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             public void onLongPressOutside(ViewGroup v) {
                 if (!NFW.isDefaultAction(mSettings.actionWhenLongPressOutside)) {
                     performAction(mSettings.actionWhenLongPressOutside);
+                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 }
             }
 
@@ -68,6 +71,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             public void onDoubleClickOutside(ViewGroup v) {
                 if (!NFW.isDefaultAction(mSettings.actionWhenDoubleTapOutside)) {
                     performAction(mSettings.actionWhenDoubleTapOutside);
+                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
             }
         });
@@ -76,6 +80,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void onSettingsLoaded() {
         setSpeed(mSettings.speed);
         setLayoutAdjustment(mSettings.layoutAdjustment, true);
+        if (isResized()) {
+            setScale(mSettings.smallScreenSize);
+        }
         mBoundaryDrawable.setStroke(mBoundaryWidth, mSettings.boundaryColor);
         getAttachedView().requestLayout();
         getAttachedView().invalidate();
@@ -116,8 +123,22 @@ public class FlyingHelper extends FlyingLayout.Helper {
             resize();
         } else if (action.equals(NFW.ACTION_ADJUST_LAYOUT)) {
             if (isResized()) {
-                getAttachedView().getContext().sendBroadcast(new Intent(NFW.ACTION_ADJUST_LAYOUT));
+                int layoutAdjustment = getLayoutAdjustment();
+                switch (layoutAdjustment) {
+                    case FlyingLayout.LAYOUT_ADJUSTMENT_LEFT:
+                        layoutAdjustment = FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT;
+                        break;
+                    case FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT:
+                    default:
+                        layoutAdjustment = FlyingLayout.LAYOUT_ADJUSTMENT_LEFT;
+                        break;
+                }
+                SettingsActionReceiver.sendBroadcast(getAttachedView().getContext(), layoutAdjustment);
             }
+        } else if (action.equals(NFW.ACTION_SMALL_SCREEN_LEFT)) {
+            resize(FlyingLayout.LAYOUT_ADJUSTMENT_LEFT);
+        } else if (action.equals(NFW.ACTION_SMALL_SCREEN_RIGHT)) {
+            resize(FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT);
         }
     }
 
@@ -155,6 +176,22 @@ public class FlyingHelper extends FlyingLayout.Helper {
             goHome(mSettings.animation);
         }
         disableFlying();
+    }
+
+    public void resize(int layoutAdjustment) {
+        if (isResized()) {
+            if (getLayoutAdjustment() == layoutAdjustment) {
+                super.resize(FlyingLayout.DEFAULT_SCALE, mSettings.animation);
+            } else {
+                setLayoutAdjustment(layoutAdjustment, true);
+            }
+        } else {
+            if (getLayoutAdjustment() != layoutAdjustment) {
+                setLayoutAdjustment(layoutAdjustment, false);
+            }
+            super.resize(mSettings.smallScreenSize, mSettings.animation);
+            hideSoftInputMethod();
+        }
     }
 
     public void resize() {
