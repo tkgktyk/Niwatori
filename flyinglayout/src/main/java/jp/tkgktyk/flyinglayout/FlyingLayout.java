@@ -214,7 +214,7 @@ public class FlyingLayout extends FrameLayout {
                 setScale(scale);
             }
         };
-        private boolean mUpdatePivotOnLayout;
+        private boolean mUpdatePivotOnLayout = true;
 
         /**
          * ID of the active pointer. This is used to retain consistency during
@@ -476,6 +476,10 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public void setScale(float scale) {
+            if (mUpdatePivotOnLayout) {
+                updatePivotOnLayout();
+                mUpdatePivotOnLayout = false;
+            }
             mScale = scale;
             final int count = getUseContainer() ? 1 : mView.getChildCount();
             for (int i = 0; i < count; ++i) {
@@ -822,10 +826,6 @@ public class FlyingLayout extends FrameLayout {
                         Math.round(mBoundaryRect.top * mScale + dy),
                         Math.round(mBoundaryRect.right * mScale + dx),
                         Math.round(mBoundaryRect.bottom * mScale + dy));
-            }
-            if (mUpdatePivotOnLayout) {
-                updatePivotOnLayout();
-                mUpdatePivotOnLayout = false;
             }
         }
 
