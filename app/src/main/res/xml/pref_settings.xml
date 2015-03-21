@@ -38,7 +38,7 @@
                 android:key="@string/key_action_when_tap_outside"
                 android:title="@string/title_action_when_tap_outside" />
             <ListPreference
-                android:defaultValue="@string/intent_action_adjust_layout"
+                android:defaultValue="@string/intent_action_default"
                 android:entries="@array/nfw_actions"
                 android:entryValues="@array/nfw_action_values"
                 android:key="@string/key_action_when_long_press_outside"
@@ -86,13 +86,6 @@
         <!-- Small Screen -->
         <PreferenceCategory
             android:title="@string/small_screen">
-            <!-- Layout Adjustment -->
-            <ListPreference
-                android:defaultValue="@string/default_layout_adjustment"
-                android:entries="@array/layout_adjustments"
-                android:entryValues="@array/layout_adjustment_values"
-                android:key="@string/key_layout_adjustment"
-                android:title="@string/title_layout_adjustment"/>
             <!-- Size -->
             <EditTextPreference
                 android:defaultValue="@string/default_small_screen_size"

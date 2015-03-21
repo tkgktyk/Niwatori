@@ -66,11 +66,6 @@
 
     <!-- Small Screen -->
     <string name="small_screen">Small Screen</string>
-    <!-- Layout Adjustment -->
-    <string name="title_layout_adjustment">左右寄せ</string>
-    <string name="layout_adjustment_left">左寄せ</string>
-    <string name="layout_adjustment_center">中央</string>
-    <string name="layout_adjustment_right">右寄せ</string>
     <!-- Small Screen Size -->
     <string name="title_small_screen_size">サイズ*</string>
     <string name="note_small_screen_size">単位は%です。</string>

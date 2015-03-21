@@ -13,8 +13,6 @@
     <string name="action_toggle">Movable Screen</string>
     <string name="action_pin">Pin</string>
     <string name="action_pin_or_reset">Slide Down</string>
-    <string name="action_resize">Small Screen</string>
-    <string name="action_adjust_layout">Adjust Layout</string>
     <string name="action_small_screen_left">Small Screen (Left)</string>
     <string name="action_small_screen_right">Small Screen (Right)</string>
     <string name="action_reset">Reset</string>

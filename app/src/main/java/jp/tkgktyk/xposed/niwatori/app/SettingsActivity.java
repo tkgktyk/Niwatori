@@ -183,8 +183,10 @@ public class SettingsActivity extends Activity {
                 = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                getActivity().setProgressBarIndeterminateVisibility(true);
-                getActivity().sendBroadcast(new Intent(NFW.ACTION_SETTINGS_CHANGED));
+                NFW.Settings settings = new NFW.Settings(sharedPreferences);
+                Intent intent = new Intent(NFW.ACTION_SETTINGS_CHANGED);
+                intent.putExtra(NFW.EXTRA_SETTINGS, settings);
+                getActivity().sendBroadcast(intent);
                 Log.d(TAG, "sent setting changed");
             }
         };
@@ -379,7 +381,6 @@ public class SettingsActivity extends Activity {
             });
             openActivity(R.string.key_initial_position, InitialPositionActivity.class);
             // small screen
-            showListSummary(R.string.key_layout_adjustment);
             showTextSummary(R.string.key_small_screen_size, "%");
             // Test
             showListSummary(R.string.key_action_when_tap_on_recents);

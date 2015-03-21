@@ -66,10 +66,6 @@
 
     <!-- Small Screen -->
     <string name="small_screen">Small Screen</string>
-    <!-- Layout Adjustment -->
-    <string name="title_layout_adjustment">Layout Adjustment</string>
-    <string name="layout_adjustment_left">Left</string>
-    <string name="layout_adjustment_right">Right</string>
     <!-- Small Screen Size -->
     <string name="title_small_screen_size">Size*</string>
     <string name="note_small_screen_size">Unit is percent(%).</string>

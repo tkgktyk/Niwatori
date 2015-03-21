@@ -22,7 +22,6 @@ public class ShortcutActivity extends ListActivity {
             NFW.ACTION_TOGGLE,
             NFW.ACTION_PIN,
             NFW.ACTION_PIN_OR_RESET,
-            NFW.ACTION_RESIZE,
             NFW.ACTION_SMALL_SCREEN_LEFT,
             NFW.ACTION_SMALL_SCREEN_RIGHT,
     };
@@ -30,7 +29,6 @@ public class ShortcutActivity extends ListActivity {
             R.string.action_toggle,
             R.string.action_pin,
             R.string.action_pin_or_reset,
-            R.string.action_resize,
             R.string.action_small_screen_left,
             R.string.action_small_screen_right,
     };

@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -28,7 +29,11 @@ public class ModPhoneStatusBar extends XposedModule {
 
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
+    private static XSharedPreferences mPrefs;
+    // for status bar
     private static FlyingHelper mHelper;
+    // for navigation key
+    private static NFW.Settings mNavSettings;
 
     private static View mPhoneStatusBarView;
     private static final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
@@ -46,6 +51,10 @@ public class ModPhoneStatusBar extends XposedModule {
             logD("consumed: " + action);
         }
     };
+
+    public static void initZygote(XSharedPreferences prefs) {
+        mPrefs = prefs;
+    }
 
     public static void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (!loadPackageParam.packageName.equals("com.android.systemui")) {
@@ -67,8 +76,8 @@ public class ModPhoneStatusBar extends XposedModule {
                 try {
                     final FrameLayout panelHolder = (FrameLayout) param.thisObject;
                     // need to reload on each package?
-                    mSettings.reload();
-                    mHelper = new FlyingHelper(panelHolder, 1, false, mSettings);
+                    mNavSettings = newSettings(mPrefs);
+                    mHelper = new FlyingHelper(panelHolder, 1, false, mNavSettings);
                     XposedHelpers.setAdditionalInstanceField(panelHolder,
                             FIELD_FLYING_HELPER, mHelper);
 
@@ -78,8 +87,9 @@ public class ModPhoneStatusBar extends XposedModule {
                         public void onReceive(Context context, Intent intent) {
                             logD("reload settings");
                             // need to reload on each package?
-                            mSettings.reload();
-                            mHelper.onSettingsLoaded();
+                            NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+                            mNavSettings = settings;
+                            mHelper.onSettingsLoaded(settings);
                         }
                     }, NFW.SETTINGS_CHANGED_FILTER);
                     log("attached to status bar");
@@ -197,9 +207,8 @@ public class ModPhoneStatusBar extends XposedModule {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         logD("prepareNavigationBarView");
                         try {
-                            mSettings.reload();
-                            if (mSettings.testFeature) {
-                                log("attached to Navigation Bar");
+                            if (mNavSettings.testFeature) {
+                                logD("attached to Navigation Bar");
                                 final Object phoneStatusBar = param.thisObject;
                                 final View navigationBarView = (View) XposedHelpers.getObjectField(
                                         phoneStatusBar, "mNavigationBarView");
@@ -233,11 +242,11 @@ public class ModPhoneStatusBar extends XposedModule {
                             @Override
                             public boolean onSingleTapConfirmed(MotionEvent e) {
                                 try {
-                                    if (NFW.isDefaultAction(mSettings.actionWhenTapOnRecents)) {
+                                    if (NFW.isDefaultAction(mNavSettings.actionWhenTapOnRecents)) {
                                         clickListener.onClick(recentsButton);
                                     } else {
                                         NFW.performAction(recentsButton.getContext(),
-                                                mSettings.actionWhenTapOnRecents);
+                                                mNavSettings.actionWhenTapOnRecents);
                                     }
                                 } catch (Throwable t) {
                                     logE(t);
@@ -248,7 +257,7 @@ public class ModPhoneStatusBar extends XposedModule {
                             @Override
                             public void onLongPress(MotionEvent e) {
                                 try {
-                                    if (NFW.isDefaultAction(mSettings.actionWhenLongPressOnRecents)) {
+                                    if (NFW.isDefaultAction(mNavSettings.actionWhenLongPressOnRecents)) {
                                         if (longClickListener != null) {
                                             longClickListener.onLongClick(recentsButton);
                                         } else {
@@ -256,7 +265,7 @@ public class ModPhoneStatusBar extends XposedModule {
                                         }
                                     } else {
                                         NFW.performAction(recentsButton.getContext(),
-                                                mSettings.actionWhenLongPressOnRecents);
+                                                mNavSettings.actionWhenLongPressOnRecents);
                                     }
                                     recentsButton.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                                 } catch (Throwable t) {
@@ -267,15 +276,15 @@ public class ModPhoneStatusBar extends XposedModule {
                             @Override
                             public boolean onDoubleTap(MotionEvent e) {
                                 try {
-                                    if (NFW.isDefaultAction(mSettings.actionWhenDoubleTapOnRecents)) {
-                                        if (!NFW.isDefaultAction(mSettings.actionWhenTapOnRecents)) {
+                                    if (NFW.isDefaultAction(mNavSettings.actionWhenDoubleTapOnRecents)) {
+                                        if (!NFW.isDefaultAction(mNavSettings.actionWhenTapOnRecents)) {
                                             clickListener.onClick(recentsButton);
                                         } else {
                                             return false;
                                         }
                                     } else {
                                         NFW.performAction(recentsButton.getContext(),
-                                                mSettings.actionWhenDoubleTapOnRecents);
+                                                mNavSettings.actionWhenDoubleTapOnRecents);
                                     }
                                     recentsButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                                 } catch (Throwable t) {

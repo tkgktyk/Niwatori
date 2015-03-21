@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
-import de.robv.android.xposed.XSharedPreferences;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
 
 /**
@@ -31,15 +30,13 @@ public class NFW {
     public static final String ACTION_TOGGLE = PACKAGE_NAME + ".intent.action.TOGGLE";
     public static final String ACTION_PIN = PACKAGE_NAME + ".intent.action.PIN";
     public static final String ACTION_PIN_OR_RESET = PACKAGE_NAME + ".intent.action.PIN_OR_RESET";
-    public static final String ACTION_RESIZE = PACKAGE_NAME + ".intent.action.RESIZE";
-    public static final String ACTION_ADJUST_LAYOUT = PACKAGE_NAME + ".intent.action.ADJUST_LAYOUT";
-    public static final String ACTION_SMALL_SCREEN_LEFT = PACKAGE_NAME + ".intent.action.ACTION_SMALL_SCREEN_LEFT";
-    public static final String ACTION_SMALL_SCREEN_RIGHT = PACKAGE_NAME + ".intent.action.ACTION_SMALL_SCREEN_RIGHT";
+    public static final String ACTION_SMALL_SCREEN_LEFT = PACKAGE_NAME + ".intent.action.SMALL_SCREEN_LEFT";
+    public static final String ACTION_SMALL_SCREEN_RIGHT = PACKAGE_NAME + ".intent.action.SMALL_SCREEN_RIGHT";
     public static final String ACTION_RESET = PACKAGE_NAME + ".intent.action.RESET";
     public static final String ACTION_SOFT_RESET = PACKAGE_NAME + ".intent.action.SOFT_RESET";
 
     public static final String ACTION_SETTINGS_CHANGED = PACKAGE_NAME + ".intent.action.SETTINGS_CHANGED";
-    public static final String ACTION_SETTINGS_LOADED = PACKAGE_NAME + ".intent.action.SETTINGS_LOADED";
+    public static final String EXTRA_SETTINGS = PACKAGE_NAME + ".itent.extra.SETTINGS";
 
     /**
      * Static IntentFilters
@@ -49,7 +46,6 @@ public class NFW {
     public static final IntentFilter FOCUSED_ACTIVITY_FILTER;
     public static final IntentFilter ACTIVITY_FILTER;
     public static final IntentFilter SETTINGS_CHANGED_FILTER = new IntentFilter(ACTION_SETTINGS_CHANGED);
-    public static final IntentFilter SETTINGS_LOADED_FILTER = new IntentFilter(ACTION_SETTINGS_LOADED);
     /**
      * Receivers are set priority.
      * 1. Status bar
@@ -71,8 +67,6 @@ public class NFW {
         STATUS_BAR_FILTER.addAction(NFW.ACTION_TOGGLE);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
-        STATUS_BAR_FILTER.addAction(NFW.ACTION_RESIZE);
-//        STATUS_BAR_FILTER.addAction(NFW.ACTION_ADJUST_LAYOUT);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN_LEFT);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN_RIGHT);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
@@ -106,8 +100,12 @@ public class NFW {
     public static Context getNiwatoriContext(Context context) {
         Context niwatoriContext = null;
         try {
-            niwatoriContext = context.createPackageContext(
-                    NFW.PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+            if (context.getPackageName().equals(NFW.PACKAGE_NAME)) {
+                niwatoriContext = context;
+            } else {
+                niwatoriContext = context.createPackageContext(
+                        NFW.PACKAGE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+            }
         } catch (Throwable t) {
             XposedModule.logE(t);
         }
@@ -122,8 +120,6 @@ public class NFW {
     }
 
     public static class Settings implements Serializable {
-        private final XSharedPreferences mPrefs;
-
         public Set<String> blackSet;
         public boolean animation;
         public String actionWhenTapOutside;
@@ -136,7 +132,6 @@ public class NFW {
         public int initialXp;
         public int initialYp;
 
-        public int layoutAdjustment;
         public float smallScreenSize;
 
         public boolean testFeature;
@@ -145,36 +140,31 @@ public class NFW {
         public String actionWhenLongPressOnRecents;
         public String actionWhenDoubleTapOnRecents;
 
-        public Settings(XSharedPreferences prefs) {
-            mPrefs = prefs;
-            reload();
+        public Settings(SharedPreferences prefs) {
+            load(prefs);
         }
 
-        public void reload() {
-            mPrefs.reload();
-            blackSet = mPrefs.getStringSet("key_black_list", Collections.<String>emptySet());
-            animation = mPrefs.getBoolean("key_animation", true);
-            actionWhenTapOutside = mPrefs.getString("key_action_when_tap_outside", ACTION_SOFT_RESET);
-            actionWhenLongPressOutside = mPrefs.getString("key_action_when_long_press_outside", ACTION_ADJUST_LAYOUT);
-            actionWhenDoubleTapOutside = mPrefs.getString("key_action_when_double_tap_outside", ACTION_PIN);
+        public void load(SharedPreferences prefs) {
+            blackSet = prefs.getStringSet("key_black_list", Collections.<String>emptySet());
+            animation = prefs.getBoolean("key_animation", true);
+            actionWhenTapOutside = prefs.getString("key_action_when_tap_outside", ACTION_SOFT_RESET);
+            actionWhenLongPressOutside = prefs.getString("key_action_when_long_press_outside", ACTION_DEFAULT);
+            actionWhenDoubleTapOutside = prefs.getString("key_action_when_double_tap_outside", ACTION_PIN);
 
-            speed = Float.parseFloat(mPrefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
-            drawBoundary = mPrefs.getBoolean("key_draw_boundary", true);
-            boundaryColor = Color.parseColor(mPrefs.getString("key_boundary_color", "#689F38")); // default is Green
-            initialXp = mPrefs.getInt("key_initial_x_percent", InitialPosition.DEFAULT_X_PERCENT);
-            initialYp = mPrefs.getInt("key_initial_y_percent", InitialPosition.DEFAULT_Y_PERCENT);
+            speed = Float.parseFloat(prefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
+            drawBoundary = prefs.getBoolean("key_draw_boundary", true);
+            boundaryColor = Color.parseColor(prefs.getString("key_boundary_color", "#689F38")); // default is Green
+            initialXp = prefs.getInt("key_initial_x_percent", InitialPosition.DEFAULT_X_PERCENT);
+            initialYp = prefs.getInt("key_initial_y_percent", InitialPosition.DEFAULT_Y_PERCENT);
 
-            layoutAdjustment = Integer.parseInt(
-                    mPrefs.getString("key_layout_adjustment", Integer.toString(FlyingLayout.DEFAULT_LAYOUT_ADJUSTMENT))
-            );
-            smallScreenSize = Float.parseFloat(mPrefs.getString("key_small_screen_size", "70")) / 100f;
+            smallScreenSize = Float.parseFloat(prefs.getString("key_small_screen_size", "70")) / 100f;
 
-            testFeature = mPrefs.getBoolean("key_test_feature", false);
+            testFeature = prefs.getBoolean("key_test_feature", false);
             if (testFeature) {
-                resetAutomatically = mPrefs.getBoolean("key_reset_automatically", false);
-                actionWhenTapOnRecents = mPrefs.getString("key_action_when_tap_on_recents", ACTION_DEFAULT);
-                actionWhenLongPressOnRecents = mPrefs.getString("key_action_when_long_press_on_recents", ACTION_DEFAULT);
-                actionWhenDoubleTapOnRecents = mPrefs.getString("key_action_when_double_tap_on_recents", ACTION_DEFAULT);
+                resetAutomatically = prefs.getBoolean("key_reset_automatically", false);
+                actionWhenTapOnRecents = prefs.getString("key_action_when_tap_on_recents", ACTION_DEFAULT);
+                actionWhenLongPressOnRecents = prefs.getString("key_action_when_long_press_on_recents", ACTION_DEFAULT);
+                actionWhenDoubleTapOnRecents = prefs.getString("key_action_when_double_tap_on_recents", ACTION_DEFAULT);
             } else {
                 resetAutomatically = false;
                 actionWhenTapOnRecents = ACTION_DEFAULT;

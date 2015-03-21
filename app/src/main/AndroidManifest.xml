@@ -52,12 +52,6 @@
             android:name=".app.AboutActivity"
             android:label="@string/about_activity_name"
             android:theme="@style/AppTheme"/>
-
-        <receiver android:name=".app.SettingsActionReceiver">
-            <intent-filter>
-                <action android:name="jp.tkgktyk.xposed.niwatori.intent.action.ADJUST_LAYOUT"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

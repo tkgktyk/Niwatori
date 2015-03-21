@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
-import jp.tkgktyk.xposed.niwatori.app.SettingsActionReceiver;
 
 /**
  * Created by tkgktyk on 2015/02/13.
@@ -19,25 +18,24 @@ import jp.tkgktyk.xposed.niwatori.app.SettingsActionReceiver;
 public class FlyingHelper extends FlyingLayout.Helper {
     private static final String TAG = FlyingHelper.class.getSimpleName();
 
-    private final NFW.Settings mSettings;
     private final InputMethodManager mInputMethodManager;
+    private NFW.Settings mSettings;
 
     private final GradientDrawable mBoundaryDrawable = NFW.makeBoundaryDrawable(0, 0);
     private int mBoundaryWidth;
     private boolean mBoundaryShown = false;
 
-    public FlyingHelper(FrameLayout view, int frameLayoutHierarchy, boolean useContainer, NFW.Settings settings)
-            throws NoSuchMethodException {
+    public FlyingHelper(FrameLayout view, int frameLayoutHierarchy, boolean useContainer,
+                        NFW.Settings settings) throws NoSuchMethodException {
         super(view, frameLayoutHierarchy);
-        mSettings = settings;
 
         mInputMethodManager = (InputMethodManager) view.getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        initialize(useContainer);
+        initialize(useContainer, settings);
     }
 
-    private void initialize(boolean useContainer) {
+    private void initialize(boolean useContainer, NFW.Settings settings) {
         final Context niwatoriContext = NFW.getNiwatoriContext(getAttachedView().getContext());
         if (niwatoriContext != null) {
             mBoundaryWidth = Math.round(niwatoriContext.getResources().getDimension(R.dimen.boundary_width));
@@ -47,45 +45,48 @@ public class FlyingHelper extends FlyingLayout.Helper {
             setHorizontalPadding(padding);
             setVerticalPadding(padding);
         }
-        onSettingsLoaded();
+        onSettingsLoaded(settings);
         setTouchEventEnabled(false);
         setUseContainer(useContainer);
         setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
             @Override
             public void onClickOutside(ViewGroup v) {
-                if (!NFW.isDefaultAction(mSettings.actionWhenTapOutside)) {
-                    performAction(mSettings.actionWhenTapOutside);
-                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                if (!NFW.isDefaultAction(getSettings().actionWhenTapOutside)) {
+                    performAction(getSettings().actionWhenTapOutside);
+//                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
             }
 
             @Override
             public void onLongPressOutside(ViewGroup v) {
-                if (!NFW.isDefaultAction(mSettings.actionWhenLongPressOutside)) {
-                    performAction(mSettings.actionWhenLongPressOutside);
+                if (!NFW.isDefaultAction(getSettings().actionWhenLongPressOutside)) {
+                    performAction(getSettings().actionWhenLongPressOutside);
                     v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 }
             }
 
             @Override
             public void onDoubleClickOutside(ViewGroup v) {
-                if (!NFW.isDefaultAction(mSettings.actionWhenDoubleTapOutside)) {
-                    performAction(mSettings.actionWhenDoubleTapOutside);
-                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                if (!NFW.isDefaultAction(getSettings().actionWhenDoubleTapOutside)) {
+                    performAction(getSettings().actionWhenDoubleTapOutside);
+//                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
             }
         });
     }
 
-    public void onSettingsLoaded() {
-        setSpeed(mSettings.speed);
-        setLayoutAdjustment(mSettings.layoutAdjustment, true);
+    public void onSettingsLoaded(NFW.Settings settings) {
+        mSettings = settings;
+        setSpeed(getSettings().speed);
         if (isResized()) {
-            setScale(mSettings.smallScreenSize);
+            setScale(getSettings().smallScreenSize);
         }
-        mBoundaryDrawable.setStroke(mBoundaryWidth, mSettings.boundaryColor);
-        getAttachedView().requestLayout();
-        getAttachedView().invalidate();
+        mBoundaryDrawable.setStroke(mBoundaryWidth, getSettings().boundaryColor);
+        getAttachedView().postInvalidate();
+    }
+
+    public NFW.Settings getSettings() {
+        return mSettings;
     }
 
     private void updateBoundaryShown(boolean shown) {
@@ -119,22 +120,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
             pin();
         } else if (action.equals(NFW.ACTION_PIN_OR_RESET)) {
             pinOrReset();
-        } else if (action.equals(NFW.ACTION_RESIZE)) {
-            resize();
-        } else if (action.equals(NFW.ACTION_ADJUST_LAYOUT)) {
-            if (isResized()) {
-                int layoutAdjustment = getLayoutAdjustment();
-                switch (layoutAdjustment) {
-                    case FlyingLayout.LAYOUT_ADJUSTMENT_LEFT:
-                        layoutAdjustment = FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT;
-                        break;
-                    case FlyingLayout.LAYOUT_ADJUSTMENT_RIGHT:
-                    default:
-                        layoutAdjustment = FlyingLayout.LAYOUT_ADJUSTMENT_LEFT;
-                        break;
-                }
-                SettingsActionReceiver.sendBroadcast(getAttachedView().getContext(), layoutAdjustment);
-            }
         } else if (action.equals(NFW.ACTION_SMALL_SCREEN_LEFT)) {
             resize(FlyingLayout.LAYOUT_ADJUSTMENT_LEFT);
         } else if (action.equals(NFW.ACTION_SMALL_SCREEN_RIGHT)) {
@@ -145,7 +130,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     private void toggle() {
         if (isFlying()) {
             disableFlying();
-            goHome(mSettings.animation);
+            goHome(getSettings().animation);
         } else {
             if (!isResized() && staysHome()) {
                 moveToInitialPosition(false);
@@ -173,7 +158,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             moveToInitialPosition(true);
             hideSoftInputMethod();
         } else {
-            goHome(mSettings.animation);
+            goHome(getSettings().animation);
         }
         disableFlying();
     }
@@ -181,7 +166,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void resize(int layoutAdjustment) {
         if (isResized()) {
             if (getLayoutAdjustment() == layoutAdjustment) {
-                super.resize(FlyingLayout.DEFAULT_SCALE, mSettings.animation);
+                super.resize(FlyingLayout.DEFAULT_SCALE, getSettings().animation);
             } else {
                 setLayoutAdjustment(layoutAdjustment, true);
             }
@@ -189,24 +174,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
             if (getLayoutAdjustment() != layoutAdjustment) {
                 setLayoutAdjustment(layoutAdjustment, false);
             }
-            super.resize(mSettings.smallScreenSize, mSettings.animation);
+            super.resize(getSettings().smallScreenSize, getSettings().animation);
             hideSoftInputMethod();
-        }
-    }
-
-    public void resize() {
-        if (isResized()) {
-            super.resize(FlyingLayout.DEFAULT_SCALE, mSettings.animation);
-//            updateBoundaryShown(isFlying());
-        } else {
-            super.resize(mSettings.smallScreenSize, mSettings.animation);
-            hideSoftInputMethod();
-//            updateBoundaryShown(true);
         }
     }
 
     private boolean moveToInitialPosition(boolean pin) {
-        final InitialPosition pos = new InitialPosition(mSettings.initialXp, mSettings.initialYp);
+        final InitialPosition pos = new InitialPosition(getSettings().initialXp, getSettings().initialYp);
         if (pin && pos.getXp() == 0 && pos.getYp() == 0) {
             // default position for pin
             pos.setXp(0); // 0%
@@ -217,7 +191,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         boolean moved = false;
         if (x != 0 || y != 0) {
             moved = true;
-            moveWithoutSpeed(x, y, mSettings.animation);
+            moveWithoutSpeed(x, y, getSettings().animation);
         }
         return moved;
     }
@@ -228,11 +202,11 @@ public class FlyingHelper extends FlyingLayout.Helper {
             disableFlying();
             // goHome must be placed after pin() for "Reset when collapsed"
             // option.
-            goHome(mSettings.animation);
+            goHome(getSettings().animation);
             handled = true;
         }
         if ((force || !handled) && isResized()) {
-            resize();
+            super.resize(FlyingLayout.DEFAULT_SCALE, getSettings().animation);
         }
     }
 
@@ -248,7 +222,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void draw(Canvas canvas) {
-        if (mSettings.drawBoundary && mBoundaryShown) {
+        if (getSettings().drawBoundary && mBoundaryShown) {
             mBoundaryDrawable.setBounds(getBoundaryRect());
             mBoundaryDrawable.draw(canvas);
         }

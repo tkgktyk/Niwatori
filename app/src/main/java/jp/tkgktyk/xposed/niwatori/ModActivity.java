@@ -22,6 +22,7 @@ import android.widget.TabHost;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -60,7 +61,10 @@ public class ModActivity extends XposedModule {
 
     private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
 
-    public static void initZygote() {
+    private static XSharedPreferences mPrefs;
+
+    public static void initZygote(XSharedPreferences prefs) {
+        mPrefs = prefs;
         try {
             installToDecorView();
             installToActivity();
@@ -80,8 +84,7 @@ public class ModActivity extends XposedModule {
                     try {
                         final FrameLayout decorView = (FrameLayout) param.thisObject;
                         // need to reload on each package?
-                        mSettings.reload();
-                        final FlyingHelper helper = new FlyingHelper(decorView, 1, true, mSettings);
+                        final FlyingHelper helper = new FlyingHelper(decorView, 1, true, newSettings(mPrefs));
                         XposedHelpers.setAdditionalInstanceField(decorView,
                                 FIELD_FLYING_HELPER, helper);
 //                        setBackground(decorView);
@@ -181,8 +184,8 @@ public class ModActivity extends XposedModule {
                             public void onReceive(Context context, Intent intent) {
                                 logD(decorView.getContext().getPackageName() + ": reload settings");
                                 // need to reload on each package?
-                                mSettings.reload();
-                                getHelper(decorView).onSettingsLoaded();
+                                NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+                                getHelper(decorView).onSettingsLoaded(settings);
                             }
                         };
                         XposedHelpers.setAdditionalInstanceField(decorView,
@@ -440,14 +443,14 @@ public class ModActivity extends XposedModule {
     }
 
     private static void resetAutomatically(Activity activity) {
-        if (mSettings.resetAutomatically) {
+        final FlyingHelper helper = getHelper(activity);
+        if (helper == null) {
+            logD("DecorView is null");
+            return;
+        }
+        if (helper.getSettings().resetAutomatically) {
             // When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
             // because through an Activity. So shouldn't reset automatically.
-            final FlyingHelper helper = getHelper(activity);
-            if (helper == null) {
-                logD("DecorView is null");
-                return;
-            }
             helper.resetState(true);
         }
     }
@@ -555,14 +558,14 @@ public class ModActivity extends XposedModule {
     }
 
     private static void resetAutomatically(Dialog dialog) {
-        if (mSettings.resetAutomatically) {
+        final FlyingHelper helper = getHelper(dialog);
+        if (helper == null) {
+            logD("DecorView is null");
+            return;
+        }
+        if (helper.getSettings().resetAutomatically) {
             // When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
             // because through an Activity. So shouldn't reset automatically.
-            final FlyingHelper helper = getHelper(dialog);
-            if (helper == null) {
-                logD("DecorView is null");
-                return;
-            }
             helper.resetState(true);
         }
     }

@@ -66,11 +66,6 @@
 
     <!-- Small Screen -->
     <string name="small_screen">Небольшой экран</string>
-    <!-- Layout Adjustment -->
-    <string name="title_layout_adjustment">Регулировка положения</string>
-    <string name="layout_adjustment_left">Слева</string>
-    <string name="layout_adjustment_center">По центру</string>
-    <string name="layout_adjustment_right">Справа</string>
     <!-- Small Screen Size -->
     <string name="title_small_screen_size">Размер</string>
     <string name="note_small_screen_size">Значение(%).</string>

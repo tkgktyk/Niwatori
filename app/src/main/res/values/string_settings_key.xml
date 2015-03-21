@@ -20,8 +20,6 @@
     <string name="key_initial_x_percent" translatable="false">key_initial_x_percent</string>
     <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
 
-    <!-- Layout Adjustment -->
-    <string name="key_layout_adjustment" translatable="false">key_layout_adjustment</string>
     <!-- Small Screen Size -->
     <string name="key_small_screen_size" translatable="false">key_small_screen_size</string>
 
