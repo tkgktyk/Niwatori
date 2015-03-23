@@ -1,6 +1,6 @@
 <resources>
     <!-- Displayed in Xposed framework -->
-    <string name="app_name">One-Handed Mode Collection</string>
+    <string name="app_name">Temporary One-Handed Mode</string>
     <string name="xposed_description">Режим управления одной рукой.</string>
 
     <!-- Blacklist -->
@@ -9,6 +9,7 @@
 
     <!-- Shortcut name -->
     <string name="shortcut_activity_name">NFW действия</string>
+    <string name="action_none">None</string>
     <string name="action_default">По умолчанию </string>
     <string name="action_toggle">Toggle</string>
     <string name="action_pin">Pin</string>

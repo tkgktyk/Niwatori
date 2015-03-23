@@ -39,13 +39,13 @@ public class ModPhoneStatusBar extends XposedModule {
     private static final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            logD("global broadcast receiver: " + intent.getAction());
+            final String action = intent.getAction();
+            logD("global broadcast receiver: " + action);
             final int mState = XposedHelpers.getIntField(mPhoneStatusBarView, "mState");
             if (mState == 0) { // STATE_CLOSED = 0
                 return;
             }
             // target is status bar
-            final String action = intent.getAction();
             mHelper.performAction(action);
             abortBroadcast();
             logD("consumed: " + action);
@@ -184,7 +184,9 @@ public class ModPhoneStatusBar extends XposedModule {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
-                                mHelper.resetState(true);
+                                if (mHelper.getSettings().resetAutomatically) {
+                                    mHelper.resetState(true);
+                                }
                             } catch (Throwable t) {
                                 logE(t);
                             }

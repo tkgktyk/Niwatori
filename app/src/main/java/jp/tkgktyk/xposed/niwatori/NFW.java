@@ -26,6 +26,7 @@ public class NFW {
     public static final String PACKAGE_NAME = NFW.class.getPackage().getName();
     public static final String NAME = NFW.class.getSimpleName();
 
+    public static final String ACTION_NONE = "";
     public static final String ACTION_DEFAULT = "";
     public static final String ACTION_TOGGLE = PACKAGE_NAME + ".intent.action.TOGGLE";
     public static final String ACTION_PIN = PACKAGE_NAME + ".intent.action.PIN";
@@ -36,7 +37,7 @@ public class NFW {
     public static final String ACTION_SOFT_RESET = PACKAGE_NAME + ".intent.action.SOFT_RESET";
 
     public static final String ACTION_SETTINGS_CHANGED = PACKAGE_NAME + ".intent.action.SETTINGS_CHANGED";
-    public static final String EXTRA_SETTINGS = PACKAGE_NAME + ".itent.extra.SETTINGS";
+    public static final String EXTRA_SETTINGS = PACKAGE_NAME + ".intent.extra.SETTINGS";
 
     /**
      * Static IntentFilters
@@ -122,6 +123,7 @@ public class NFW {
     public static class Settings implements Serializable {
         public Set<String> blackSet;
         public boolean animation;
+        public boolean resetAutomatically;
         public String actionWhenTapOutside;
         public String actionWhenLongPressOutside;
         public String actionWhenDoubleTapOutside;
@@ -135,7 +137,6 @@ public class NFW {
         public float smallScreenSize;
 
         public boolean testFeature;
-        public boolean resetAutomatically;
         public String actionWhenTapOnRecents;
         public String actionWhenLongPressOnRecents;
         public String actionWhenDoubleTapOnRecents;
@@ -147,8 +148,9 @@ public class NFW {
         public void load(SharedPreferences prefs) {
             blackSet = prefs.getStringSet("key_black_list", Collections.<String>emptySet());
             animation = prefs.getBoolean("key_animation", true);
+            resetAutomatically = prefs.getBoolean("key_reset_automatically", true);
             actionWhenTapOutside = prefs.getString("key_action_when_tap_outside", ACTION_SOFT_RESET);
-            actionWhenLongPressOutside = prefs.getString("key_action_when_long_press_outside", ACTION_DEFAULT);
+            actionWhenLongPressOutside = prefs.getString("key_action_when_long_press_outside", ACTION_NONE);
             actionWhenDoubleTapOutside = prefs.getString("key_action_when_double_tap_outside", ACTION_PIN);
 
             speed = Float.parseFloat(prefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
@@ -161,12 +163,10 @@ public class NFW {
 
             testFeature = prefs.getBoolean("key_test_feature", false);
             if (testFeature) {
-                resetAutomatically = prefs.getBoolean("key_reset_automatically", false);
                 actionWhenTapOnRecents = prefs.getString("key_action_when_tap_on_recents", ACTION_DEFAULT);
                 actionWhenLongPressOnRecents = prefs.getString("key_action_when_long_press_on_recents", ACTION_DEFAULT);
                 actionWhenDoubleTapOnRecents = prefs.getString("key_action_when_double_tap_on_recents", ACTION_DEFAULT);
             } else {
-                resetAutomatically = false;
                 actionWhenTapOnRecents = ACTION_DEFAULT;
                 actionWhenLongPressOnRecents = ACTION_DEFAULT;
                 actionWhenDoubleTapOnRecents = ACTION_DEFAULT;

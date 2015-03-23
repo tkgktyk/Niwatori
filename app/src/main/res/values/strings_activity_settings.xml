@@ -11,7 +11,7 @@
     <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
     <!-- Note -->
     <string name="title_notes">Notes</string>
-    <string name="summary_notes">- Adjust Layout and Resets are for outside.\n- Soft Reset resets one-handed mode step by step.\n- Wait for several seconds for changes to take effect.</string>
+    <string name="summary_notes">If you turn off "Auto Reset", be sure to expand status bar from shortcut.</string>
 
     <!-- Settings -->
     <string name="title_settings">Settings</string>
@@ -25,6 +25,9 @@
     <string name="title_animation">Animation</string>
     <string name="summary_animation_on">Smooth movement</string>
     <string name="summary_animation_off">Move immediately</string>
+    <!-- Reset automatically -->
+    <string name="title_reset_automatically">Auto Reset</string>
+    <string name="summary_reset_automatically">Reset when moved to background.</string>
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Tap Outside</string>
     <string name="title_action_when_long_press_outside">Long Press Outside</string>
@@ -85,11 +88,7 @@
 
     <!-- Test -->
     <string name="title_test">Test</string>
-    <string name="summary_test">Simple interface to fire actions. Use other apps to more customize. (requires to rotate or lock the screen)</string>
-    <!-- Reset automatically -->
-    <string name="title_reset_automatically">Reset Automatically</string>
-    <string name="summary_reset_automatically_on">Be sure to turn off if you use shortcuts.</string>
-    <string name="summary_reset_automatically_off">Activity keeps the window state if possible.</string>
+    <string name="summary_test">Simple interface to fire actions. Use other apps to more customize. (requires reboot)</string>
     <!-- Actions -->
     <string name="title_action_when_tap_on_recents">Tap On Recents (software)</string>
     <string name="title_action_when_long_press_on_recents">Long Press On Recents (software)</string>

@@ -25,6 +25,9 @@
     <string name="title_animation">アニメーション</string>
     <string name="summary_animation_on">なめらかな移動</string>
     <string name="summary_animation_off">すぐに移動</string>
+    <!-- Reset automatically -->
+    <string name="title_reset_automatically">自動リセット</string>
+    <string name="summary_reset_automatically">バックグラウンドに移るとリセットされます</string>
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Tap Outside</string>
     <string name="title_action_when_long_press_outside">Long Press Outside</string>
@@ -85,11 +88,7 @@
 
     <!-- Test -->
     <string name="title_test">テスト</string>
-    <string name="summary_test">ショートカットを介さず直接制御するためのインターフェースです。複雑な制御をするには他のアプリからショートカットを使用してください。</string>
-    <!-- Reset automatically -->
-    <string name="title_reset_automatically">自動的にリセット</string>
-    <string name="summary_reset_automatically_on">ショートカットを使用する場合はオフにしてください</string>
-    <string name="summary_reset_automatically_off">バックグラウンドでもウィンドウモードが保持されます</string>
+    <string name="summary_test">ショートカットを介さず直接制御するためのインターフェースです。複雑な制御をするには他のアプリからショートカットを使用してください。（要再起動）</string>
     <!-- Actions -->
     <string name="title_action_when_tap_on_recents">最近のアプリをタップ（ソフトウェアキー）</string>
     <string name="title_action_when_long_press_on_recents">最近のアプリを長押し（ソフトウェアキー）</string>

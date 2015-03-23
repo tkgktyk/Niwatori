@@ -30,23 +30,29 @@
                 android:summaryOff="@string/summary_animation_off"
                 android:summaryOn="@string/summary_animation_on"
                 android:title="@string/title_animation"/>
+            <!-- Reset Automatically -->
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+                android:defaultValue="true"
+                android:key="@string/key_reset_automatically"
+                android:summary="@string/summary_reset_automatically"
+                android:title="@string/title_reset_automatically"/>
             <!-- Actions at Outside -->
             <ListPreference
                 android:defaultValue="@string/intent_action_soft_reset"
-                android:entries="@array/nfw_actions"
-                android:entryValues="@array/nfw_action_values"
+                android:entries="@array/outside_actions"
+                android:entryValues="@array/outside_action_values"
                 android:key="@string/key_action_when_tap_outside"
                 android:title="@string/title_action_when_tap_outside" />
             <ListPreference
-                android:defaultValue="@string/intent_action_default"
-                android:entries="@array/nfw_actions"
-                android:entryValues="@array/nfw_action_values"
+                android:defaultValue="@string/intent_action_none"
+                android:entries="@array/outside_actions"
+                android:entryValues="@array/outside_action_values"
                 android:key="@string/key_action_when_long_press_outside"
                 android:title="@string/title_action_when_long_press_outside" />
             <ListPreference
                 android:defaultValue="@string/intent_action_pin"
-                android:entries="@array/nfw_actions"
-                android:entryValues="@array/nfw_action_values"
+                android:entries="@array/outside_actions"
+                android:entryValues="@array/outside_action_values"
                 android:key="@string/key_action_when_double_tap_outside"
                 android:title="@string/title_action_when_double_tap_outside" />
         </PreferenceCategory>
@@ -125,14 +131,6 @@
                 android:defaultValue="false"
                 android:key="@string/key_test_feature"
                 android:summary="@string/summary_test"/>
-            <!-- Reset Automatically -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
-                android:defaultValue="false"
-                android:dependency="@string/key_test_feature"
-                android:key="@string/key_reset_automatically"
-                android:summaryOff="@string/summary_reset_automatically_off"
-                android:summaryOn="@string/summary_reset_automatically_on"
-                android:title="@string/title_reset_automatically"/>
             <!-- Actions -->
             <ListPreference
                 android:defaultValue=""

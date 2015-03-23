@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
@@ -61,6 +63,11 @@ public class ModActivity extends XposedModule {
 
     private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
 
+    private static final String FIELD_AUTO_RESET_HANDLER = NFW.NAME + "_autoResetHandler";
+    private static final long AUTO_RESET_DELAY = 1000; // [ms]
+    private static final int MSG_AUTO_RESET_FOR_ACTIVITY = 1;
+    private static final int MSG_AUTO_RESET_FOR_DIALOG = 2;
+
     private static XSharedPreferences mPrefs;
 
     public static void initZygote(XSharedPreferences prefs) {
@@ -69,7 +76,7 @@ public class ModActivity extends XposedModule {
             installToDecorView();
             installToActivity();
             installToDialog();
-            log("prepared to attach to Activity and Dialog");
+            logD("prepared to attach to Activity and Dialog");
         } catch (Throwable t) {
             logE(t);
         }
@@ -99,7 +106,7 @@ public class ModActivity extends XposedModule {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             final FrameLayout decorView = (FrameLayout) param.thisObject;
                             final Drawable drawable = (Drawable) param.args[0];
-                            param.args[0] = checkDrawable(decorView, drawable);
+                            param.args[0] = censorDrawable(decorView, drawable);
                         }
                     });
             XposedHelpers.findAndHookMethod(classDecorView, "onInterceptTouchEvent", MotionEvent.class,
@@ -219,10 +226,10 @@ public class ModActivity extends XposedModule {
     }
 
     private static void setBackground(View decorView) {
-        decorView.setBackground(checkDrawable(decorView, decorView.getBackground()));
+        decorView.setBackground(censorDrawable(decorView, decorView.getBackground()));
     }
 
-    private static Drawable checkDrawable(View decorView, Drawable drawable) {
+    private static Drawable censorDrawable(View decorView, Drawable drawable) {
         if (drawable == null) {
             final TypedValue a = new TypedValue();
             if (decorView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true)) {
@@ -296,6 +303,8 @@ public class ModActivity extends XposedModule {
                     final Activity activity = (Activity) param.thisObject;
                     XposedHelpers.setAdditionalInstanceField(activity, FIELD_RECEIVER_REGISTERED, false);
                     XposedHelpers.setAdditionalInstanceField(activity, FIELD_HAS_FOCUS, false);
+                    XposedHelpers.setAdditionalInstanceField(activity, FIELD_AUTO_RESET_HANDLER,
+                            new AutoResetHandler());
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -313,6 +322,12 @@ public class ModActivity extends XposedModule {
                     final boolean hasFocus = (Boolean) param.args[0];
                     logD(activity + "#onWindowFocusChanged: hasFocus=" + hasFocus);
                     registerReceiver(activity, hasFocus);
+
+                    if (hasFocus) {
+                        stopAutoReset(activity, MSG_AUTO_RESET_FOR_ACTIVITY);
+                    } else {
+                        reserveAutoReset(activity, MSG_AUTO_RESET_FOR_ACTIVITY);
+                    }
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -322,10 +337,12 @@ public class ModActivity extends XposedModule {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
-                    final Activity activity = (Activity) param.thisObject;
-                    final boolean hasFocus = activity.hasWindowFocus();
+                    Activity activity = (Activity) param.thisObject;
+                    boolean hasFocus = activity.hasWindowFocus();
                     logD(activity + "#onResume: hasFocus=" + hasFocus);
                     registerReceiver(activity, hasFocus);
+
+                    stopAutoReset(activity, MSG_AUTO_RESET_FOR_ACTIVITY);
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -335,9 +352,24 @@ public class ModActivity extends XposedModule {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
-                    final Activity activity = (Activity) param.thisObject;
+                    Activity activity = (Activity) param.thisObject;
                     logD(activity + "#onPause");
                     unregisterReceiver(activity);
+
+                    reserveAutoReset(activity, MSG_AUTO_RESET_FOR_ACTIVITY);
+                } catch (Throwable t) {
+                    logE(t);
+                }
+            }
+        });
+        XposedHelpers.findAndHookMethod(Activity.class, "onDestroy", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                try {
+                    Activity activity = (Activity) param.thisObject;
+                    logD(activity + "#onDestroy");
+
+                    stopAutoReset(activity, MSG_AUTO_RESET_FOR_ACTIVITY);
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -368,6 +400,18 @@ public class ModActivity extends XposedModule {
                         }
                     }
                 });
+    }
+
+    private static void stopAutoReset(Object object, int msg) {
+        Handler handler = (Handler)XposedHelpers.getAdditionalInstanceField(object, FIELD_AUTO_RESET_HANDLER);
+        handler.removeMessages(msg);
+    }
+
+    private static void reserveAutoReset(Object object, int msg) {
+        Handler handler = (Handler)XposedHelpers.getAdditionalInstanceField(object, FIELD_AUTO_RESET_HANDLER);
+        handler.removeMessages(msg);
+        Message msgObj = handler.obtainMessage(msg, object);
+        handler.sendMessageDelayed(msgObj, AUTO_RESET_DELAY);
     }
 
     private static boolean isTabContent(Activity activity) {
@@ -408,7 +452,6 @@ public class ModActivity extends XposedModule {
                 logD("register again");
                 activity.unregisterReceiver(mActivityActionReceiver);
                 register = true;
-                resetAutomatically(activity);
             }
         } else {
             // keep unfocus
@@ -435,23 +478,8 @@ public class ModActivity extends XposedModule {
             XposedHelpers.setAdditionalInstanceField(
                     activity, FIELD_RECEIVER_REGISTERED, false);
             logD("unregistered");
-
-            resetAutomatically(activity);
         } else {
             logD("not registered");
-        }
-    }
-
-    private static void resetAutomatically(Activity activity) {
-        final FlyingHelper helper = getHelper(activity);
-        if (helper == null) {
-            logD("DecorView is null");
-            return;
-        }
-        if (helper.getSettings().resetAutomatically) {
-            // When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
-            // because through an Activity. So shouldn't reset automatically.
-            helper.resetState(true);
         }
     }
 
@@ -488,7 +516,6 @@ public class ModActivity extends XposedModule {
                         registerReceiver(dialog);
                     } else {
                         unregisterReceiver(dialog);
-                        resetAutomatically(dialog);
                     }
                 } catch (Throwable t) {
                     logE(t);
@@ -557,16 +584,37 @@ public class ModActivity extends XposedModule {
         }
     }
 
-    private static void resetAutomatically(Dialog dialog) {
-        final FlyingHelper helper = getHelper(dialog);
-        if (helper == null) {
-            logD("DecorView is null");
-            return;
-        }
-        if (helper.getSettings().resetAutomatically) {
-            // When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
-            // because through an Activity. So shouldn't reset automatically.
-            helper.resetState(true);
+    private static class AutoResetHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_AUTO_RESET_FOR_ACTIVITY: {
+                    Activity activity = (Activity) msg.obj;
+                    FlyingHelper helper = getHelper(activity);
+                    if (helper == null) {
+                        logD("DecorView is null");
+                        return;
+                    }
+                    if (helper.getSettings().resetAutomatically) {
+                        logD(activity.toString() + "reset automatically");
+                        helper.resetState(true);
+                    }
+                }
+                break;
+                case MSG_AUTO_RESET_FOR_DIALOG: {
+                    Dialog dialog = (Dialog) msg.obj;
+                    FlyingHelper helper = getHelper(dialog);
+                    if (helper == null) {
+                        logD("DecorView is null");
+                        return;
+                    }
+                    if (helper.getSettings().resetAutomatically) {
+                        logD(dialog.toString() + "reset automatically");
+                        helper.resetState(true);
+                    }
+                }
+                break;
+            }
         }
     }
 }

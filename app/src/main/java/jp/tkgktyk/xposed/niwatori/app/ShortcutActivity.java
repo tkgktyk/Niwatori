@@ -20,14 +20,12 @@ public class ShortcutActivity extends ListActivity {
 
     private static final String mActionList[] = {
             NFW.ACTION_TOGGLE,
-            NFW.ACTION_PIN,
             NFW.ACTION_PIN_OR_RESET,
             NFW.ACTION_SMALL_SCREEN_LEFT,
             NFW.ACTION_SMALL_SCREEN_RIGHT,
     };
     private static final int mShortcutNameIdList[] = {
             R.string.action_toggle,
-            R.string.action_pin,
             R.string.action_pin_or_reset,
             R.string.action_small_screen_left,
             R.string.action_small_screen_right,

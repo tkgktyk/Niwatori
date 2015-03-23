@@ -1,14 +1,15 @@
 <resources>
     <!-- Displayed in Xposed framework -->
-    <string name="app_name">One-Handed Mode Collection</string>
-    <string name="xposed_description">Movable ScreenとSlide Down、Small Screen.</string>
+    <string name="app_name">Temporary One-Handed Mode</string>
+    <string name="xposed_description">Movable ScreenとSlide Down、Small Screen。</string>
 
     <!-- Blacklist -->
     <string name="black_list_activity_name">除外リスト（故障中）</string>
     <string name="only_selected">選択のみ表示</string>
 
     <!-- Shortcut name -->
-    <string name="shortcut_activity_name">Actions</string>
+    <string name="shortcut_activity_name">One-handed Mode</string>
+    <string name="action_none">None</string>
     <string name="action_default">Default</string>
     <string name="action_toggle">Movable Screen</string>
     <string name="action_pin">Pin</string>

@@ -25,6 +25,11 @@
     <string name="title_animation">Анимация</string>
     <string name="summary_animation_on">Плавное движение</string>
     <string name="summary_animation_off">Немедленный переход</string>
+    <!-- Reset automatically -->
+    <string name="title_reset_automatically">Сброс автоматически</string>
+    <string name="summary_reset_automatically">Reset when moved to background.</string>
+    <string name="summary_reset_automatically_on">Отключить, если вы используете ярлыки</string>
+    <string name="summary_reset_automatically_off">Удерживать состояние окна, если это возможно</string>
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Tap Outside</string>
     <string name="title_action_when_long_press_outside">Long Press Outside</string>
@@ -86,10 +91,6 @@
     <!-- Test -->
     <string name="title_test">Тестирование</string>
     <string name="summary_test">Простой интерфейс (в данном приложении) для быстрого просмотра изменений\n(Требуется перезагрузка)</string>
-    <!-- Reset automatically -->
-    <string name="title_reset_automatically">Сброс автоматически</string>
-    <string name="summary_reset_automatically_on">Отключить, если вы используете ярлыки</string>
-    <string name="summary_reset_automatically_off">Удерживать состояние окна, если это возможно</string>
     <!-- Actions -->
     <string name="title_action_when_tap_on_recents">Нажатие на недавние приложения (программная)</string>
     <string name="title_action_when_long_press_on_recents">Долгое нажатие на недавние приложения (программная)</string>

@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Test Action -->
-    <string-array name="nfw_actions">
-        <item>@string/action_default</item>
-        <item>@string/action_toggle</item>
-        <item>@string/action_pin</item>
-        <item>@string/action_pin_or_reset</item>
-        <item>@string/action_small_screen_left</item>
-        <item>@string/action_small_screen_right</item>
-        <item>@string/action_reset</item>
-        <item>@string/action_soft_reset</item>
-    </string-array>
     <string name="intent_action_default" translatable="false"></string>
+    <string name="intent_action_none" translatable="false"></string>
     <string name="intent_action_toggle" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.TOGGLE</string>
     <string name="intent_action_pin" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN</string>
     <string name="intent_action_pin_or_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</string>
@@ -19,15 +9,31 @@
     <string name="intent_action_small_screen_right" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SMALL_SCREEN_RIGHT</string>
     <string name="intent_action_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.RESET</string>
     <string name="intent_action_soft_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SOFT_RESET</string>
+    <!-- Outside Action -->
+    <string-array name="outside_actions">
+        <item>@string/action_none</item>
+        <item>@string/action_pin</item>
+        <item>@string/action_soft_reset</item>
+    </string-array>
+    <string-array name="outside_action_values" translatable="false">
+        <item>@string/intent_action_none</item>
+        <item>@string/intent_action_pin</item>
+        <item>@string/intent_action_soft_reset</item>
+    </string-array>
+    <!-- Test Action -->
+    <string-array name="nfw_actions">
+        <item>@string/action_default</item>
+        <item>@string/action_toggle</item>
+        <item>@string/action_pin_or_reset</item>
+        <item>@string/action_small_screen_left</item>
+        <item>@string/action_small_screen_right</item>
+    </string-array>
     <string-array name="nfw_action_values" translatable="false">
         <item>@string/intent_action_default</item>
         <item>@string/intent_action_toggle</item>
-        <item>@string/intent_action_pin</item>
         <item>@string/intent_action_pin_or_reset</item>
         <item>@string/intent_action_small_screen_left</item>
         <item>@string/intent_action_small_screen_right</item>
-        <item>@string/intent_action_reset</item>
-        <item>@string/intent_action_soft_reset</item>
     </string-array>
     <!-- Boundary Color -->
     <string-array name="boundary_colors">

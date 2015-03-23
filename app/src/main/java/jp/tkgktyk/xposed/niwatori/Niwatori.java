@@ -18,13 +18,11 @@ public class Niwatori implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
         ModPhoneStatusBar.initZygote(mPrefs);
         ModActivity.initZygote(mPrefs);
-        ModInputMethod.initZygote();
+        ModInputMethod.initZygote(mPrefs);
     }
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         ModPhoneStatusBar.handleLoadPackage(loadPackageParam);
-//        ModFlyingLayout.handleLoadPackage(loadPackageParam,);
-//        ModNavigationKey.handleLoadPackage(loadPackageParam);
     }
 }

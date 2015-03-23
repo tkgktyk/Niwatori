@@ -7,39 +7,43 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 
 /**
  * Created by tkgktyk on 2015/02/12.
  */
 public class ModInputMethod extends XposedModule {
-    public static void initZygote() {
+    public static void initZygote(XSharedPreferences prefs) {
         try {
-            final XC_MethodHook onSoftInputShown = new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        logD(param.method.getName());
-                        final Context context = ((View) XposedHelpers.getObjectField(
-                                param.thisObject, "mCurRootView")).getContext();
-                        NFW.performAction(context, NFW.ACTION_RESET);
-                    } catch (Throwable t) {
-                        logE(t);
+            NFW.Settings settings = newSettings(prefs);
+            if (settings.testFeature && settings.resetAutomatically) {
+                final XC_MethodHook onSoftInputShown = new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            logD(param.method.getName());
+                            final Context context = ((View) XposedHelpers.getObjectField(
+                                    param.thisObject, "mCurRootView")).getContext();
+                            NFW.performAction(context, NFW.ACTION_RESET);
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
                     }
-                }
-            };
-            // for general EditText
-            XposedHelpers.findAndHookMethod(InputMethodManager.class,
-                    "showSoftInput", View.class, int.class, ResultReceiver.class,
-                    onSoftInputShown);
-            // for SearchView (on ActionBar)
-            XposedHelpers.findAndHookMethod(InputMethodManager.class,
-                    "showSoftInputUnchecked", int.class, ResultReceiver.class,
-                    onSoftInputShown);
-            // for another case??? just to be sure
-            XposedHelpers.findAndHookMethod(InputMethodManager.class,
-                    "showSoftInputFromInputMethod", IBinder.class, int.class,
-                    onSoftInputShown);
+                };
+                // for general EditText
+                XposedHelpers.findAndHookMethod(InputMethodManager.class,
+                        "showSoftInput", View.class, int.class, ResultReceiver.class,
+                        onSoftInputShown);
+                // for SearchView (on ActionBar)
+                XposedHelpers.findAndHookMethod(InputMethodManager.class,
+                        "showSoftInputUnchecked", int.class, ResultReceiver.class,
+                        onSoftInputShown);
+                // for another case??? just to be sure
+                XposedHelpers.findAndHookMethod(InputMethodManager.class,
+                        "showSoftInputFromInputMethod", IBinder.class, int.class,
+                        onSoftInputShown);
+            }
         } catch (Throwable t) {
             logE(t);
         }
