@@ -14,8 +14,8 @@ import jp.tkgktyk.xposed.niwatori.R;
  */
 public class AppSelectActivity extends Activity {
 
-    public static String EXTRA_PREF_KEY_STRING = NFW.PACKAGE_NAME + ".intent.extra.PREF_KEY_STRING";
-    public static String EXTRA_TITLE_ID = NFW.PACKAGE_NAME + ".intent.extra.TITLE_ID";
+    public static String EXTRA_PREF_KEY_STRING = NFW.PREFIX_EXTRA + "PREF_KEY_STRING";
+    public static String EXTRA_TITLE_ID = NFW.PREFIX_EXTRA + "TITLE_ID";
 
     private class ViewHolder {
         CheckBox onlySelected;
