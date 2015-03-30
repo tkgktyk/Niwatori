@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.common.base.Strings;
 
@@ -23,21 +24,29 @@ import jp.tkgktyk.flyinglayout.FlyingLayout;
  * Niwatori - Fly the Window
  */
 public class NFW {
+    private static final String TAG = NFW.class.getSimpleName();
+
     public static final String PACKAGE_NAME = NFW.class.getPackage().getName();
     public static final String NAME = NFW.class.getSimpleName();
+    public static final String PREFIX_ACTION = PACKAGE_NAME + ".intent.action.";
+    public static final String PREFIX_EXTRA = PACKAGE_NAME + ".intent.extra.";
 
     public static final String ACTION_NONE = "";
-    public static final String ACTION_DEFAULT = "";
-    public static final String ACTION_TOGGLE = PACKAGE_NAME + ".intent.action.TOGGLE";
-    public static final String ACTION_PIN = PACKAGE_NAME + ".intent.action.PIN";
-    public static final String ACTION_PIN_OR_RESET = PACKAGE_NAME + ".intent.action.PIN_OR_RESET";
-    public static final String ACTION_SMALL_SCREEN_LEFT = PACKAGE_NAME + ".intent.action.SMALL_SCREEN_LEFT";
-    public static final String ACTION_SMALL_SCREEN_RIGHT = PACKAGE_NAME + ".intent.action.SMALL_SCREEN_RIGHT";
-    public static final String ACTION_RESET = PACKAGE_NAME + ".intent.action.RESET";
-    public static final String ACTION_SOFT_RESET = PACKAGE_NAME + ".intent.action.SOFT_RESET";
+    public static final String ACTION_MOVABLE_SCREEN = PREFIX_ACTION + "MOVABLE_SCREEN";
+    public static final String ACTION_PIN = PREFIX_ACTION + "PIN";
+    public static final String ACTION_PIN_OR_RESET = PREFIX_ACTION + "PIN_OR_RESET";
+    public static final String ACTION_SMALL_SCREEN = PREFIX_ACTION + "SMALL_SCREEN";
+    public static final String ACTION_RESET = PREFIX_ACTION + "RESET";
+    public static final String ACTION_SOFT_RESET = PREFIX_ACTION + "SOFT_RESET";
 
-    public static final String ACTION_SETTINGS_CHANGED = PACKAGE_NAME + ".intent.action.SETTINGS_CHANGED";
-    public static final String EXTRA_SETTINGS = PACKAGE_NAME + ".intent.extra.SETTINGS";
+    public static final String PREFIX_ACTION_SB = PREFIX_ACTION + "SB_";
+    public static final String ACTION_SB_EXPAND_NOTIFICATIONS = PREFIX_ACTION_SB + "EXPAND_NOTIFICATIONS";
+    public static final String ACTION_SB_EXPAND_QUICK_SETTINGS = PREFIX_ACTION_SB + "EXPAND_QUICK_SETTINGS";
+
+    public static final String ACTION_CS_SWAP_LEFT_RIGHT = PREFIX_ACTION + "CS_SWAP_LEFT_RIGHT";
+
+    public static final String ACTION_SETTINGS_CHANGED = PREFIX_ACTION + "SETTINGS_CHANGED";
+    public static final String EXTRA_SETTINGS = PREFIX_EXTRA + "SETTINGS";
 
     /**
      * Static IntentFilters
@@ -65,16 +74,18 @@ public class NFW {
      */
     static {
         STATUS_BAR_FILTER = new IntentFilter();
-        STATUS_BAR_FILTER.addAction(NFW.ACTION_TOGGLE);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_MOVABLE_SCREEN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
-        STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN_LEFT);
-        STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN_RIGHT);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SOFT_RESET);
         FOCUSED_DIALOG_FILTER = new IntentFilter(STATUS_BAR_FILTER);
         FOCUSED_ACTIVITY_FILTER = new IntentFilter(STATUS_BAR_FILTER);
         ACTIVITY_FILTER = new IntentFilter(STATUS_BAR_FILTER);
+        // Exclusive
+        STATUS_BAR_FILTER.addAction((NFW.ACTION_SB_EXPAND_NOTIFICATIONS));
+        STATUS_BAR_FILTER.addAction((NFW.ACTION_SB_EXPAND_QUICK_SETTINGS));
         // Priority
         STATUS_BAR_FILTER.setPriority(NFW.PRIORITY_STATUS_BAR);
         FOCUSED_DIALOG_FILTER.setPriority(NFW.PRIORITY_FOCUSED_DIALOG);
@@ -86,6 +97,14 @@ public class NFW {
     @SuppressLint("WorldReadableFiles")
     public static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_WORLD_READABLE);
+    }
+
+    public static void sendSettingsChanged(Context context, SharedPreferences prefs) {
+        Log.d(TAG, "send settings changed");
+        NFW.Settings settings = new NFW.Settings(prefs);
+        Intent intent = new Intent(NFW.ACTION_SETTINGS_CHANGED);
+        intent.putExtra(NFW.EXTRA_SETTINGS, settings);
+        context.sendBroadcast(intent);
     }
 
     public static void performAction(@NonNull Context context, @Nullable String action) {
@@ -123,23 +142,20 @@ public class NFW {
     public static class Settings implements Serializable {
         public Set<String> blackSet;
         public boolean animation;
-        public boolean resetAutomatically;
+        public boolean autoReset;
+        public String extraAction;
         public String actionWhenTapOutside;
-        public String actionWhenLongPressOutside;
         public String actionWhenDoubleTapOutside;
 
         public float speed;
-        public boolean drawBoundary;
-        public int boundaryColor;
+        public int boundaryColorMS;
         public int initialXp;
         public int initialYp;
 
+        public int boundaryColorSS;
         public float smallScreenSize;
-
-        public boolean testFeature;
-        public String actionWhenTapOnRecents;
-        public String actionWhenLongPressOnRecents;
-        public String actionWhenDoubleTapOnRecents;
+        public float smallScreenPivotX;
+        public float smallScreenPivotY;
 
         public Settings(SharedPreferences prefs) {
             load(prefs);
@@ -148,29 +164,20 @@ public class NFW {
         public void load(SharedPreferences prefs) {
             blackSet = prefs.getStringSet("key_black_list", Collections.<String>emptySet());
             animation = prefs.getBoolean("key_animation", true);
-            resetAutomatically = prefs.getBoolean("key_reset_automatically", true);
+            autoReset = prefs.getBoolean("key_auto_reset", false);
+            extraAction = prefs.getString("key_extra_action", ACTION_MOVABLE_SCREEN);
             actionWhenTapOutside = prefs.getString("key_action_when_tap_outside", ACTION_SOFT_RESET);
-            actionWhenLongPressOutside = prefs.getString("key_action_when_long_press_outside", ACTION_NONE);
             actionWhenDoubleTapOutside = prefs.getString("key_action_when_double_tap_outside", ACTION_PIN);
 
             speed = Float.parseFloat(prefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
-            drawBoundary = prefs.getBoolean("key_draw_boundary", true);
-            boundaryColor = Color.parseColor(prefs.getString("key_boundary_color", "#689F38")); // default is Green
+            boundaryColorMS = Color.parseColor(prefs.getString("key_boundary_color_ms", "#689F38")); // default is Light Green
             initialXp = prefs.getInt("key_initial_x_percent", InitialPosition.DEFAULT_X_PERCENT);
             initialYp = prefs.getInt("key_initial_y_percent", InitialPosition.DEFAULT_Y_PERCENT);
 
-            smallScreenSize = Float.parseFloat(prefs.getString("key_small_screen_size", "70")) / 100f;
-
-            testFeature = prefs.getBoolean("key_test_feature", false);
-            if (testFeature) {
-                actionWhenTapOnRecents = prefs.getString("key_action_when_tap_on_recents", ACTION_DEFAULT);
-                actionWhenLongPressOnRecents = prefs.getString("key_action_when_long_press_on_recents", ACTION_DEFAULT);
-                actionWhenDoubleTapOnRecents = prefs.getString("key_action_when_double_tap_on_recents", ACTION_DEFAULT);
-            } else {
-                actionWhenTapOnRecents = ACTION_DEFAULT;
-                actionWhenLongPressOnRecents = ACTION_DEFAULT;
-                actionWhenDoubleTapOnRecents = ACTION_DEFAULT;
-            }
+            boundaryColorSS = Color.parseColor(prefs.getString("key_boundary_color_ss", "#00000000")); // default is Transparent
+            smallScreenSize = prefs.getInt("key_small_screen_size", 70) / 100f;
+            smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0) / 100f;
+            smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 100) / 100f;
         }
     }
 }

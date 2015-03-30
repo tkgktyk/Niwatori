@@ -32,8 +32,6 @@ import java.util.ArrayList;
  * Created by tkgktyk on 2014/01/01.
  */
 public class FlyingLayout extends FrameLayout {
-    public static final int LAYOUT_ADJUSTMENT_LEFT = Gravity.LEFT;
-    public static final int LAYOUT_ADJUSTMENT_RIGHT = Gravity.RIGHT;
 
     public static final float DEFAULT_SPEED = 1.5f;
     public static final int DEFAULT_HORIZONTAL_PADDING = 0;
@@ -41,7 +39,8 @@ public class FlyingLayout extends FrameLayout {
     public static final boolean DEFAULT_TOUCH_EVENT_ENABLED = true;
     public static final boolean DEFAULT_USE_CONTAINER = false;
     public static final float DEFAULT_SCALE = 1.0f;
-    public static final int DEFAULT_LAYOUT_ADJUSTMENT = LAYOUT_ADJUSTMENT_LEFT;
+    public static final float DEFAULT_PIVOT_X = 0.0f;
+    public static final float DEFAULT_PIVOT_Y = 1.0f;
     private static final String TAG = FlyingLayout.class.getSimpleName();
     private Helper mHelper;
 
@@ -196,6 +195,7 @@ public class FlyingLayout extends FrameLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Point offset = (Point) animation.getAnimatedValue();
                 setOffset(offset.x, offset.y);
+                mView.requestLayout();
             }
         };
         private final ValueAnimator.AnimatorUpdateListener mChangePivotAnimatorUpdateListener
@@ -203,7 +203,8 @@ public class FlyingLayout extends FrameLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 PointF pivot = (PointF) animation.getAnimatedValue();
-                changePivot(pivot.x, pivot.y);
+                setChildrenPivot(pivot.x, pivot.y);
+                mView.requestLayout();
             }
         };
         private final ValueAnimator.AnimatorUpdateListener mScaleAnimatorUpdateListener
@@ -212,9 +213,10 @@ public class FlyingLayout extends FrameLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float scale = (Float) animation.getAnimatedValue();
                 setScale(scale);
+                mView.requestLayout();
             }
         };
-        private boolean mUpdatePivotOnLayout = true;
+        private boolean mUpdatePivotOnTime = true;
 
         /**
          * ID of the active pointer. This is used to retain consistency during
@@ -240,7 +242,8 @@ public class FlyingLayout extends FrameLayout {
         private int mOffsetX;
         private int mOffsetY;
         private float mScale;
-        private int mLayoutAdjustment;
+        private float mPivotX;
+        private float mPivotY;
         private OnFlyingEventListener mOnFlyingEventListener = new SimpleOnFlyingEventListener();
         private FrameLayout mView;
 
@@ -278,13 +281,13 @@ public class FlyingLayout extends FrameLayout {
                 @Override
                 public void onChildViewAdded(View parent, View child) {
                     // recalculate
-                    mUpdatePivotOnLayout = true;
+                    mUpdatePivotOnTime = true;
                 }
 
                 @Override
                 public void onChildViewRemoved(View parent, View child) {
                     // recalculate
-                    mUpdatePivotOnLayout = true;
+                    mUpdatePivotOnTime = true;
                 }
             });
 
@@ -295,7 +298,7 @@ public class FlyingLayout extends FrameLayout {
             setUseContainer(DEFAULT_USE_CONTAINER);
             setOffset(0, 0);
             setScale(DEFAULT_SCALE);
-            setLayoutAdjustment(DEFAULT_LAYOUT_ADJUSTMENT);
+            setPivot(DEFAULT_PIVOT_X, DEFAULT_PIVOT_Y);
 
             mGetPaddingLeftWithForeground = getHiddenMethod(view, frameLayoutHierarchy,
                     "getPaddingLeftWithForeground");
@@ -453,7 +456,6 @@ public class FlyingLayout extends FrameLayout {
 
         public void setOffsetX(int offset) {
             mOffsetX = offset;
-            mView.requestLayout();
         }
 
         public int getOffsetY() {
@@ -462,13 +464,11 @@ public class FlyingLayout extends FrameLayout {
 
         public void setOffsetY(int offset) {
             mOffsetY = offset;
-            mView.requestLayout();
         }
 
         public void setOffset(int x, int y) {
             mOffsetX = x;
             mOffsetY = y;
-            mView.requestLayout();
         }
 
         public float getScale() {
@@ -476,9 +476,10 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public void setScale(float scale) {
-            if (mUpdatePivotOnLayout) {
-                updatePivotOnLayout();
-                mUpdatePivotOnLayout = false;
+            // Also called from resize
+            if (mUpdatePivotOnTime) {
+                performLayoutAdjustment();
+                mUpdatePivotOnTime = false;
             }
             mScale = scale;
             final int count = getUseContainer() ? 1 : mView.getChildCount();
@@ -487,34 +488,50 @@ public class FlyingLayout extends FrameLayout {
                 child.setScaleX(scale);
                 child.setScaleY(scale);
             }
-            mView.requestLayout();
         }
 
-        public int getLayoutAdjustment() {
-            return mLayoutAdjustment;
+        public float getPivotX() {
+            return mPivotX;
         }
 
-        public void setLayoutAdjustment(int layoutAdjustment) {
-            setLayoutAdjustment(layoutAdjustment, false);
+        public float getPivotY() {
+            return mPivotY;
         }
 
-        public void setLayoutAdjustment(int layoutAdjustment, boolean animation) {
-            mLayoutAdjustment = layoutAdjustment;
+        public void setPivot(float x, float y) {
+            mPivotX = x;
+            mPivotY = y;
+            mUpdatePivotOnTime = true;
+        }
+
+        public void setPivotX(float x) {
+            setPivot(x, mPivotY);
+        }
+
+        public void setPivotY(float y) {
+            setPivot(mPivotX, y);
+        }
+
+        private void setChildrenPivot(float x, float y) {
+            final int count = getUseContainer() ? 1 : mView.getChildCount();
+            for (int i = 0; i < count; ++i) {
+                final View child = mView.getChildAt(i);
+                child.setPivotX(x);
+                child.setPivotY(y);
+            }
+        }
+
+        public void performLayoutAdjustment() {
+            performLayoutAdjustment(false);
+        }
+
+        public void performLayoutAdjustment(boolean animation) {
             if (mView.getChildCount() == 0) {
                 return;
             }
             final View view = getUseContainer() ? mView.getChildAt(0) : mView;
-            float pivotX;
-            switch (layoutAdjustment) {
-                case LAYOUT_ADJUSTMENT_RIGHT:
-                    pivotX = view.getWidth();
-                    break;
-                case LAYOUT_ADJUSTMENT_LEFT:
-                default:
-                    pivotX = 0.0f;
-                    break;
-            }
-            final float pivotY = view.getHeight();
+            final float pivotX = view.getWidth() * mPivotX;
+            final float pivotY = view.getHeight() * mPivotY;
             if (animation) {
                 final View child = mView.getChildAt(0);
                 final PointF start = new PointF(child.getPivotX(), child.getPivotY());
@@ -523,22 +540,8 @@ public class FlyingLayout extends FrameLayout {
                 animator.addUpdateListener(mChangePivotAnimatorUpdateListener);
                 animator.start();
             } else {
-                changePivot(pivotX, pivotY);
+                setChildrenPivot(pivotX, pivotY);
             }
-        }
-
-        private void changePivot(float x, float y) {
-            final int count = getUseContainer() ? 1 : mView.getChildCount();
-            for (int i = 0; i < count; ++i) {
-                final View child = mView.getChildAt(i);
-                child.setPivotX(x);
-                child.setPivotY(y);
-            }
-            mView.requestLayout();
-        }
-
-        private void updatePivotOnLayout() {
-            setLayoutAdjustment(mLayoutAdjustment);
         }
 
         public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -743,6 +746,7 @@ public class FlyingLayout extends FrameLayout {
             final int parentTop = getPaddingTopWithForeground();
             final int parentBottom = bottom - top - getPaddingBottomWithForeground();
 
+            final int oldHeight = mBoundaryRect.height();
             mBoundaryRect.setEmpty();
             for (int i = 0; i < count; i++) {
                 final View child = mView.getChildAt(i);
@@ -808,24 +812,16 @@ public class FlyingLayout extends FrameLayout {
             if (!isResized()) {
                 mBoundaryRect.offset(mOffsetX, mOffsetY);
             } else {
-                float dx, dy;
-                dy = mBoundaryRect.height() * (1 - mScale);
-                switch (mLayoutAdjustment) {
-                    case LAYOUT_ADJUSTMENT_RIGHT:
-                        dx = mBoundaryRect.width() * (1 - mScale);
-                        break;
-                    case LAYOUT_ADJUSTMENT_LEFT:
-                    default:
-                        dx = 0f;
-                        break;
-                }
-                dx += mOffsetX;
-                dy += mOffsetY;
+                final float dx = mBoundaryRect.width() * mPivotX * (1 - mScale) + mOffsetX;
+                final float dy = mBoundaryRect.height() * mPivotY * (1 - mScale) + mOffsetY;
                 mBoundaryRect.set(
                         Math.round(mBoundaryRect.left * mScale + dx),
                         Math.round(mBoundaryRect.top * mScale + dy),
                         Math.round(mBoundaryRect.right * mScale + dx),
                         Math.round(mBoundaryRect.bottom * mScale + dy));
+            }
+            if (oldHeight != mBoundaryRect.height()) {
+                performLayoutAdjustment();
             }
         }
 
@@ -851,6 +847,7 @@ public class FlyingLayout extends FrameLayout {
             final int newY = clamp(mOffsetY + deltaY, vLimit);
             if (!animation) {
                 setOffset(newX, newY);
+                mView.requestLayout();
             } else {
                 final Point start = new Point(mOffsetX, mOffsetY);
                 final Point end = new Point(newX, newY);
@@ -887,6 +884,7 @@ public class FlyingLayout extends FrameLayout {
                 scaleDown.start();
             } else {
                 setScale(scale);
+                mView.requestLayout();
             }
         }
 

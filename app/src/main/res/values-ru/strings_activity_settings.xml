@@ -19,20 +19,17 @@
 
     <!-- General -->
     <string name="general">Основное</string>
-    <!-- Blask list -->
-    <string name="title_black_list">@string/black_list_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">Анимация</string>
     <string name="summary_animation_on">Плавное движение</string>
     <string name="summary_animation_off">Немедленный переход</string>
     <!-- Reset automatically -->
-    <string name="title_reset_automatically">Сброс автоматически</string>
-    <string name="summary_reset_automatically">Reset when moved to background.</string>
-    <string name="summary_reset_automatically_on">Отключить, если вы используете ярлыки</string>
-    <string name="summary_reset_automatically_off">Удерживать состояние окна, если это возможно</string>
+    <string name="title_auto_reset">Сброс автоматически</string>
+    <string name="summary_auto_reset">Turn off if keyboard causes issue. (requires reboot)</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">Extra Action</string>
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Tap Outside</string>
-    <string name="title_action_when_long_press_outside">Long Press Outside</string>
     <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
 
     <!-- Movable Screen -->
@@ -40,11 +37,9 @@
     <!-- Speed -->
     <string name="title_speed">Скорость</string>
     <string name="note_speed">Рекомендуемое значение:\n - около 2-ух для смартфона</string>
-    <!-- Draw Boundary -->
-    <string name="title_draw_boundary">Граница окна</string>
-    <string name="summary_draw_boundary">При режиме управления одной рукой</string>
     <!-- Boundary Color -->
     <string name="title_boundary_color">Цвет границы</string>
+    <string name="none">None</string>
     <string name="red">Красный</string>
     <string name="pink">Розовый</string>
     <string name="purple">Фиолетовый</string>
@@ -68,12 +63,23 @@
     <string name="title_initial_position">Исходное положение</string>
     <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>
     <string name="usage_of_initial_position">Перетащите, чтобы изменить положение.\nНажмите клавишу возврата, чтобы сохранить.</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
 
     <!-- Small Screen -->
     <string name="small_screen">Небольшой экран</string>
     <!-- Small Screen Size -->
-    <string name="title_small_screen_size">Размер</string>
-    <string name="note_small_screen_size">Значение(%).</string>
+    <string name="title_small_screen">Размер*</string>
+    <string name="summary_small_screen">Change size and pivot</string>
+    <string name="pivot_x_d1">Pivot X = %1$d%%</string>
+    <string name="pivot_y_d1">Pivot Y = %1$d%%</string>
+    <string name="size_d1">Size = %1$d%%</string>
+    <string name="pivot_x">Pivot X</string>
+    <string name="pivot_y">Pivot Y</string>
+    <string name="size">Size</string>
 
     <!-- Others -->
     <string name="title_others">Другое</string>
@@ -87,14 +93,6 @@
     <!-- Links -->
     <string name="title_google_play">Получить Google Play версию</string>
     <string name="summary_google_play">Нажмите, чтобы перейти в Google Play</string>
-
-    <!-- Test -->
-    <string name="title_test">Тестирование</string>
-    <string name="summary_test">Простой интерфейс (в данном приложении) для быстрого просмотра изменений\n(Требуется перезагрузка)</string>
-    <!-- Actions -->
-    <string name="title_action_when_tap_on_recents">Нажатие на недавние приложения (программная)</string>
-    <string name="title_action_when_long_press_on_recents">Долгое нажатие на недавние приложения (программная)</string>
-    <string name="title_action_when_double_tap_on_recents">Двойное нажатие на недавние приложения (программная)</string>
 
     <!-- About -->
     <string name="title_about">О приложении</string>

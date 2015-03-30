@@ -11,7 +11,7 @@ import jp.tkgktyk.xposed.niwatori.R;
  * Created by tkgktyk on 2015/02/25.
  */
 public class AboutActivity extends Activity {
-    public static final String EXTRA_DONATED = NFW.PACKAGE_NAME + ".intent.extra.DONATED";
+    public static final String EXTRA_DONATED = NFW.PREFIX_EXTRA + "DONATED";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

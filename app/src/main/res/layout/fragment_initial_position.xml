@@ -23,6 +23,32 @@
             android:gravity="center"
             android:text="@string/usage_of_initial_position"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
+
     </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/initXText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/init_x_d1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/initYText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/init_y_d1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black"/>
+
+    </LinearLayout>
 
 </jp.tkgktyk.xposed.niwatori.app.GridLinedFlyingLayout>

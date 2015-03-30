@@ -183,11 +183,7 @@ public class SettingsActivity extends Activity {
                 = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                NFW.Settings settings = new NFW.Settings(sharedPreferences);
-                Intent intent = new Intent(NFW.ACTION_SETTINGS_CHANGED);
-                intent.putExtra(NFW.EXTRA_SETTINGS, settings);
-                getActivity().sendBroadcast(intent);
-                Log.d(TAG, "sent setting changed");
+                NFW.sendSettingsChanged(getActivity(), sharedPreferences);
             }
         };
 
@@ -264,37 +260,34 @@ public class SettingsActivity extends Activity {
                     et.getText());
         }
 
-        protected void openSelectorOnClick(@StringRes int id, @StringRes final int title) {
+        protected void openActivity(@StringRes int id, final Class<?> cls) {
+            openActivity(id, cls, null);
+        }
+
+        protected void openActivity(@StringRes int id, final Class<?> cls, final ExtendsPutter putter) {
             Preference pref = findPreference(id);
             pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent activity = new Intent(preference.getContext(), AppSelectActivity.class);
-                    activity.putExtra(AppSelectActivity.EXTRA_PREF_KEY_STRING, preference.getKey());
-                    activity.putExtra(AppSelectActivity.EXTRA_TITLE_ID, title);
+                    Intent activity = new Intent(preference.getContext(), cls);
+                    if (putter != null) {
+                        putter.putExtends(activity);
+                    }
                     startActivity(activity);
                     return true;
                 }
             });
         }
 
-        protected void openActivity(@StringRes int id, final Class<?> cls) {
-            Preference pref = findPreference(id);
-            pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent activity = new Intent(preference.getContext(), cls);
-                    startActivity(activity);
-                    return true;
-                }
-            });
+        protected interface ExtendsPutter {
+            public void putExtends(Intent activityIntent);
         }
     }
 
     public static class SettingsFragment extends BaseFragment {
         private static final int mPremiumSettings[] = {
                 R.string.key_initial_position,
-                R.string.key_small_screen_size
+                R.string.key_small_screen,
         };
         private static final int mPurchasePremiumSettings = R.string.key_purchase_premium_settings;
         private static String ARG_HAS_PREMIUM_SETTINGS = NFW.PACKAGE_NAME + ".HAS_PREMIUM_SETTINGS";
@@ -361,13 +354,12 @@ public class SettingsActivity extends Activity {
                     });
 
             // Settings
-            openSelectorOnClick(R.string.key_black_list, R.string.black_list_activity_name);
+            showListSummary(R.string.key_extra_action);
             showListSummary(R.string.key_action_when_tap_outside);
-            showListSummary(R.string.key_action_when_long_press_outside);
             showListSummary(R.string.key_action_when_double_tap_outside);
             // movable screen
             showTextSummary(R.string.key_speed);
-            showListSummary(R.string.key_boundary_color, new Preference.OnPreferenceChangeListener() {
+            showListSummary(R.string.key_boundary_color_ms, new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     final int width = Math.round(getResources().getDimension(R.dimen.boundary_width));
@@ -379,13 +371,43 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
-            openActivity(R.string.key_initial_position, InitialPositionActivity.class);
+            Preference initialPosition = findPreference(R.string.key_initial_position);
+            initialPosition.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent activity = new Intent(preference.getContext(),
+                            mHasPremiumSettings?
+                                    InitialPositionActivity.class:
+                                    InitialPositionSimpleActivity.class);
+                    startActivity(activity);
+                    return true;
+                }
+            });
             // small screen
-            showTextSummary(R.string.key_small_screen_size, "%");
-            // Test
-            showListSummary(R.string.key_action_when_tap_on_recents);
-            showListSummary(R.string.key_action_when_long_press_on_recents);
-            showListSummary(R.string.key_action_when_double_tap_on_recents);
+            showListSummary(R.string.key_boundary_color_ss, new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final int width = Math.round(getResources().getDimension(R.dimen.boundary_width));
+                    final int color = Color.parseColor((String) newValue);
+                    final GradientDrawable drawable = NFW.makeBoundaryDrawable(width, color);
+                    final int size = Math.round(getResources().getDimension(android.R.dimen.app_icon_size));
+                    drawable.setSize(size, size);
+                    preference.setIcon(drawable);
+                    return true;
+                }
+            });
+            Preference smallScreen = findPreference(R.string.key_small_screen);
+            smallScreen.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent activity = new Intent(preference.getContext(),
+                            mHasPremiumSettings?
+                                    SmallScreenActivity.class:
+                                    SmallScreenSimpleActivity.class);
+                    startActivity(activity);
+                    return true;
+                }
+            });
             // About
             Preference about = findPreference(R.string.key_about);
             about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -403,9 +425,9 @@ public class SettingsActivity extends Activity {
         private void setHasPremiumSettings(boolean purchased) {
             mHasPremiumSettings = purchased || PURCHASED;
             findPreference(mPurchasePremiumSettings).setEnabled(!mHasPremiumSettings);
-            for (int i : mPremiumSettings) {
-                findPreference(i).setEnabled(mHasPremiumSettings);
-            }
+//            for (int i : mPremiumSettings) {
+//                findPreference(i).setEnabled(mHasPremiumSettings);
+//            }
         }
 
         private void disablePremiumSettings() {

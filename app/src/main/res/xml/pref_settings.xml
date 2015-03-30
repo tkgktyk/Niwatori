@@ -19,10 +19,6 @@
         <!-- General -->
         <PreferenceCategory
             android:title="@string/general">
-            <!-- Black List -->
-            <Preference
-                android:key="@string/key_black_list"
-                android:title="@string/title_black_list"/>
             <!-- Animation -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="true"
@@ -32,29 +28,30 @@
                 android:title="@string/title_animation"/>
             <!-- Reset Automatically -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
-                android:defaultValue="true"
-                android:key="@string/key_reset_automatically"
-                android:summary="@string/summary_reset_automatically"
-                android:title="@string/title_reset_automatically"/>
+                android:defaultValue="false"
+                android:key="@string/key_auto_reset"
+                android:summary="@string/summary_auto_reset"
+                android:title="@string/title_auto_reset"/>
+            <!-- Extra Action -->
+            <ListPreference
+                android:defaultValue="@string/intent_action_movable_screen"
+                android:entries="@array/extra_actions"
+                android:entryValues="@array/extra_action_values"
+                android:key="@string/key_extra_action"
+                android:title="@string/title_extra_action"/>
             <!-- Actions at Outside -->
             <ListPreference
                 android:defaultValue="@string/intent_action_soft_reset"
                 android:entries="@array/outside_actions"
                 android:entryValues="@array/outside_action_values"
                 android:key="@string/key_action_when_tap_outside"
-                android:title="@string/title_action_when_tap_outside" />
-            <ListPreference
-                android:defaultValue="@string/intent_action_none"
-                android:entries="@array/outside_actions"
-                android:entryValues="@array/outside_action_values"
-                android:key="@string/key_action_when_long_press_outside"
-                android:title="@string/title_action_when_long_press_outside" />
+                android:title="@string/title_action_when_tap_outside"/>
             <ListPreference
                 android:defaultValue="@string/intent_action_pin"
                 android:entries="@array/outside_actions"
                 android:entryValues="@array/outside_action_values"
                 android:key="@string/key_action_when_double_tap_outside"
-                android:title="@string/title_action_when_double_tap_outside" />
+                android:title="@string/title_action_when_double_tap_outside"/>
         </PreferenceCategory>
 
         <!-- Movable Screen -->
@@ -68,19 +65,12 @@
                 android:key="@string/key_speed"
                 android:selectAllOnFocus="true"
                 android:title="@string/title_speed"/>
-            <!-- Draw Boundary -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
-                android:defaultValue="true"
-                android:key="@string/key_draw_boundary"
-                android:summary="@string/summary_draw_boundary"
-                android:title="@string/title_draw_boundary"/>
             <!-- Boundary Color -->
             <ListPreference
-                android:defaultValue="@string/default_boundary_color"
-                android:dependency="@string/key_draw_boundary"
+                android:defaultValue="@string/default_boundary_color_ms"
                 android:entries="@array/boundary_colors"
                 android:entryValues="@array/boundary_color_values"
-                android:key="@string/key_boundary_color"
+                android:key="@string/key_boundary_color_ms"
                 android:title="@string/title_boundary_color"/>
             <!-- Initial Position -->
             <Preference
@@ -92,15 +82,18 @@
         <!-- Small Screen -->
         <PreferenceCategory
             android:title="@string/small_screen">
+            <!-- Boundary Color -->
+            <ListPreference
+                android:defaultValue="@string/default_boundary_color_ss"
+                android:entries="@array/boundary_colors"
+                android:entryValues="@array/boundary_color_values"
+                android:key="@string/key_boundary_color_ss"
+                android:title="@string/title_boundary_color"/>
             <!-- Size -->
-            <EditTextPreference
-                android:defaultValue="@string/default_small_screen_size"
-                android:dialogMessage="@string/note_small_screen_size"
-                android:inputType="number"
-                android:key="@string/key_small_screen_size"
-                android:maxLength="2"
-                android:selectAllOnFocus="true"
-                android:title="@string/title_small_screen_size"/>
+            <Preference
+                android:key="@string/key_small_screen"
+                android:summary="@string/summary_small_screen"
+                android:title="@string/title_small_screen"/>
         </PreferenceCategory>
 
         <!-- Others -->
@@ -122,37 +115,6 @@
                     android:data="market://details?id=jp.tkgktyk.xposed.niwatori"/>
             </Preference>
 
-        </PreferenceCategory>
-
-        <!-- Test -->
-        <PreferenceCategory
-            android:title="@string/title_test">
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
-                android:defaultValue="false"
-                android:key="@string/key_test_feature"
-                android:summary="@string/summary_test"/>
-            <!-- Actions -->
-            <ListPreference
-                android:defaultValue=""
-                android:dependency="@string/key_test_feature"
-                android:entries="@array/nfw_actions"
-                android:entryValues="@array/nfw_action_values"
-                android:key="@string/key_action_when_tap_on_recents"
-                android:title="@string/title_action_when_tap_on_recents"/>
-            <ListPreference
-                android:defaultValue=""
-                android:dependency="@string/key_test_feature"
-                android:entries="@array/nfw_actions"
-                android:entryValues="@array/nfw_action_values"
-                android:key="@string/key_action_when_long_press_on_recents"
-                android:title="@string/title_action_when_long_press_on_recents"/>
-            <ListPreference
-                android:defaultValue=""
-                android:dependency="@string/key_test_feature"
-                android:entries="@array/nfw_actions"
-                android:entryValues="@array/nfw_action_values"
-                android:key="@string/key_action_when_double_tap_on_recents"
-                android:title="@string/title_action_when_double_tap_on_recents"/>
         </PreferenceCategory>
     </PreferenceScreen>
 

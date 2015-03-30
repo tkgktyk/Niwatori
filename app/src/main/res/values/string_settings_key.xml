@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Blask list -->
-    <string name="key_black_list" translatable="false">key_black_list</string>
+    <string name="key_version_name" translatable="false">key_version_name</string>
+
     <!-- Animation -->
     <string name="key_animation" translatable="false">key_animation</string>
+    <!-- Auto Reset -->
+    <string name="key_auto_reset" translatable="false">key_auto_reset</string>
+    <!-- Extra Action -->
+    <string name="key_extra_action" translatable="false">key_extra_action</string>
     <!-- Actions -->
     <string name="key_action_when_tap_outside" translatable="false">key_action_when_tap_outside</string>
-    <string name="key_action_when_long_press_outside" translatable="false">key_action_when_long_press_outside</string>
     <string name="key_action_when_double_tap_outside" translatable="false">key_action_when_double_tap_outside</string>
 
     <!-- Speed -->
     <string name="key_speed" translatable="false">key_speed</string>
-    <!-- Draw Boundary -->
-    <string name="key_draw_boundary" translatable="false">key_draw_boundary</string>
     <!-- Boundary Color -->
-    <string name="key_boundary_color" translatable="false">key_boundary_color</string>
+    <string name="key_boundary_color_ms" translatable="false">key_boundary_color_ms</string>
     <!-- Initial position -->
     <string name="key_initial_position" translatable="false">key_initial_position</string>
     <string name="key_initial_x_percent" translatable="false">key_initial_x_percent</string>
     <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
 
-    <!-- Small Screen Size -->
+    <!-- Small Screen -->
+    <!-- Boundary Color -->
+    <string name="key_boundary_color_ss" translatable="false">key_boundary_color_ss</string>
+    <!-- Size -->
+    <string name="key_small_screen" translatable="false">key_small_screen</string>
     <string name="key_small_screen_size" translatable="false">key_small_screen_size</string>
-
-    <!-- Test -->
-    <string name="key_test_feature" translatable="false">key_test_feature</string>
-    <!-- Reset automatically -->
-    <string name="key_reset_automatically" translatable="false">key_reset_automatically</string>
-    <!-- Actions -->
-    <string name="key_action_when_tap_on_recents" translatable="false">key_action_when_tap_on_recents</string>
-    <string name="key_action_when_long_press_on_recents" translatable="false">key_action_when_long_press_on_recents</string>
-    <string name="key_action_when_double_tap_on_recents" translatable="false">key_action_when_double_tap_on_recents</string>
+    <string name="key_small_screen_pivot_x" translatable="false">key_small_screen_pivot_x</string>
+    <string name="key_small_screen_pivot_y" translatable="false">key_small_screen_pivot_y</string>
 
     <!-- Purchases -->
     <!-- Premium Settings -->

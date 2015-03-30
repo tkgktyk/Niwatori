@@ -17,7 +17,7 @@ public class ModInputMethod extends XposedModule {
     public static void initZygote(XSharedPreferences prefs) {
         try {
             NFW.Settings settings = newSettings(prefs);
-            if (settings.testFeature && settings.resetAutomatically) {
+            if (settings.autoReset) {
                 final XC_MethodHook onSoftInputShown = new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

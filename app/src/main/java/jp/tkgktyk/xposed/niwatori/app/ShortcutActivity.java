@@ -19,16 +19,25 @@ import jp.tkgktyk.xposed.niwatori.R;
 public class ShortcutActivity extends ListActivity {
 
     private static final String mActionList[] = {
-            NFW.ACTION_TOGGLE,
+            NFW.ACTION_MOVABLE_SCREEN,
             NFW.ACTION_PIN_OR_RESET,
-            NFW.ACTION_SMALL_SCREEN_LEFT,
-            NFW.ACTION_SMALL_SCREEN_RIGHT,
+            NFW.ACTION_SMALL_SCREEN,
+            NFW.ACTION_SB_EXPAND_NOTIFICATIONS,
+            NFW.ACTION_SB_EXPAND_QUICK_SETTINGS,
     };
     private static final int mShortcutNameIdList[] = {
-            R.string.action_toggle,
+            R.string.action_movable_screen,
             R.string.action_pin_or_reset,
-            R.string.action_small_screen_left,
-            R.string.action_small_screen_right,
+            R.string.action_small_screen,
+            R.string.action_sb_expand_notifications,
+            R.string.action_sb_expand_quick_settings,
+    };
+    private static final int mShortcutIconList[] = {
+            R.drawable.ic_action_movable_screen,
+            R.drawable.ic_action_slide_down,
+            R.drawable.ic_action_small_screen,
+            R.drawable.ic_action_expand_notifications,
+            R.drawable.ic_action_expand_quick_settings,
     };
     private List<String> mShortcutNameList;
 
@@ -56,7 +65,7 @@ public class ShortcutActivity extends ListActivity {
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcut);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, mShortcutNameList.get(position));
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(this, R.drawable.ic_launcher));
+                Intent.ShortcutIconResource.fromContext(this, mShortcutIconList[position]));
 
         setResult(RESULT_OK, intent);
         finish();

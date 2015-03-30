@@ -11,7 +11,7 @@
     <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
     <!-- Note -->
     <string name="title_notes">Notes</string>
-    <string name="summary_notes">If you turn off "Auto Reset", be sure to expand status bar from shortcut.</string>
+    <string name="summary_notes">If you turned off "Auto Reset", be sure to expand status bar from shortcut.</string>
 
     <!-- Settings -->
     <string name="title_settings">Settings</string>
@@ -19,18 +19,17 @@
 
     <!-- General -->
     <string name="general">General</string>
-    <!-- Blask list -->
-    <string name="title_black_list">@string/black_list_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">Animation</string>
     <string name="summary_animation_on">Smooth movement</string>
     <string name="summary_animation_off">Move immediately</string>
-    <!-- Reset automatically -->
-    <string name="title_reset_automatically">Auto Reset</string>
-    <string name="summary_reset_automatically">Reset when moved to background.</string>
+    <!-- Auto Reset -->
+    <string name="title_auto_reset">Auto Reset</string>
+    <string name="summary_auto_reset">Turn off if keyboard causes issue. (requires reboot)</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">Extra Action</string>
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Tap Outside</string>
-    <string name="title_action_when_long_press_outside">Long Press Outside</string>
     <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
 
     <!-- Movable Screen -->
@@ -38,11 +37,9 @@
     <!-- Speed -->
     <string name="title_speed">Speed</string>
     <string name="note_speed">Recommended value:\n  - around 2 for smartphones.</string>
-    <!-- Draw Boundary -->
-    <string name="title_draw_boundary">Draw Boundary</string>
-    <string name="summary_draw_boundary">During one-handed mode</string>
     <!-- Boundary Color -->
     <string name="title_boundary_color">Boundary Color</string>
+    <string name="none">None</string>
     <string name="red">Red</string>
     <string name="pink">Pink</string>
     <string name="purple">Purple</string>
@@ -65,13 +62,24 @@
     <!-- Initial position -->
     <string name="title_initial_position">Initial Position*</string>
     <string name="summary_initial_position">Slide down to here</string>
-    <string name="usage_of_initial_position">Drag to change position.\nPress back key to save.</string>
+    <string name="usage_of_initial_position">Drag to change position</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
 
     <!-- Small Screen -->
     <string name="small_screen">Small Screen</string>
     <!-- Small Screen Size -->
-    <string name="title_small_screen_size">Size*</string>
-    <string name="note_small_screen_size">Unit is percent(%).</string>
+    <string name="title_small_screen">Size*</string>
+    <string name="summary_small_screen">Change size and pivot</string>
+    <string name="pivot_x_d1">Pivot X = %1$d%%</string>
+    <string name="pivot_y_d1">Pivot Y = %1$d%%</string>
+    <string name="size_d1">Size = %1$d%%</string>
+    <string name="pivot_x">Pivot X</string>
+    <string name="pivot_y">Pivot Y</string>
+    <string name="size">Size</string>
 
     <!-- Others -->
     <string name="title_others">Others</string>
@@ -79,20 +87,12 @@
     <!-- Purchases -->
     <!-- Premium Settings -->
     <string name="title_purchase_premium_settings">Premium Settings</string>
-    <string name="summary_purchase_premium_settings">Donate to unlock all settings (marked *)</string>
+    <string name="summary_purchase_premium_settings">Donate to use graphical settings (marked *)</string>
     <string name="summary_unavailable_premium_settings">\"In-app Billing\" is not available on your phone.</string>
 
     <!-- Links -->
     <string name="title_google_play">Get Google Play version</string>
     <string name="summary_google_play">Tap to go to Google Play</string>
-
-    <!-- Test -->
-    <string name="title_test">Test</string>
-    <string name="summary_test">Simple interface to fire actions. Use other apps to more customize. (requires reboot)</string>
-    <!-- Actions -->
-    <string name="title_action_when_tap_on_recents">Tap On Recents (software)</string>
-    <string name="title_action_when_long_press_on_recents">Long Press On Recents (software)</string>
-    <string name="title_action_when_double_tap_on_recents">Double Tap On Recents (software)</string>
 
     <!-- About -->
     <string name="title_about">@string/about_activity_name</string>

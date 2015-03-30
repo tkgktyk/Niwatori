@@ -11,7 +11,7 @@
     <string name="summary_shortcuts">・Movable Screen: 表示位置を動かせるようになります。\n・Pin: 表示位置を固定します。\n・Slide Down: 表示位置を変更します。\n・Small Screen: 表示サイズを変更します。\nナビゲーションキーのアクションやリングターゲットなどに登録して使用してください。</string>
     <!-- Note -->
     <string name="title_notes">その他</string>
-    <string name="summary_notes">・アプリの外側をタップするとリセットされます。\n・外側をダブルタップするとピン止めします。\n・設定の変更が反映されるまで数秒かかります。</string>
+    <string name="summary_notes">自動リセット機能を使わない場合はステータスバー開くのにショートカットを使ってください。</string>
 
     <!-- Settings -->
     <string name="title_settings">設定</string>
@@ -19,18 +19,17 @@
 
     <!-- General -->
     <string name="general">General</string>
-    <!-- Blask list -->
-    <string name="title_black_list">@string/black_list_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">アニメーション</string>
     <string name="summary_animation_on">なめらかな移動</string>
     <string name="summary_animation_off">すぐに移動</string>
-    <!-- Reset automatically -->
-    <string name="title_reset_automatically">自動リセット</string>
-    <string name="summary_reset_automatically">バックグラウンドに移るとリセットされます</string>
+    <!-- Auto Reset -->
+    <string name="title_auto_reset">自動リセット</string>
+    <string name="summary_auto_reset">キーボード周りに問題が発生したらOFFにしてください。（要再起動）</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">Extra Action</string>
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Tap Outside</string>
-    <string name="title_action_when_long_press_outside">Long Press Outside</string>
     <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
 
     <!-- Movable Screen -->
@@ -38,11 +37,9 @@
     <!-- Speed -->
     <string name="title_speed">スピード</string>
     <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
-    <!-- Draw Boundary -->
-    <string name="title_draw_boundary">境界線の描画</string>
-    <string name="summary_draw_boundary">片手モードの時に描画</string>
     <!-- Boundary Color -->
     <string name="title_boundary_color">境界線の色</string>
+    <string name="none">None</string>
     <string name="red">Red</string>
     <string name="pink">Pink</string>
     <string name="purple">Purple</string>
@@ -65,13 +62,24 @@
     <!-- Initial position -->
     <string name="title_initial_position">初期位置*</string>
     <string name="summary_initial_position">Slide Down時にこの場所へ移動します。</string>
-    <string name="usage_of_initial_position">ドラッグで位置を変更。\n戻ると自動でセーブされます。</string>
+    <string name="usage_of_initial_position">ドラッグで位置を変更</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
 
     <!-- Small Screen -->
     <string name="small_screen">Small Screen</string>
     <!-- Small Screen Size -->
-    <string name="title_small_screen_size">サイズ*</string>
-    <string name="note_small_screen_size">単位は%です。</string>
+    <string name="title_small_screen">サイズ*</string>
+    <string name="summary_small_screen">大きさと中心軸を変更</string>
+    <string name="pivot_x_d1">Pivot X = %1$d%%</string>
+    <string name="pivot_y_d1">Pivot Y = %1$d%%</string>
+    <string name="size_d1">Size = %1$d%%</string>
+    <string name="pivot_x">Pivot X</string>
+    <string name="pivot_y">Pivot Y</string>
+    <string name="size">Size</string>
 
     <!-- Others -->
     <string name="title_others">その他</string>
@@ -79,20 +87,12 @@
     <!-- Purchases -->
     <!-- Premium Settings -->
     <string name="title_purchase_premium_settings">プレミアム設定</string>
-    <string name="summary_purchase_premium_settings">すべての設定（*印）をアンロックするには購入してください</string>
+    <string name="summary_purchase_premium_settings">グラフィカルな設定画面を使用するには購入してください（*印）</string>
     <string name="summary_unavailable_premium_settings">アプリ内課金が利用できません</string>
 
     <!-- Links -->
     <string name="title_google_play">Google Playバージョンのアプリ</string>
     <string name="summary_google_play">Google Playに移動します</string>
-
-    <!-- Test -->
-    <string name="title_test">テスト</string>
-    <string name="summary_test">ショートカットを介さず直接制御するためのインターフェースです。複雑な制御をするには他のアプリからショートカットを使用してください。（要再起動）</string>
-    <!-- Actions -->
-    <string name="title_action_when_tap_on_recents">最近のアプリをタップ（ソフトウェアキー）</string>
-    <string name="title_action_when_long_press_on_recents">最近のアプリを長押し（ソフトウェアキー）</string>
-    <string name="title_action_when_double_tap_on_recents">最近のアプリをダブルタップ（ソフトウェアキー）</string>
 
     <!-- About -->
     <string name="title_about">@string/about_activity_name</string>
