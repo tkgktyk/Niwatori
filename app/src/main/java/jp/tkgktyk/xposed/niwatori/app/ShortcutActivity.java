@@ -22,6 +22,7 @@ public class ShortcutActivity extends ListActivity {
             NFW.ACTION_MOVABLE_SCREEN,
             NFW.ACTION_PIN_OR_RESET,
             NFW.ACTION_SMALL_SCREEN,
+            NFW.ACTION_EXTRA_ACTION,
             NFW.ACTION_SB_EXPAND_NOTIFICATIONS,
             NFW.ACTION_SB_EXPAND_QUICK_SETTINGS,
     };
@@ -29,6 +30,7 @@ public class ShortcutActivity extends ListActivity {
             R.string.action_movable_screen,
             R.string.action_pin_or_reset,
             R.string.action_small_screen,
+            R.string.action_extra_action,
             R.string.action_sb_expand_notifications,
             R.string.action_sb_expand_quick_settings,
     };
@@ -36,6 +38,7 @@ public class ShortcutActivity extends ListActivity {
             R.drawable.ic_action_movable_screen,
             R.drawable.ic_action_slide_down,
             R.drawable.ic_action_small_screen,
+            R.drawable.ic_action_extra_action,
             R.drawable.ic_action_expand_notifications,
             R.drawable.ic_action_expand_quick_settings,
     };

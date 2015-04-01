@@ -2,11 +2,14 @@ package jp.tkgktyk.xposed.niwatori.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import jp.tkgktyk.flyinglayout.FlyingLayout;
+import jp.tkgktyk.xposed.niwatori.InitialPosition;
 import jp.tkgktyk.xposed.niwatori.NFW;
 import jp.tkgktyk.xposed.niwatori.R;
 
@@ -30,9 +33,23 @@ public class MyApp extends Application {
             onVersionUpdated(current, old);
 
             // reload preferences and put new version name
-            NFW.getSharedPreferences(this).edit()
+            final SharedPreferences prefs = NFW.getSharedPreferences(this);
+            prefs.edit()
                     .putString(keyVersionName, current.toString())
                     .apply();
+            // set default value for Change Settings Actions
+            final String keyInitX = getString(R.string.key_initial_x_percent);
+            if (!prefs.contains(keyInitX)) {
+                prefs.edit()
+                        .putInt(keyInitX, InitialPosition.DEFAULT_X_PERCENT)
+                        .apply();
+            }
+            final String keyPivotX = getString(R.string.key_small_screen_pivot_x);
+            if (!prefs.contains(keyPivotX)) {
+                prefs.edit()
+                        .putInt(keyPivotX, Math.round(FlyingLayout.DEFAULT_PIVOT_X * 100))
+                        .apply();
+            }
         }
         Log.d(TAG, "start application");
 

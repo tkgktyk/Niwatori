@@ -2,6 +2,8 @@
 <resources>
     <string name="key_version_name" translatable="false">key_version_name</string>
 
+    <!-- Blacklist -->
+    <string name="key_blacklist" translatable="false">key_blacklist</string>
     <!-- Animation -->
     <string name="key_animation" translatable="false">key_animation</string>
     <!-- Auto Reset -->

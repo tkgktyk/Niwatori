@@ -354,6 +354,13 @@ public class SettingsActivity extends Activity {
                     });
 
             // Settings
+            openActivity(R.string.key_blacklist, AppSelectActivity.class, new ExtendsPutter() {
+                @Override
+                public void putExtends(Intent activityIntent) {
+                    activityIntent.putExtra(AppSelectActivity.EXTRA_PREF_KEY_ID, R.string.key_blacklist);
+                    activityIntent.putExtra(AppSelectActivity.EXTRA_TITLE_ID, R.string.blacklist_activity_name);
+                }
+            });
             showListSummary(R.string.key_extra_action);
             showListSummary(R.string.key_action_when_tap_outside);
             showListSummary(R.string.key_action_when_double_tap_outside);
@@ -371,18 +378,18 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
-            Preference initialPosition = findPreference(R.string.key_initial_position);
-            initialPosition.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent activity = new Intent(preference.getContext(),
-                            mHasPremiumSettings?
-                                    InitialPositionActivity.class:
-                                    InitialPositionSimpleActivity.class);
-                    startActivity(activity);
-                    return true;
-                }
-            });
+            findPreference(R.string.key_initial_position)
+                    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            Intent activity = new Intent(preference.getContext(),
+                                    mHasPremiumSettings ?
+                                            InitialPositionActivity.class :
+                                            InitialPositionSimpleActivity.class);
+                            startActivity(activity);
+                            return true;
+                        }
+                    });
             // small screen
             showListSummary(R.string.key_boundary_color_ss, new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -396,18 +403,18 @@ public class SettingsActivity extends Activity {
                     return true;
                 }
             });
-            Preference smallScreen = findPreference(R.string.key_small_screen);
-            smallScreen.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Intent activity = new Intent(preference.getContext(),
-                            mHasPremiumSettings?
-                                    SmallScreenActivity.class:
-                                    SmallScreenSimpleActivity.class);
-                    startActivity(activity);
-                    return true;
-                }
-            });
+            findPreference(R.string.key_small_screen)
+                    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            Intent activity = new Intent(preference.getContext(),
+                                    mHasPremiumSettings ?
+                                            SmallScreenActivity.class :
+                                            SmallScreenSimpleActivity.class);
+                            startActivity(activity);
+                            return true;
+                        }
+                    });
             // About
             Preference about = findPreference(R.string.key_about);
             about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

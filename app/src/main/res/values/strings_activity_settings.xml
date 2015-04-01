@@ -19,6 +19,8 @@
 
     <!-- General -->
     <string name="general">General</string>
+    <!-- Blacklist -->
+    <string name="title_blacklist">@string/blacklist_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">Animation</string>
     <string name="summary_animation_on">Smooth movement</string>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -161,6 +162,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void performAction(String action) {
+        Log.d(TAG, action);
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);
         } else if (action.equals(NFW.ACTION_SOFT_RESET)) {
@@ -173,6 +175,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
             pinOrReset();
         } else if (action.equals(NFW.ACTION_SMALL_SCREEN)) {
             resize();
+        } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
+            performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
             getAttachedView().getContext().sendBroadcast(new Intent(action));
         }

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import jp.tkgktyk.xposed.niwatori.NFW;
@@ -23,16 +24,19 @@ public class ChangeSettingsActionReceiver extends BroadcastReceiver {
         final SharedPreferences prefs = NFW.getSharedPreferences(context);
 
         final String action = intent.getAction();
+        Log.d(TAG, action);
         if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
             final String keyInitX = context.getString(R.string.key_initial_x_percent);
             final int initX = prefs.getInt(keyInitX, INVALID_PERCENT);
             if (initX == INVALID_PERCENT) {
+                Log.d(TAG, "invalid init x");
                 save = false;
             }
 
             final String keyPivotX = context.getString(R.string.key_small_screen_pivot_x);
             final int pivotX = prefs.getInt(keyPivotX, INVALID_PERCENT);
             if (pivotX == INVALID_PERCENT) {
+                Log.d(TAG, "invalid pivot x");
                 save = false;
             }
 

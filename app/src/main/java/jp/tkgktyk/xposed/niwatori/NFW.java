@@ -36,6 +36,7 @@ public class NFW {
     public static final String ACTION_PIN = PREFIX_ACTION + "PIN";
     public static final String ACTION_PIN_OR_RESET = PREFIX_ACTION + "PIN_OR_RESET";
     public static final String ACTION_SMALL_SCREEN = PREFIX_ACTION + "SMALL_SCREEN";
+    public static final String ACTION_EXTRA_ACTION = PREFIX_ACTION + "EXTRA_ACTION";
     public static final String ACTION_RESET = PREFIX_ACTION + "RESET";
     public static final String ACTION_SOFT_RESET = PREFIX_ACTION + "SOFT_RESET";
 
@@ -78,6 +79,7 @@ public class NFW {
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_EXTRA_ACTION);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SOFT_RESET);
         FOCUSED_DIALOG_FILTER = new IntentFilter(STATUS_BAR_FILTER);
@@ -140,7 +142,7 @@ public class NFW {
     }
 
     public static class Settings implements Serializable {
-        public Set<String> blackSet;
+        public Set<String> blackList;
         public boolean animation;
         public boolean autoReset;
         public String extraAction;
@@ -162,7 +164,7 @@ public class NFW {
         }
 
         public void load(SharedPreferences prefs) {
-            blackSet = prefs.getStringSet("key_black_list", Collections.<String>emptySet());
+            blackList = prefs.getStringSet("key_blacklist", Collections.<String>emptySet());
             animation = prefs.getBoolean("key_animation", true);
             autoReset = prefs.getBoolean("key_auto_reset", false);
             extraAction = prefs.getString("key_extra_action", ACTION_MOVABLE_SCREEN);
@@ -176,8 +178,10 @@ public class NFW {
 
             boundaryColorSS = Color.parseColor(prefs.getString("key_boundary_color_ss", "#00000000")); // default is Transparent
             smallScreenSize = prefs.getInt("key_small_screen_size", 70) / 100f;
-            smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0) / 100f;
-            smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 100) / 100f;
+            smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x",
+                    Math.round(FlyingLayout.DEFAULT_PIVOT_X * 100)) / 100f;
+            smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y",
+                    Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;;
         }
     }
 }

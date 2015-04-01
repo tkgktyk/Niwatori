@@ -19,6 +19,10 @@
         <!-- General -->
         <PreferenceCategory
             android:title="@string/general">
+            <!-- Blacklist -->
+            <Preference
+                android:key="@string/key_blacklist"
+                android:title="@string/title_blacklist"/>
             <!-- Animation -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="true"

@@ -7,8 +7,8 @@ android {
         applicationId "jp.tkgktyk.xposed.niwatori"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 17
-        versionName '0.3.5'
+        versionCode 18
+        versionName '0.3.6'
     }
     buildTypes {
         release {
@@ -26,6 +26,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     provided fileTree(include: ['*.jar'], dir: 'provided_libs')
     compile 'com.google.guava:guava:18.0'
-    compile project(':flyinglayout')
     compile 'com.android.support:support-annotations:21.0.3'
+    compile project(':flyinglayout')
 }

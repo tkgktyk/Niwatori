@@ -35,20 +35,24 @@ public class ModPhoneStatusBar extends XposedModule {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            logD("global broadcast receiver: " + action);
-            final int mState = XposedHelpers.getIntField(mPhoneStatusBarView, "mState");
-            if (action.startsWith(NFW.PREFIX_ACTION_SB)) {
-                consumeMyAction(context, action);
-                return;
+            try {
+                final String action = intent.getAction();
+                logD("global broadcast receiver: " + action);
+                final int mState = XposedHelpers.getIntField(mPhoneStatusBarView, "mState");
+                if (action.startsWith(NFW.PREFIX_ACTION_SB)) {
+                    consumeMyAction(context, action);
+                    return;
+                }
+                if (mState == 0) { // STATE_CLOSED = 0
+                    return;
+                }
+                // target is status bar
+                mHelper.performAction(action);
+                abortBroadcast();
+                logD("consumed: " + action);
+            } catch (Throwable t) {
+                logE(t);
             }
-            if (mState == 0) { // STATE_CLOSED = 0
-                return;
-            }
-            // target is status bar
-            mHelper.performAction(action);
-            abortBroadcast();
-            logD("consumed: " + action);
         }
 
         @SuppressWarnings("ResourceType")

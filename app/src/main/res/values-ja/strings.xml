@@ -10,11 +10,17 @@
     <string name="action_pin">Pin</string>
     <string name="action_pin_or_reset">Slide Down</string>
     <string name="action_small_screen">Small Screen</string>
+    <string name="action_extra_action">Extra Action</string>
     <string name="action_cs_swap_left_right">Swap Left/Right</string>
     <string name="action_reset">Reset</string>
     <string name="action_soft_reset">Soft Reset</string>
     <string name="action_sb_expand_notifications">Expand Notifications With Extra Action</string>
     <string name="action_sb_expand_quick_settings">Expand Quick Settings With Extra Action</string>
+
+    <!-- App Selector -->
+    <string name="app_select_activity_name">Select</string>
+    <string name="only_selected">Only selected</string>
+    <string name="blacklist_activity_name">Blacklist</string>
 
     <!-- Initial Position -->
     <string name="initial_position_activity_name">Initial Position</string>

@@ -5,6 +5,7 @@
     <string name="intent_action_pin" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN</string>
     <string name="intent_action_pin_or_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</string>
     <string name="intent_action_small_screen" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SMALL_SCREEN</string>
+    <string name="intent_action_extra_action" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.EXTRA_ACTION</string>
     <string name="intent_action_cs_swap_left_right" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT</string>
     <string name="intent_action_soft_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SOFT_RESET</string>
     <!-- Outside Action -->

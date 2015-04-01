@@ -54,6 +54,10 @@ public class ModActivity extends XposedModule {
                     return;
                 }
                 final FlyingHelper helper = getHelper(activity);
+                if (helper.getSettings().blackList.contains(activity.getPackageName())) {
+                    logD(activity.toString() + "is ignored");
+                    return;
+                }
                 helper.performAction(intent.getAction());
                 abortBroadcast();
                 logD(activity.toString() + ": consumed");
@@ -574,6 +578,10 @@ public class ModActivity extends XposedModule {
                     FlyingHelper helper = getHelper(dialog);
                     if (helper == null) {
                         logD("DecorView is null.");
+                        return;
+                    }
+                    if (helper.getSettings().blackList.contains(dialog.getContext().getPackageName())) {
+                        logD(dialog.toString() + "is ignored");
                         return;
                     }
                     helper.performAction(intent.getAction());

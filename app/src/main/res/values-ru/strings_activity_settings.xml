@@ -19,11 +19,13 @@
 
     <!-- General -->
     <string name="general">Основное</string>
+    <!-- Blacklist -->
+    <string name="title_blacklist">@string/blacklist_activity_name</string>
     <!-- Animation -->
     <string name="title_animation">Анимация</string>
     <string name="summary_animation_on">Плавное движение</string>
     <string name="summary_animation_off">Немедленный переход</string>
-    <!-- Reset automatically -->
+    <!-- Auto Reset -->
     <string name="title_auto_reset">Сброс автоматически</string>
     <string name="summary_auto_reset">Turn off if keyboard causes issue. (requires reboot)</string>
     <!-- Extra Action -->
