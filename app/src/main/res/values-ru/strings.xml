@@ -1,6 +1,6 @@
 <resources>
     <!-- Displayed in Xposed framework -->
-    <string name="app_name">Temporary One-Handed Mode</string>
+    <string name="app_name">Niwatori - One-Handed Mode</string>
     <string name="xposed_description">Режим управления одной рукой.</string>
 
     <!-- Shortcut name -->

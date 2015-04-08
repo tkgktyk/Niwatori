@@ -38,7 +38,7 @@
                 android:title="@string/title_auto_reset"/>
             <!-- Extra Action -->
             <ListPreference
-                android:defaultValue="@string/intent_action_movable_screen"
+                android:defaultValue="@string/intent_action_small_screen"
                 android:entries="@array/extra_actions"
                 android:entryValues="@array/extra_action_values"
                 android:key="@string/key_extra_action"
@@ -51,7 +51,7 @@
                 android:key="@string/key_action_when_tap_outside"
                 android:title="@string/title_action_when_tap_outside"/>
             <ListPreference
-                android:defaultValue="@string/intent_action_pin"
+                android:defaultValue="@string/intent_action_cs_swap_left_right"
                 android:entries="@array/outside_actions"
                 android:entryValues="@array/outside_action_values"
                 android:key="@string/key_action_when_double_tap_outside"
@@ -69,6 +69,12 @@
                 android:key="@string/key_speed"
                 android:selectAllOnFocus="true"
                 android:title="@string/title_speed"/>
+            <!-- Auto Pin -->
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+                android:defaultValue="false"
+                android:key="@string/key_auto_pin"
+                android:summary="@string/summary_auto_pin"
+                android:title="@string/title_auto_pin"/>
             <!-- Boundary Color -->
             <ListPreference
                 android:defaultValue="@string/default_boundary_color_ms"
@@ -103,12 +109,18 @@
         <!-- Others -->
         <PreferenceCategory
             android:title="@string/title_others">
+            <!-- Log Actions -->
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+                android:defaultValue="false"
+                android:key="@string/key_log_actions"
+                android:summary="@string/summary_log_actions"
+                android:title="@string/title_log_actions"/>
+
             <!-- Purchases -->
             <Preference
                 android:key="@string/key_purchase_premium_settings"
                 android:summary="@string/summary_purchase_premium_settings"
                 android:title="@string/title_purchase_premium_settings"/>
-
             <!-- Links -->
             <Preference
                 android:key="@string/key_google_play"

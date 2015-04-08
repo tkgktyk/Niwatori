@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
 
@@ -49,6 +49,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
         setTouchEventEnabled(false);
         setUseContainer(useContainer);
         setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
+            @Override
+            public void onDragFinished(ViewGroup v) {
+                if (getSettings().autoPin) {
+                    pin();
+                }
+            }
+
             @Override
             public void onClickOutside(ViewGroup v) {
                 if (!NFW.isDefaultAction(getSettings().actionWhenTapOutside)) {
@@ -149,6 +156,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public void performExtraAction() {
         final String action = getSettings().extraAction;
+        if (getSettings().logActions) {
+            XposedBridge.log(action);
+        }
         if (action.equals(NFW.ACTION_MOVABLE_SCREEN)) {
             forceMovable();
             updateBoundary();
@@ -162,7 +172,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void performAction(String action) {
-        Log.d(TAG, action);
+        if (getSettings().logActions) {
+            XposedBridge.log(action);
+        }
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);
         } else if (action.equals(NFW.ACTION_SOFT_RESET)) {

@@ -150,6 +150,7 @@ public class NFW {
         public String actionWhenDoubleTapOutside;
 
         public float speed;
+        public boolean autoPin;
         public int boundaryColorMS;
         public int initialXp;
         public int initialYp;
@@ -158,6 +159,8 @@ public class NFW {
         public float smallScreenSize;
         public float smallScreenPivotX;
         public float smallScreenPivotY;
+
+        public boolean logActions;
 
         public Settings(SharedPreferences prefs) {
             load(prefs);
@@ -172,6 +175,7 @@ public class NFW {
             actionWhenDoubleTapOutside = prefs.getString("key_action_when_double_tap_outside", ACTION_PIN);
 
             speed = Float.parseFloat(prefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
+            autoPin = prefs.getBoolean("key_auto_pin", false);
             boundaryColorMS = Color.parseColor(prefs.getString("key_boundary_color_ms", "#689F38")); // default is Light Green
             initialXp = prefs.getInt("key_initial_x_percent", InitialPosition.DEFAULT_X_PERCENT);
             initialYp = prefs.getInt("key_initial_y_percent", InitialPosition.DEFAULT_Y_PERCENT);
@@ -181,7 +185,9 @@ public class NFW {
             smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x",
                     Math.round(FlyingLayout.DEFAULT_PIVOT_X * 100)) / 100f;
             smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y",
-                    Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;;
+                    Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;
+
+            logActions = prefs.getBoolean("key_log_actions", false) || BuildConfig.DEBUG;
         }
     }
 }

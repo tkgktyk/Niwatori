@@ -49,7 +49,9 @@ public class ModPhoneStatusBar extends XposedModule {
                 // target is status bar
                 mHelper.performAction(action);
                 abortBroadcast();
-                logD("consumed: " + action);
+                if (mHelper.getSettings().logActions) {
+                    log(STATUS_BAR_SERVICE + " consumed: " + action);
+                }
             } catch (Throwable t) {
                 logE(t);
             }
@@ -65,6 +67,9 @@ public class ModPhoneStatusBar extends XposedModule {
                 Object statusBar = context.getSystemService(STATUS_BAR_SERVICE);
                 XposedHelpers.callMethod(statusBar, "expandSettingsPanel");
                 mHelper.performExtraAction();
+            }
+            if (mHelper.getSettings().logActions) {
+                log(STATUS_BAR_SERVICE + " consumed: " + action);
             }
         }
     };

@@ -1,7 +1,7 @@
 <resources>
     <!-- Displayed in Xposed framework -->
-    <string name="app_name">Temporary One-Handed Mode</string>
-    <string name="xposed_description">Movable Screen, Slide Down and Small Screen.</string>
+    <string name="app_name">Niwatori - One-Handed Mode</string>
+    <string name="xposed_description">Slide Down, Movable and Small Screen.</string>
 
     <!-- Shortcut name -->
     <string name="shortcut_activity_name">One-Handed Mode</string>

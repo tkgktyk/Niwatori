@@ -47,20 +47,30 @@ public class ModActivity extends XposedModule {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                logD("activity broadcast receiver: " + intent.getAction());
+                final String action = intent.getAction();
+                logD("activity broadcast receiver: " + action);
                 final Activity activity = (Activity) context;
                 if (isTabContent(activity)) {
                     logD(activity.getLocalClassName() + " is a tab content.");
                     return;
                 }
                 final FlyingHelper helper = getHelper(activity);
-                if (helper.getSettings().blackList.contains(activity.getPackageName())) {
-                    logD(activity.toString() + "is ignored");
+                if (helper == null) {
+                    logD("DecorView is null.");
                     return;
                 }
-                helper.performAction(intent.getAction());
+                final String packageName = activity.getPackageName();
+                if (helper.getSettings().blackList.contains(packageName)) {
+                    if (helper.getSettings().logActions) {
+                        log(activity.toString() + "is ignored");
+                    }
+                    return;
+                }
+                helper.performAction(action);
                 abortBroadcast();
-                logD(activity.toString() + ": consumed");
+                if (helper.getSettings().logActions) {
+                    log(packageName + " consumed: " + action);
+                }
             } catch (Throwable t) {
                 logE(t);
             }
@@ -573,20 +583,26 @@ public class ModActivity extends XposedModule {
         final BroadcastReceiver actionReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                logD("activity broadcast receiver: " + intent.getAction());
                 try {
+                    final String action = intent.getAction();
+                    logD("activity broadcast receiver: " + action);
                     FlyingHelper helper = getHelper(dialog);
                     if (helper == null) {
                         logD("DecorView is null.");
                         return;
                     }
-                    if (helper.getSettings().blackList.contains(dialog.getContext().getPackageName())) {
-                        logD(dialog.toString() + "is ignored");
+                    final String packageName = dialog.getContext().getPackageName();
+                    if (helper.getSettings().blackList.contains(packageName)) {
+                        if (helper.getSettings().logActions) {
+                            log(dialog.toString() + "is ignored");
+                        }
                         return;
                     }
-                    helper.performAction(intent.getAction());
+                    helper.performAction(action);
                     abortBroadcast();
-                    logD(dialog.toString() + ": consumed");
+                    if (helper.getSettings().logActions) {
+                        log(packageName + " consumed: " + action);
+                    }
                 } catch (Throwable t) {
                     logE(t);
                 }

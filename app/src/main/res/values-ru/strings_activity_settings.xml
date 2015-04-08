@@ -73,6 +73,9 @@
 
     <!-- Small Screen -->
     <string name="small_screen">Небольшой экран</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">Auto Pin</string>
+    <string name="summary_auto_pin">Pin after moving</string>
     <!-- Small Screen Size -->
     <string name="title_small_screen">Размер*</string>
     <string name="summary_small_screen">Change size and pivot</string>
@@ -85,6 +88,9 @@
 
     <!-- Others -->
     <string name="title_others">Другое</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">Log Actions</string>
+    <string name="summary_log_actions">History and who consumed</string>
 
     <!-- Purchases -->
     <!-- Premium Settings -->

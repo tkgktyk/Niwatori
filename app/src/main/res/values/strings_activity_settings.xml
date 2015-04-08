@@ -39,6 +39,9 @@
     <!-- Speed -->
     <string name="title_speed">Speed</string>
     <string name="note_speed">Recommended value:\n  - around 2 for smartphones.</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">Auto Pin</string>
+    <string name="summary_auto_pin">Pin after moving</string>
     <!-- Boundary Color -->
     <string name="title_boundary_color">Boundary Color</string>
     <string name="none">None</string>
@@ -85,6 +88,9 @@
 
     <!-- Others -->
     <string name="title_others">Others</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">Log Actions</string>
+    <string name="summary_log_actions">History and who consumed</string>
 
     <!-- Purchases -->
     <!-- Premium Settings -->

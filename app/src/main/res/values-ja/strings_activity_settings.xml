@@ -39,6 +39,9 @@
     <!-- Speed -->
     <string name="title_speed">スピード</string>
     <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">自動Pin</string>
+    <string name="summary_auto_pin">移動後に自動でPinを実行</string>
     <!-- Boundary Color -->
     <string name="title_boundary_color">境界線の色</string>
     <string name="none">None</string>
@@ -85,6 +88,9 @@
 
     <!-- Others -->
     <string name="title_others">その他</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">アクション履歴を記録する</string>
+    <string name="summary_log_actions">履歴と、どのアプリに使われたか</string>
 
     <!-- Purchases -->
     <!-- Premium Settings -->
