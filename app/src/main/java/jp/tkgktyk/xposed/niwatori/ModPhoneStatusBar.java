@@ -203,9 +203,9 @@ public class ModPhoneStatusBar extends XposedModule {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
-                                if (mHelper.getSettings().autoReset) {
+//                                if (mHelper.getSettings().autoReset) {
                                     mHelper.resetState(true);
-                                }
+//                                }
                             } catch (Throwable t) {
                                 logE(t);
                             }
