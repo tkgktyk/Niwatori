@@ -739,8 +739,13 @@ public class FlyingLayout extends FrameLayout {
                     mLastMotionY = (int) ev.getY(ev.findPointerIndex(mActivePointerId));
                     break;
             }
-            final boolean consumed = mGestureDetector.onTouchEvent(ev);
-            return consumed || consumeTouchEvent();
+
+            final boolean consume = consumeTouchEvent();
+            if (consume) {
+                mGestureDetector.onTouchEvent(ev);
+                return true;
+            }
+            return false;
         }
 
         private boolean consumeTouchEvent() {
