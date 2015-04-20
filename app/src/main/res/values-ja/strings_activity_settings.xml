@@ -85,6 +85,9 @@
     <string name="pivot_x">Pivot X</string>
     <string name="pivot_y">Pivot Y</string>
     <string name="size">Size</string>
+    <!-- Another Resize Method -->
+    <string name="title_another_resize_method">Another Resize Method</string>
+    <string name="summary_another_resize_method">Apply another method to specified apps</string>
 
     <!-- Others -->
     <string name="title_others">その他</string>
@@ -95,7 +98,7 @@
     <!-- Purchases -->
     <!-- Premium Settings -->
     <string name="title_purchase_premium_settings">プレミアム設定</string>
-    <string name="summary_purchase_premium_settings">グラフィカルな設定画面を使用するには購入してください（*印）</string>
+    <string name="summary_purchase_premium_settings">グラフィカルな設定画面を使用するには寄付をお願いします（*印の項目）</string>
     <string name="summary_unavailable_premium_settings">アプリ内課金が利用できません</string>
 
     <!-- Links -->

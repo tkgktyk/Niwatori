@@ -11,7 +11,7 @@
     <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
     <!-- Note -->
     <string name="title_notes">Notes</string>
-    <string name="summary_notes">If you turned off "Auto Reset", be sure to expand status bar from shortcut.</string>
+    <string name="summary_notes">There are no notes.</string>
 
     <!-- Settings -->
     <string name="title_settings">Settings</string>
@@ -87,7 +87,7 @@
     <string name="size">Size</string>
     <!-- Another Resize Method -->
     <string name="title_another_resize_method">Another Resize Method</string>
-    <string name="summary_another_resize_method">Apply another resize method to specified apps</string>
+    <string name="summary_another_resize_method">Apply another method to specified apps</string>
 
     <!-- Others -->
     <string name="title_others">Others</string>

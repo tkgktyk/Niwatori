@@ -21,6 +21,7 @@
     <string name="app_select_activity_name">Select</string>
     <string name="only_selected">Only selected</string>
     <string name="blacklist_activity_name">Blacklist</string>
+    <string name="another_resize_method_targets_activity_name">Another Resize Method Targets</string>
 
     <!-- Initial Position -->
     <string name="initial_position_activity_name">Initial Position</string>
