@@ -159,6 +159,7 @@ public class NFW {
         public float smallScreenSize;
         public float smallScreenPivotX;
         public float smallScreenPivotY;
+        public Set<String> anotherResizeMethodTargets;
 
         public boolean logActions;
 
@@ -186,6 +187,8 @@ public class NFW {
                     Math.round(FlyingLayout.DEFAULT_PIVOT_X * 100)) / 100f;
             smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y",
                     Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;
+            anotherResizeMethodTargets = prefs.getStringSet("key_another_resize_method_targets",
+                    Collections.<String>emptySet());
 
             logActions = prefs.getBoolean("key_log_actions", false) || BuildConfig.DEBUG;
         }

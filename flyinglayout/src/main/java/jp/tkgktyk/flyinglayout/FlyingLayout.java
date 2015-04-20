@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
+import com.google.common.collect.Lists;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -33,6 +35,9 @@ import java.util.ArrayList;
  */
 public class FlyingLayout extends FrameLayout {
 
+    public static final int RESIZE_MODE_SCALE = 0;
+    public static final int RESIZE_MODE_PADDING = 1;
+
     public static final float DEFAULT_SPEED = 1.5f;
     public static final int DEFAULT_HORIZONTAL_PADDING = 0;
     public static final int DEFAULT_VERTICAL_PADDING = 0;
@@ -41,6 +46,7 @@ public class FlyingLayout extends FrameLayout {
     public static final float DEFAULT_SCALE = 1.0f;
     public static final float DEFAULT_PIVOT_X = 0.0f;
     public static final float DEFAULT_PIVOT_Y = 1.0f;
+    public static final int DEFAULT_RESIZE_MODE = RESIZE_MODE_SCALE;
     private static final String TAG = FlyingLayout.class.getSimpleName();
     private Helper mHelper;
 
@@ -218,6 +224,8 @@ public class FlyingLayout extends FrameLayout {
         };
         private boolean mUpdatePivotOnTime = true;
 
+        private ArrayList<Rect> mChildrenPaddingBackup;
+
         /**
          * ID of the active pointer. This is used to retain consistency during
          * drags/flings if multiple pointers are used.
@@ -244,6 +252,7 @@ public class FlyingLayout extends FrameLayout {
         private float mScale;
         private float mPivotX;
         private float mPivotY;
+        private int mResizeMode;
         private OnFlyingEventListener mOnFlyingEventListener = new SimpleOnFlyingEventListener();
         private FrameLayout mView;
 
@@ -299,6 +308,7 @@ public class FlyingLayout extends FrameLayout {
             setOffset(0, 0);
             setScale(DEFAULT_SCALE);
             setPivot(DEFAULT_PIVOT_X, DEFAULT_PIVOT_Y);
+            setResizeMode(DEFAULT_RESIZE_MODE);
 
             mGetPaddingLeftWithForeground = getHiddenMethod(view, frameLayoutHierarchy,
                     "getPaddingLeftWithForeground");
@@ -481,12 +491,20 @@ public class FlyingLayout extends FrameLayout {
                 performLayoutAdjustment();
                 mUpdatePivotOnTime = false;
             }
-            mScale = scale;
-            final int count = getUseContainer() ? 1 : mView.getChildCount();
-            for (int i = 0; i < count; ++i) {
-                final View child = mView.getChildAt(i);
-                child.setScaleX(scale);
-                child.setScaleY(scale);
+            switch (mResizeMode) {
+                case RESIZE_MODE_SCALE: {
+                    mScale = scale;
+                    final int count = getUseContainer() ? 1 : mView.getChildCount();
+                    for (int i = 0; i < count; ++i) {
+                        final View child = mView.getChildAt(i);
+                        child.setScaleX(scale);
+                        child.setScaleY(scale);
+                    }
+                    break;
+                }
+                case RESIZE_MODE_PADDING:
+                    resize(scale, false);
+                    break;
             }
         }
 
@@ -519,6 +537,14 @@ public class FlyingLayout extends FrameLayout {
                 child.setPivotX(x);
                 child.setPivotY(y);
             }
+        }
+
+        public void setResizeMode(int mode) {
+            mResizeMode = mode;
+        }
+
+        public int getResizeMode() {
+            return mResizeMode;
         }
 
         public void performLayoutAdjustment() {
@@ -877,19 +903,86 @@ public class FlyingLayout extends FrameLayout {
             return mBoundaryRect.contains(x, y);
         }
 
+        private void backupChildrenPadding() {
+            final int count = mView.getChildCount();
+            mChildrenPaddingBackup = Lists.newArrayListWithCapacity(count);
+            for (int i = 0; i < count; ++i) {
+                final View child = mView.getChildAt(i);
+                final Rect paddings = new Rect();
+                paddings.set(child.getPaddingLeft(), child.getPaddingTop(),
+                        child.getPaddingRight(), child.getPaddingBottom());
+                mChildrenPaddingBackup.add(paddings);
+            }
+        }
+
         public void resize(float scale, boolean animation) {
-            if (animation) {
-                final ValueAnimator scaleDown = ValueAnimator.ofFloat(mScale, scale);
-                scaleDown.addUpdateListener(mScaleAnimatorUpdateListener);
-                scaleDown.start();
-            } else {
-                setScale(scale);
-                mView.requestLayout();
+//            Log.d(TAG, "padding: " + mView.getPaddingLeft() + ", " + mView.getPaddingTop()
+//                    + ", " + mView.getPaddingRight() + ", " + mView.getPaddingBottom());
+            switch (mResizeMode) {
+                case RESIZE_MODE_SCALE: {
+                    if (animation) {
+                        final ValueAnimator scaleDown = ValueAnimator.ofFloat(mScale, scale);
+                        scaleDown.addUpdateListener(mScaleAnimatorUpdateListener);
+                        scaleDown.start();
+                    } else {
+                        setScale(scale);
+                        mView.requestLayout();
+                    }
+                    break;
+                }
+                case RESIZE_MODE_PADDING: {
+                    if (mChildrenPaddingBackup == null ||
+                            mChildrenPaddingBackup.size() != mView.getChildCount()){
+                        backupChildrenPadding();
+                    }
+                    final int count = getUseContainer() ? 1 : mView.getChildCount();
+                    mScale = scale;
+                    if (scale == DEFAULT_SCALE) {
+                        // reset
+                        for (int i = 0; i < count; ++i) {
+                            final View child = mView.getChildAt(i);
+                            final Rect paddings = mChildrenPaddingBackup.get(i);
+                            child.setPadding(paddings.left, paddings.top,
+                                    paddings.right, paddings.bottom);
+                        }
+                    } else {
+                        for (int i = 0; i < count; ++i) {
+                            final View child = mView.getChildAt(i);
+                            float dw = child.getWidth() * (1 - scale);
+                            float dh = child.getHeight() * (1 - scale);
+                            int paddingLeft = Math.round(dw * mPivotX);
+                            int paddingRight = Math.round(dw * (1 - mPivotX));
+                            int paddingTop = Math.round(dh * mPivotY);
+                            int paddingBottom = Math.round(dh * (1 - mPivotY));
+                            child.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+                        }
+                    }
+                    break;
+                }
             }
         }
 
         public boolean isResized() {
-            return mScale != DEFAULT_SCALE;
+            switch (mResizeMode) {
+                case RESIZE_MODE_PADDING: {
+                    View child = mView.getChildAt(0);
+                    if (child == null) {
+                        return false;
+                    }
+                    if (mChildrenPaddingBackup == null ||
+                            mChildrenPaddingBackup.size() != mView.getChildCount()){
+                        backupChildrenPadding();
+                    }
+                    Rect paddings = mChildrenPaddingBackup.get(0);
+                    return child.getPaddingLeft() != paddings.left ||
+                            child.getPaddingTop() != paddings.top ||
+                            child.getPaddingRight() != paddings.right ||
+                            child.getPaddingBottom() != paddings.bottom;
+                }
+                case RESIZE_MODE_SCALE:
+                default:
+                    return mScale != DEFAULT_SCALE;
+            }
         }
 
         protected Rect getBoundaryRect() {
@@ -912,12 +1005,12 @@ public class FlyingLayout extends FrameLayout {
                             MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.EXACTLY;
             mMatchParentChildren.clear();
 
-//            widthMeasureSpec = MeasureSpec.makeMeasureSpec(
-//                    Math.round(MeasureSpec.getSize(widthMeasureSpec) * 0.7f),
-//                    MeasureSpec.getMode(widthMeasureSpec));
-//            heightMeasureSpec = MeasureSpec.makeMeasureSpec(
-//                    Math.round(MeasureSpec.getSize(heightMeasureSpec) * 0.7f),
-//                    MeasureSpec.getMode(heightMeasureSpec));
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(
+                    Math.round(MeasureSpec.getSize(widthMeasureSpec) * 0.7f),
+                    MeasureSpec.getMode(widthMeasureSpec));
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                    Math.round(MeasureSpec.getSize(heightMeasureSpec) * 0.7f),
+                    MeasureSpec.getMode(heightMeasureSpec));
 
             int maxHeight = 0;
             int maxWidth = 0;

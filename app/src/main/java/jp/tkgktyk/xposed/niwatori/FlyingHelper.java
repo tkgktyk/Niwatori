@@ -1,6 +1,5 @@
 package jp.tkgktyk.xposed.niwatori;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -95,6 +94,11 @@ public class FlyingHelper extends FlyingLayout.Helper {
         mSettings = settings;
         setSpeed(getSettings().speed);
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
+        if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
+            setResizeMode(FlyingLayout.RESIZE_MODE_PADDING);
+        } else {
+            setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
+        }
         if (isResized()) {
             setScale(getSettings().smallScreenSize);
         }
@@ -304,7 +308,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         mInputMethodManager.hideSoftInputFromWindow(getAttachedView().getWindowToken(), 0);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);

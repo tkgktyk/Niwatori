@@ -415,6 +415,16 @@ public class SettingsActivity extends Activity {
                             return true;
                         }
                     });
+            openActivity(R.string.key_another_resize_method_targets, AppSelectActivity.class,
+                    new ExtendsPutter() {
+                        @Override
+                        public void putExtends(Intent activityIntent) {
+                            activityIntent.putExtra(AppSelectActivity.EXTRA_PREF_KEY_ID,
+                                    R.string.key_another_resize_method_targets);
+                            activityIntent.putExtra(AppSelectActivity.EXTRA_TITLE_ID,
+                                    R.string.another_resize_method_targets_activity_name);
+                        }
+                    });
             // About
             Preference about = findPreference(R.string.key_about);
             about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

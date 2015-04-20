@@ -219,6 +219,26 @@ public class ModActivity extends XposedModule {
                             return invokeOriginalMethod(methodHookParam);
                         }
                     });
+//            XposedHelpers.findAndHookMethod(classFrameLayout, "onMeasure", int.class, int.class,
+//                    new XC_MethodReplacement() {
+//                @Override
+//                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+//                    try {
+//                        final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
+//                        final FlyingHelper helper = getHelper(decorView);
+//                        if (helper != null) {
+//                            logD();
+//                            final int widthMeasureSpec = (Integer) methodHookParam.args[0];
+//                            final int heightMeasureSpec = (Integer) methodHookParam.args[1];
+//                            helper.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//                            return null;
+//                        }
+//                    } catch (Throwable t) {
+//                        logE(t);
+//                    }
+//                    return invokeOriginalMethod(methodHookParam);
+//                }
+//            });
 
             XposedHelpers.findAndHookMethod(classDecorView, "onAttachedToWindow", new XC_MethodHook() {
                 @Override

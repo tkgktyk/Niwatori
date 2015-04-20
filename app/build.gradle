@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "jp.tkgktyk.xposed.niwatori"
         minSdkVersion 16
-        targetSdkVersion 21
-        versionCode 19
-        versionName '0.3.7'
+        targetSdkVersion 22
+        versionCode 20
+        versionName '0.3.8'
     }
     buildTypes {
         release {

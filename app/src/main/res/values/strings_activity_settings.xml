@@ -85,6 +85,9 @@
     <string name="pivot_x">Pivot X</string>
     <string name="pivot_y">Pivot Y</string>
     <string name="size">Size</string>
+    <!-- Another Resize Method -->
+    <string name="title_another_resize_method">Another Resize Method</string>
+    <string name="summary_another_resize_method">Apply another resize method to specified apps</string>
 
     <!-- Others -->
     <string name="title_others">Others</string>

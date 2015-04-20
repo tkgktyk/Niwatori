@@ -8,6 +8,10 @@ import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 import jp.tkgktyk.flyinglayout.FlyingLayout;
 import jp.tkgktyk.xposed.niwatori.InitialPosition;
 import jp.tkgktyk.xposed.niwatori.NFW;
@@ -57,8 +61,18 @@ public class MyApp extends Application {
     }
 
     protected void onVersionUpdated(MyVersion next, MyVersion old) {
+        final SharedPreferences prefs = NFW.getSharedPreferences(this);
         if (old.isOlderThan("0.3.5")) {
-            NFW.getSharedPreferences(this).edit().clear().commit();
+            prefs.edit().clear().commit();
+        }
+        if (old.isOlderThan("0.3.8")) {
+            // add initial value
+            final String keyTargets = getString(R.string.key_another_resize_method_targets);
+            Set<String> targets = prefs.getStringSet(keyTargets, Sets.<String>newHashSet());
+            targets.add("com.android.chrome");
+            prefs.edit()
+                    .putStringSet(keyTargets, targets)
+                    .commit();
         }
     }
 

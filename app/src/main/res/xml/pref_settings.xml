@@ -104,6 +104,11 @@
                 android:key="@string/key_small_screen"
                 android:summary="@string/summary_small_screen"
                 android:title="@string/title_small_screen"/>
+            <!-- Another Resize Method -->
+            <Preference
+                android:key="@string/key_another_resize_method_targets"
+                android:title="@string/title_another_resize_method"
+                android:summary="@string/summary_another_resize_method"/>
         </PreferenceCategory>
 
         <!-- Others -->

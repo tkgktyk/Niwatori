@@ -33,6 +33,8 @@
     <string name="key_small_screen_size" translatable="false">key_small_screen_size</string>
     <string name="key_small_screen_pivot_x" translatable="false">key_small_screen_pivot_x</string>
     <string name="key_small_screen_pivot_y" translatable="false">key_small_screen_pivot_y</string>
+    <!-- Another Resize Method -->
+    <string name="key_another_resize_method_targets" translatable="false">key_another_resize_method_targets</string>
 
     <!-- Log Actions -->
     <string name="key_log_actions" translatable="false">key_log_actions</string>
