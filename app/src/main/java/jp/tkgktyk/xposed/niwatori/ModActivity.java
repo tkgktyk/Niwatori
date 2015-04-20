@@ -409,12 +409,13 @@ public class ModActivity extends XposedModule {
                 }
             }
         });
-        XposedHelpers.findAndHookMethod(Activity.class, "onDestroy", new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Activity.class, "onStop", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
                     Activity activity = (Activity) param.thisObject;
-                    logD(activity + "#onDestroy");
+                    logD(activity + "#onStop");
+                    resetAutomatically(activity);
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -485,7 +486,7 @@ public class ModActivity extends XposedModule {
                 logD("register again");
                 activity.unregisterReceiver(mActivityActionReceiver);
                 register = true;
-                resetAutomatically(activity);
+//                resetAutomatically(activity);
             }
         } else {
             // keep unfocus
@@ -513,7 +514,7 @@ public class ModActivity extends XposedModule {
                     activity, FIELD_RECEIVER_REGISTERED, false);
             logD("unregistered");
 
-            resetAutomatically(activity);
+//            resetAutomatically(activity);
         } else {
             logD("not registered");
         }
