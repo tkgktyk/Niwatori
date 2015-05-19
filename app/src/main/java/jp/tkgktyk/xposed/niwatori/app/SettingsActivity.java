@@ -284,13 +284,13 @@ public class SettingsActivity extends Activity {
         }
     }
 
-    public static class SettingsFragment extends BaseFragment {
-        private static final int mPremiumSettings[] = {
-                R.string.key_initial_position,
-                R.string.key_small_screen,
-        };
+    public static class SettingsFragment extends BaseFragment
+            implements ConfirmDialogFragment.OnConfirmedListener {
+        private static final int REQUEST_INITIAL_POSITION = 1;
+        private static final int REQUEST_SMALL_SCREEN = 2;
+
         private static final int mPurchasePremiumSettings = R.string.key_purchase_premium_settings;
-        private static String ARG_HAS_PREMIUM_SETTINGS = NFW.PACKAGE_NAME + ".HAS_PREMIUM_SETTINGS";
+        private static final String ARG_HAS_PREMIUM_SETTINGS = NFW.PACKAGE_NAME + ".HAS_PREMIUM_SETTINGS";
 
         private SettingsActivity mSettingsActivity;
         private boolean mHasPremiumSettings;
@@ -382,11 +382,15 @@ public class SettingsActivity extends Activity {
                     .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
-                            Intent activity = new Intent(preference.getContext(),
-                                    mHasPremiumSettings ?
-                                            InitialPositionActivity.class :
-                                            InitialPositionSimpleActivity.class);
-                            startActivity(activity);
+                            if (mHasPremiumSettings) {
+                                openActivity(InitialPositionActivity.class);
+                            } else {
+                                ConfirmDialogFragment.newInstance(
+                                        getString(R.string.title_premium_settings),
+                                        getString(R.string.note_premium_settings),
+                                        null, SettingsFragment.this, REQUEST_INITIAL_POSITION)
+                                        .show(getFragmentManager(), "initial_position");
+                            }
                             return true;
                         }
                     });
@@ -407,11 +411,15 @@ public class SettingsActivity extends Activity {
                     .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
-                            Intent activity = new Intent(preference.getContext(),
-                                    mHasPremiumSettings ?
-                                            SmallScreenActivity.class :
-                                            SmallScreenSimpleActivity.class);
-                            startActivity(activity);
+                            if (mHasPremiumSettings) {
+                                openActivity(SmallScreenActivity.class);
+                            } else {
+                                ConfirmDialogFragment.newInstance(
+                                        getString(R.string.title_premium_settings),
+                                        getString(R.string.note_premium_settings),
+                                        null, SettingsFragment.this, REQUEST_SMALL_SCREEN)
+                                        .show(getFragmentManager(), "small_screen");
+                            }
                             return true;
                         }
                     });
@@ -442,9 +450,6 @@ public class SettingsActivity extends Activity {
         private void setHasPremiumSettings(boolean purchased) {
             mHasPremiumSettings = purchased || PURCHASED;
             findPreference(mPurchasePremiumSettings).setEnabled(!mHasPremiumSettings);
-//            for (int i : mPremiumSettings) {
-//                findPreference(i).setEnabled(mHasPremiumSettings);
-//            }
         }
 
         private void disablePremiumSettings() {
@@ -452,6 +457,23 @@ public class SettingsActivity extends Activity {
             Preference pref = findPreference(mPurchasePremiumSettings);
             pref.setEnabled(false);
             pref.setSummary(R.string.summary_unavailable_premium_settings);
+        }
+
+        private void openActivity(Class<?> cls) {
+            Intent activity = new Intent(getActivity(), cls);
+            startActivity(activity);
+        }
+
+        @Override
+        public void onConfirmed(int requestCode, Bundle extras) {
+            switch (requestCode) {
+                case REQUEST_INITIAL_POSITION:
+                    openActivity(InitialPositionActivity.class);
+                    break;
+                case REQUEST_SMALL_SCREEN:
+                    openActivity(SmallScreenActivity.class);
+                    break;
+            }
         }
     }
 }

@@ -57,17 +57,9 @@
             android:name=".app.InitialPositionActivity"
             android:theme="@style/TranslucentTheme"/>
         <activity
-            android:name=".app.InitialPositionSimpleActivity"
-            android:label="@string/initial_position_activity_name"
-            android:theme="@style/DialogTheme"/>
-        <activity
             android:name=".app.SmallScreenActivity"
             android:label="@string/small_screen_activity_name"
             android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".app.SmallScreenSimpleActivity"
-            android:label="@string/small_screen_activity_name"
-            android:theme="@style/DialogTheme"/>
 
         <receiver android:name=".app.ChangeSettingsActionReceiver">
             <intent-filter>

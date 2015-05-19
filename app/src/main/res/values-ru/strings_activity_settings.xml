@@ -100,6 +100,10 @@
     <string name="title_purchase_premium_settings">Премиум настройки</string>
     <string name="summary_purchase_premium_settings">Пожертвуйте, чтобы разблокировать все параметры</string>
     <string name="summary_unavailable_premium_settings">\"Внутрипрограммные покупки\" недоступены на вашем телефоне.</string>
+    <string name="title_premium_settings">Premium Settings</string>
+    <string name="note_premium_settings">Please donate to use graphical settings!</string>
+    <string name="use_without_donation">Use without donation</string>
+    <string name="back">Back</string>
 
     <!-- Links -->
     <string name="title_google_play">Получить Google Play версию</string>
