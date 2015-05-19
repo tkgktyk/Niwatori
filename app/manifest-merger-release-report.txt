@@ -111,7 +111,7 @@ ADDED from AndroidManifest.xml:56:9
 		ADDED from AndroidManifest.xml:58:13
 	android:name
 		ADDED from AndroidManifest.xml:57:13
-activity#jp.tkgktyk.xposed.niwatori.app.InitialPositionSimpleActivity
+activity#jp.tkgktyk.xposed.niwatori.app.SmallScreenActivity
 ADDED from AndroidManifest.xml:59:9
 	android:label
 		ADDED from AndroidManifest.xml:61:13
@@ -119,32 +119,16 @@ ADDED from AndroidManifest.xml:59:9
 		ADDED from AndroidManifest.xml:62:13
 	android:name
 		ADDED from AndroidManifest.xml:60:13
-activity#jp.tkgktyk.xposed.niwatori.app.SmallScreenActivity
-ADDED from AndroidManifest.xml:63:9
-	android:label
-		ADDED from AndroidManifest.xml:65:13
-	android:theme
-		ADDED from AndroidManifest.xml:66:13
-	android:name
-		ADDED from AndroidManifest.xml:64:13
-activity#jp.tkgktyk.xposed.niwatori.app.SmallScreenSimpleActivity
-ADDED from AndroidManifest.xml:67:9
-	android:label
-		ADDED from AndroidManifest.xml:69:13
-	android:theme
-		ADDED from AndroidManifest.xml:70:13
-	android:name
-		ADDED from AndroidManifest.xml:68:13
 receiver#jp.tkgktyk.xposed.niwatori.app.ChangeSettingsActionReceiver
-ADDED from AndroidManifest.xml:72:9
+ADDED from AndroidManifest.xml:64:9
 	android:name
-		ADDED from AndroidManifest.xml:72:19
+		ADDED from AndroidManifest.xml:64:19
 intent-filter#jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT
-ADDED from AndroidManifest.xml:73:13
+ADDED from AndroidManifest.xml:65:13
 action#jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT
-ADDED from AndroidManifest.xml:74:17
+ADDED from AndroidManifest.xml:66:17
 	android:name
-		ADDED from AndroidManifest.xml:74:25
+		ADDED from AndroidManifest.xml:66:25
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from Niwatori:flyinglayout:unspecified:7:5

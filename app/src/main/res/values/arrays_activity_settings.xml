@@ -83,4 +83,18 @@
     <integer name="default_small_screen_size" translatable="false">60</integer>
     <integer name="default_small_screen_pivot_x" translatable="false">0</integer>
     <integer name="default_small_screen_pivot_y" translatable="false">100</integer>
+    <!-- Extra Action on Recents -->
+    <string-array name="events_on_recents" translatable="false">
+        <item>@string/action_none</item>
+        <item>@string/tap_on_recens</item>
+        <item>@string/double_tap_on_recens</item>
+        <item>@string/long_press_on_recens</item>
+    </string-array>
+    <string-array name="event_values_on_recents" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string name="default_event_on_recents" translatable="false">0</string>
 </resources>

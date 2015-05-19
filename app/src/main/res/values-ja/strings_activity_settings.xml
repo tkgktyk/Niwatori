@@ -18,7 +18,7 @@
     <string name="current_s1">現在値: %1$s</string>
 
     <!-- General -->
-    <string name="general">General</string>
+    <string name="category_general">General</string>
     <!-- Blacklist -->
     <string name="title_blacklist">@string/blacklist_activity_name</string>
     <!-- Animation -->
@@ -35,7 +35,7 @@
     <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
 
     <!-- Movable Screen -->
-    <string name="movable_screen">Movable Screen</string>
+    <string name="category_movable_screen">Movable Screen</string>
     <!-- Speed -->
     <string name="title_speed">スピード</string>
     <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
@@ -75,7 +75,7 @@
     <string name="unit_percent">%</string>
 
     <!-- Small Screen -->
-    <string name="small_screen">Small Screen</string>
+    <string name="category_small_screen">Small Screen</string>
     <!-- Small Screen Size -->
     <string name="title_small_screen">サイズ*</string>
     <string name="summary_small_screen">大きさと中心軸を変更</string>
@@ -90,7 +90,7 @@
     <string name="summary_another_resize_method">Apply another method to specified apps</string>
 
     <!-- Others -->
-    <string name="title_others">その他</string>
+    <string name="category_other">その他</string>
     <!-- Log Actions -->
     <string name="title_log_actions">アクション履歴を記録する</string>
     <string name="summary_log_actions">履歴と、どのアプリに使われたか</string>
@@ -108,6 +108,12 @@
     <!-- Links -->
     <string name="title_google_play">Google Playバージョンのアプリ</string>
     <string name="summary_google_play">Google Playに移動します</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="title_extra_action_on_recents">Extra Action on Recents</string>
+    <string name="tap_on_recens">Tap</string>
+    <string name="double_tap_on_recens">Double Tap</string>
+    <string name="long_press_on_recens">Long Press</string>
 
     <!-- About -->
     <string name="title_about">@string/about_activity_name</string>

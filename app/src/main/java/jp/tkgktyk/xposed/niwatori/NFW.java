@@ -95,6 +95,11 @@ public class NFW {
         ACTIVITY_FILTER.setPriority(NFW.PRIORITY_ACTIVITY);
     }
 
+    public static final int NONE_ON_RECENTS = 0;
+    public static final int TAP_ON_RECENTS = 1;
+    public static final int DOUBLE_TAP_ON_RECENTS = 2;
+    public static final int LONG_PRESS_ON_RECENTS = 3;
+
     @SuppressWarnings("deprecation")
     @SuppressLint("WorldReadableFiles")
     public static SharedPreferences getSharedPreferences(Context context) {
@@ -163,6 +168,8 @@ public class NFW {
 
         public boolean logActions;
 
+        public int extraActionOnRecents;
+
         public Settings(SharedPreferences prefs) {
             load(prefs);
         }
@@ -189,6 +196,9 @@ public class NFW {
                     Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;
             anotherResizeMethodTargets = prefs.getStringSet("key_another_resize_method_targets",
                     Collections.<String>emptySet());
+
+            extraActionOnRecents = Integer.parseInt(
+                    prefs.getString("key_extra_action_on_recents", "0"));
 
             logActions = prefs.getBoolean("key_log_actions", false) || BuildConfig.DEBUG;
         }

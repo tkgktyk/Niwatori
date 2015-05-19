@@ -433,6 +433,8 @@ public class SettingsActivity extends Activity {
                                     R.string.another_resize_method_targets_activity_name);
                         }
                     });
+            // Other
+            showListSummary(R.string.key_extra_action_on_recents);
             // About
             Preference about = findPreference(R.string.key_about);
             about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

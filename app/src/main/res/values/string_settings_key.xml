@@ -45,6 +45,9 @@
     <!-- Links -->
     <string name="key_google_play" translatable="false">key_google_play</string>
 
+    <!-- Extra Action on Recents -->
+    <string name="key_extra_action_on_recents" translatable="false">key_extra_action_on_recents</string>
+
     <!-- About -->
     <string name="key_about" translatable="false">key_about</string>
 </resources>

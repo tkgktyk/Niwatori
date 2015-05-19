@@ -18,7 +18,7 @@
     <string name="current_s1">Состояние: %1$s</string>
 
     <!-- General -->
-    <string name="general">Основное</string>
+    <string name="category_general">Основное</string>
     <!-- Blacklist -->
     <string name="title_blacklist">@string/blacklist_activity_name</string>
     <!-- Animation -->
@@ -35,7 +35,7 @@
     <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
 
     <!-- Movable Screen -->
-    <string name="movable_screen">Передвигаемый экран</string>
+    <string name="category_movable_screen">Передвигаемый экран</string>
     <!-- Speed -->
     <string name="title_speed">Скорость</string>
     <string name="note_speed">Рекомендуемое значение:\n - около 2-ух для смартфона</string>
@@ -72,7 +72,7 @@
     <string name="unit_percent">%</string>
 
     <!-- Small Screen -->
-    <string name="small_screen">Небольшой экран</string>
+    <string name="category_small_screen">Небольшой экран</string>
     <!-- Auto Pin -->
     <string name="title_auto_pin">Auto Pin</string>
     <string name="summary_auto_pin">Pin after moving</string>
@@ -89,8 +89,8 @@
     <string name="title_another_resize_method">Another Resize Method</string>
     <string name="summary_another_resize_method">Apply another method to specified apps</string>
 
-    <!-- Others -->
-    <string name="title_others">Другое</string>
+    <!-- Other -->
+    <string name="category_other">Другое</string>
     <!-- Log Actions -->
     <string name="title_log_actions">Log Actions</string>
     <string name="summary_log_actions">History and who consumed</string>
@@ -108,6 +108,12 @@
     <!-- Links -->
     <string name="title_google_play">Получить Google Play версию</string>
     <string name="summary_google_play">Нажмите, чтобы перейти в Google Play</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="title_extra_action_on_recents">Extra Action on Recents</string>
+    <string name="tap_on_recens">Tap</string>
+    <string name="double_tap_on_recens">Double Tap</string>
+    <string name="long_press_on_recens">Long Press</string>
 
     <!-- About -->
     <string name="title_about">О приложении</string>

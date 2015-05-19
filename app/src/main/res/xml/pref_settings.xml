@@ -18,7 +18,7 @@
         android:title="@string/title_settings">
         <!-- General -->
         <PreferenceCategory
-            android:title="@string/general">
+            android:title="@string/category_general">
             <!-- Blacklist -->
             <Preference
                 android:key="@string/key_blacklist"
@@ -60,7 +60,7 @@
 
         <!-- Movable Screen -->
         <PreferenceCategory
-            android:title="@string/movable_screen">
+            android:title="@string/category_movable_screen">
             <!-- Speed -->
             <EditTextPreference
                 android:defaultValue="1.5"
@@ -91,7 +91,7 @@
 
         <!-- Small Screen -->
         <PreferenceCategory
-            android:title="@string/small_screen">
+            android:title="@string/category_small_screen">
             <!-- Boundary Color -->
             <ListPreference
                 android:defaultValue="@string/default_boundary_color_ss"
@@ -111,9 +111,9 @@
                 android:summary="@string/summary_another_resize_method"/>
         </PreferenceCategory>
 
-        <!-- Others -->
+        <!-- Other -->
         <PreferenceCategory
-            android:title="@string/title_others">
+            android:title="@string/category_other">
             <!-- Log Actions -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
@@ -135,7 +135,13 @@
                     android:action="android.intent.action.VIEW"
                     android:data="market://details?id=jp.tkgktyk.xposed.niwatori"/>
             </Preference>
-
+            <!-- Extra Action on Recents -->
+            <ListPreference
+                android:defaultValue="@string/default_event_on_recents"
+                android:entries="@array/events_on_recents"
+                android:entryValues="@array/event_values_on_recents"
+                android:key="@string/key_extra_action_on_recents"
+                android:title="@string/title_extra_action_on_recents"/>
         </PreferenceCategory>
     </PreferenceScreen>
 
