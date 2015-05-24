@@ -102,7 +102,8 @@
     <string name="summary_unavailable_premium_settings">\"In-app Billing\" is not available on your phone.</string>
     <string name="title_premium_settings">Premium Settings</string>
     <string name="note_premium_settings">Please donate to use graphical settings!</string>
-    <string name="use_without_donation">Use without donation</string>
+    <string name="already_donated">Already donated</string>
+    <string name="thank_you_very_much">Thank you!</string>
     <string name="back">Back</string>
 
     <!-- Links -->

@@ -54,7 +54,7 @@ public class ConfirmDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setTitle(getTitle())
                 .setMessage(getMessage())
-                .setPositiveButton(R.string.use_without_donation, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.already_donated, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         returnToTarget();
@@ -76,6 +76,6 @@ public class ConfirmDialogFragment extends DialogFragment {
     }
 
     public interface OnConfirmedListener {
-        public void onConfirmed(int requestCode, Bundle extras);
+        void onConfirmed(int requestCode, Bundle extras);
     }
 }

@@ -2,14 +2,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Instructions -->
     <Preference
+        android:icon="@null"
         android:summary="@string/summary_instructions"
         android:title="@string/title_instructions"/>
     <!-- Shortcuts -->
     <Preference
+        android:icon="@null"
         android:summary="@string/summary_shortcuts"
         android:title="@string/title_shortcuts"/>
     <!-- Notes -->
     <Preference
+        android:icon="@null"
         android:summary="@string/summary_notes"
         android:title="@string/title_notes"/>
 
@@ -21,11 +24,13 @@
             android:title="@string/category_general">
             <!-- Blacklist -->
             <Preference
+                android:icon="@null"
                 android:key="@string/key_blacklist"
                 android:title="@string/title_blacklist"/>
             <!-- Animation -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="true"
+                android:icon="@null"
                 android:key="@string/key_animation"
                 android:summaryOff="@string/summary_animation_off"
                 android:summaryOn="@string/summary_animation_on"
@@ -33,6 +38,7 @@
             <!-- Reset Automatically -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
+                android:icon="@null"
                 android:key="@string/key_auto_reset"
                 android:summary="@string/summary_auto_reset"
                 android:title="@string/title_auto_reset"/>
@@ -41,6 +47,7 @@
                 android:defaultValue="@string/intent_action_small_screen"
                 android:entries="@array/extra_actions"
                 android:entryValues="@array/extra_action_values"
+                android:icon="@null"
                 android:key="@string/key_extra_action"
                 android:title="@string/title_extra_action"/>
             <!-- Actions at Outside -->
@@ -48,12 +55,14 @@
                 android:defaultValue="@string/intent_action_soft_reset"
                 android:entries="@array/outside_actions"
                 android:entryValues="@array/outside_action_values"
+                android:icon="@null"
                 android:key="@string/key_action_when_tap_outside"
                 android:title="@string/title_action_when_tap_outside"/>
             <ListPreference
                 android:defaultValue="@string/intent_action_cs_swap_left_right"
                 android:entries="@array/outside_actions"
                 android:entryValues="@array/outside_action_values"
+                android:icon="@null"
                 android:key="@string/key_action_when_double_tap_outside"
                 android:title="@string/title_action_when_double_tap_outside"/>
         </PreferenceCategory>
@@ -65,6 +74,7 @@
             <EditTextPreference
                 android:defaultValue="1.5"
                 android:dialogMessage="@string/note_speed"
+                android:icon="@null"
                 android:inputType="numberDecimal"
                 android:key="@string/key_speed"
                 android:selectAllOnFocus="true"
@@ -72,6 +82,7 @@
             <!-- Auto Pin -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
+                android:icon="@null"
                 android:key="@string/key_auto_pin"
                 android:summary="@string/summary_auto_pin"
                 android:title="@string/title_auto_pin"/>
@@ -80,10 +91,12 @@
                 android:defaultValue="@string/default_boundary_color_ms"
                 android:entries="@array/boundary_colors"
                 android:entryValues="@array/boundary_color_values"
+                android:icon="@null"
                 android:key="@string/key_boundary_color_ms"
                 android:title="@string/title_boundary_color"/>
             <!-- Initial Position -->
             <Preference
+                android:icon="@null"
                 android:key="@string/key_initial_position"
                 android:summary="@string/summary_initial_position"
                 android:title="@string/title_initial_position"/>
@@ -97,18 +110,21 @@
                 android:defaultValue="@string/default_boundary_color_ss"
                 android:entries="@array/boundary_colors"
                 android:entryValues="@array/boundary_color_values"
+                android:icon="@null"
                 android:key="@string/key_boundary_color_ss"
                 android:title="@string/title_boundary_color"/>
             <!-- Size -->
             <Preference
+                android:icon="@null"
                 android:key="@string/key_small_screen"
                 android:summary="@string/summary_small_screen"
                 android:title="@string/title_small_screen"/>
             <!-- Another Resize Method -->
             <Preference
+                android:icon="@null"
                 android:key="@string/key_another_resize_method_targets"
-                android:title="@string/title_another_resize_method"
-                android:summary="@string/summary_another_resize_method"/>
+                android:summary="@string/summary_another_resize_method"
+                android:title="@string/title_another_resize_method"/>
         </PreferenceCategory>
 
         <!-- Other -->
@@ -117,17 +133,20 @@
             <!-- Log Actions -->
             <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
+                android:icon="@null"
                 android:key="@string/key_log_actions"
                 android:summary="@string/summary_log_actions"
                 android:title="@string/title_log_actions"/>
 
             <!-- Purchases -->
             <Preference
+                android:icon="@null"
                 android:key="@string/key_purchase_premium_settings"
                 android:summary="@string/summary_purchase_premium_settings"
                 android:title="@string/title_purchase_premium_settings"/>
             <!-- Links -->
             <Preference
+                android:icon="@null"
                 android:key="@string/key_google_play"
                 android:summary="@string/summary_google_play"
                 android:title="@string/title_google_play">
@@ -140,6 +159,7 @@
                 android:defaultValue="@string/default_event_on_recents"
                 android:entries="@array/events_on_recents"
                 android:entryValues="@array/event_values_on_recents"
+                android:icon="@null"
                 android:key="@string/key_extra_action_on_recents"
                 android:title="@string/title_extra_action_on_recents"/>
         </PreferenceCategory>
