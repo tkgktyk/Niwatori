@@ -12,7 +12,7 @@
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:contentDescription="icon"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"/>
 
     <LinearLayout
         android:layout_width="0dp"
