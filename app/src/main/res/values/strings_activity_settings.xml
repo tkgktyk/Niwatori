@@ -5,7 +5,7 @@
 
     <!-- Instructions -->
     <string name="title_instructions">Instructions</string>
-    <string name="summary_instructions">This mod is a collection of one-handed mode:\n- Movable Screen\n- Slide Down\n- Small Screen\nYou can start one-handed mode by shortcuts. Launch them from your launcher.</string>
+    <string name="summary_instructions">This mod is a collection of one-handed mode:\n- Movable Screen\n- Slide Down\n- Small Screen\nYou can start one-handed mode by shortcuts.</string>
     <!-- Shortcuts -->
     <string name="title_shortcuts">Shortcuts [One-handed mode]</string>
     <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
