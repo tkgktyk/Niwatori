@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Loader;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -158,9 +161,12 @@ public class AppSelectFragment extends ListFragment implements
     }
 
     public static class SelectedListLoader extends MyAsyncTaskLoader<List<Entry>> {
+        private int mIconSize;
 
         public SelectedListLoader(Context context) {
             super(context);
+
+            mIconSize = context.getResources().getDimensionPixelSize(android.R.dimen.app_icon_size);
         }
 
         @Override
@@ -173,12 +179,30 @@ public class AppSelectFragment extends ListFragment implements
             List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
             Collections.sort(apps, new ApplicationInfo.DisplayNameComparator(pm));
             for (ApplicationInfo info : apps) {
-                Drawable icon = pm.getApplicationIcon(info);
+                Drawable icon = resizeIcon(pm.getApplicationIcon(info));
                 String appName = (String) pm.getApplicationLabel(info);
                 String packageName = info.packageName;
                 ret.add(new Entry(icon, appName, packageName));
+                Log.d(TAG, appName + " icon size = " + icon.getIntrinsicWidth() * icon.getIntrinsicHeight());
             }
             return ret;
+        }
+
+        private Drawable resizeIcon(Drawable icon) {
+            int size = Math.max(icon.getIntrinsicHeight(), icon.getIntrinsicWidth());
+            if (size <= mIconSize) {
+                return icon;
+            }
+            if (!(icon instanceof BitmapDrawable)) {
+                return icon;
+            }
+            float downScale = ((float) mIconSize) / size;
+            Matrix matrix = new Matrix();
+            matrix.postScale(downScale, downScale);
+            Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+            return new BitmapDrawable(getContext().getResources(),
+                    Bitmap.createBitmap(bitmap, 0, 0, icon.getIntrinsicWidth(),
+                            icon.getIntrinsicHeight(), matrix, true));
         }
     }
 
