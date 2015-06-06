@@ -2,15 +2,18 @@ package jp.tkgktyk.xposed.niwatori.app;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,9 +40,32 @@ import jp.tkgktyk.xposed.niwatori.R;
 public class AppSelectFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<List<AppSelectFragment.Entry>> {
     private static final String TAG = AppSelectFragment.class.getSimpleName();
+
+    private static final int MSG_ICON_CACHED = 1;
+
     private boolean mShowOnlySelected;
     private boolean mSave = false;
     private String mPrefKey;
+
+    private IconCache mIconCache;
+
+    private BroadcastReceiver mIconCachedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mHandler.removeMessages(MSG_ICON_CACHED);
+            mHandler.sendEmptyMessage(MSG_ICON_CACHED);
+        }
+    };
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Adapter adapter = (Adapter) getListAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,8 +79,18 @@ public class AppSelectFragment extends ListFragment implements
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (mIconCache == null) {
+            mIconCache = new IconCache(view.getContext());
+        }
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -80,8 +116,22 @@ public class AppSelectFragment extends ListFragment implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        mHandler.removeMessages(MSG_ICON_CACHED);
+        mHandler.sendEmptyMessage(MSG_ICON_CACHED);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(IconCache.ACTION_ICON_CACHED);
+        LocalBroadcastManager.getInstance(getActivity())
+                .registerReceiver(mIconCachedReceiver, filter);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mIconCachedReceiver);
         saveSelectedList();
     }
 
@@ -89,6 +139,7 @@ public class AppSelectFragment extends ListFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         getLoaderManager().destroyLoader(0);
+        mIconCache.evict();
     }
 
     @Override
@@ -100,8 +151,6 @@ public class AppSelectFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<List<Entry>> loader, List<Entry> entries) {
         List<Entry> deliverer = new ArrayList<>();
-        Adapter adapter = new Adapter(getActivity(), deliverer);
-        setListAdapter(adapter);
 
         Set<String> selectedSet = NFW.getSharedPreferences(getActivity())
                 .getStringSet(mPrefKey, Collections.<String>emptySet());
@@ -111,8 +160,7 @@ public class AppSelectFragment extends ListFragment implements
                 deliverer.add(entry);
             }
         }
-        adapter.notifyDataSetChanged();
-
+        setListAdapter(new Adapter(getActivity(), deliverer));
         setListShown(true);
     }
 
@@ -147,26 +195,20 @@ public class AppSelectFragment extends ListFragment implements
     }
 
     public static class Entry {
-        public final Drawable icon;
         public final String appName;
         public final String packageName;
 
         public boolean selected = false;
 
-        public Entry(Drawable icon, String appName, String packageName) {
-            this.icon = icon;
+        public Entry(String appName, String packageName) {
             this.appName = appName;
             this.packageName = packageName;
         }
     }
 
     public static class SelectedListLoader extends MyAsyncTaskLoader<List<Entry>> {
-        private int mIconSize;
-
         public SelectedListLoader(Context context) {
             super(context);
-
-            mIconSize = context.getResources().getDimensionPixelSize(android.R.dimen.app_icon_size);
         }
 
         @Override
@@ -179,30 +221,11 @@ public class AppSelectFragment extends ListFragment implements
             List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
             Collections.sort(apps, new ApplicationInfo.DisplayNameComparator(pm));
             for (ApplicationInfo info : apps) {
-                Drawable icon = resizeIcon(pm.getApplicationIcon(info));
                 String appName = (String) pm.getApplicationLabel(info);
                 String packageName = info.packageName;
-                ret.add(new Entry(icon, appName, packageName));
-                Log.d(TAG, appName + " icon size = " + icon.getIntrinsicWidth() * icon.getIntrinsicHeight());
+                ret.add(new Entry(appName, packageName));
             }
             return ret;
-        }
-
-        private Drawable resizeIcon(Drawable icon) {
-            int size = Math.max(icon.getIntrinsicHeight(), icon.getIntrinsicWidth());
-            if (size <= mIconSize) {
-                return icon;
-            }
-            if (!(icon instanceof BitmapDrawable)) {
-                return icon;
-            }
-            float downScale = ((float) mIconSize) / size;
-            Matrix matrix = new Matrix();
-            matrix.postScale(downScale, downScale);
-            Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
-            return new BitmapDrawable(getContext().getResources(),
-                    Bitmap.createBitmap(bitmap, 0, 0, icon.getIntrinsicWidth(),
-                            icon.getIntrinsicHeight(), matrix, true));
         }
     }
 
@@ -227,7 +250,13 @@ public class AppSelectFragment extends ListFragment implements
 
             Entry entry = getItem(position);
             //
-            holder.icon.setImageDrawable(entry.icon);
+            Bitmap icon = mIconCache.get(entry.packageName);
+            if (icon != null && !icon.isRecycled()) {
+                holder.icon.setImageBitmap(icon);
+            } else {
+                holder.icon.setImageBitmap(null);
+                mIconCache.loadAsync(getContext(), entry.packageName);
+            }
             holder.appName.setText(entry.appName);
             holder.packageName.setText(entry.packageName);
             holder.checkbox.setChecked(entry.selected);
