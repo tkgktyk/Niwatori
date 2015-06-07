@@ -37,7 +37,6 @@ public class IconCache {
 //                }
 //            }
 //        };
-//        Log.d(TAG, "max memory = " + max + "@" + this);
 
         mMemoryCache = new LruCache<String, Bitmap>(30) {
             @Override
