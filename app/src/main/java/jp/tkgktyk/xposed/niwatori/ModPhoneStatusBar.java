@@ -4,7 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,6 +23,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  * Created by tkgktyk on 2015/02/13.
  */
 public class ModPhoneStatusBar extends XposedModule {
+    private static final String CLASS_PHONE_STATUS_BAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
     private static final String CLASS_PHONE_STATUS_BAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
     private static final String CLASS_PANEL_HOLDER = "com.android.systemui.statusbar.phone.PanelHolder";
 
@@ -29,10 +33,9 @@ public class ModPhoneStatusBar extends XposedModule {
     // for status bar
     private static FlyingHelper mHelper;
 
+    private static Object mPhoneStatusBar;
     private static View mPhoneStatusBarView;
     private static final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
-        private static final String STATUS_BAR_SERVICE = "statusbar";
-
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
@@ -40,7 +43,7 @@ public class ModPhoneStatusBar extends XposedModule {
                 logD("global broadcast receiver: " + action);
                 final int mState = XposedHelpers.getIntField(mPhoneStatusBarView, "mState");
                 if (action.startsWith(NFW.PREFIX_ACTION_SB)) {
-                    consumeMyAction(context, action);
+                    consumeMyAction(action);
                     return;
                 }
                 if (mState == 0) { // STATE_CLOSED = 0
@@ -50,7 +53,7 @@ public class ModPhoneStatusBar extends XposedModule {
                 mHelper.performAction(action);
                 abortBroadcast();
                 if (mHelper.getSettings().logActions) {
-                    log(STATUS_BAR_SERVICE + " consumed: " + action);
+                    log("statusbar consumed: " + action);
                 }
             } catch (Throwable t) {
                 logE(t);
@@ -58,18 +61,16 @@ public class ModPhoneStatusBar extends XposedModule {
         }
 
         @SuppressWarnings("ResourceType")
-        private void consumeMyAction(Context context, String action) {
+        private void consumeMyAction(String action) {
             if (action.equals(NFW.ACTION_SB_EXPAND_NOTIFICATIONS)) {
-                Object statusBar = context.getSystemService(STATUS_BAR_SERVICE);
-                XposedHelpers.callMethod(statusBar, "expandNotificationsPanel");
+                XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandNotificationsPanel");
                 mHelper.performExtraAction();
             } else if (action.equals(NFW.ACTION_SB_EXPAND_QUICK_SETTINGS)) {
-                Object statusBar = context.getSystemService(STATUS_BAR_SERVICE);
-                XposedHelpers.callMethod(statusBar, "expandSettingsPanel");
+                XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandSettingsPanel");
                 mHelper.performExtraAction();
             }
             if (mHelper.getSettings().logActions) {
-                log(STATUS_BAR_SERVICE + " consumed: " + action);
+                log("statusbar consumed: " + action);
             }
         }
     };
@@ -84,6 +85,15 @@ public class ModPhoneStatusBar extends XposedModule {
         }
         try {
             installToStatusBar(loadPackageParam.classLoader);
+            //
+            // for Software Keys
+            //
+            NFW.Settings settings = newSettings(mPrefs);
+            if (settings.extraActionOnRecents != NFW.NONE_ON_RECENTS) {
+                final ClassLoader classLoader = loadPackageParam.classLoader;
+                modifySoftwareKey(classLoader);
+                log("prepared to modify software recents key");
+            }
         } catch (Throwable t) {
             logE(t);
         }
@@ -186,6 +196,14 @@ public class ModPhoneStatusBar extends XposedModule {
                         return invokeOriginalMethod(methodHookParam);
                     }
                 });
+        final Class<?> classPhoneStatusBar = XposedHelpers.findClass(
+                CLASS_PHONE_STATUS_BAR, classLoader);
+        XposedBridge.hookAllConstructors(classPhoneStatusBar, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                mPhoneStatusBar = param.thisObject;
+            }
+        });
         final Class<?> classPhoneStatusBarView = XposedHelpers.findClass(
                 CLASS_PHONE_STATUS_BAR_VIEW, classLoader);
         XposedBridge.hookAllConstructors(classPhoneStatusBarView, new XC_MethodHook() {
@@ -218,5 +236,115 @@ public class ModPhoneStatusBar extends XposedModule {
 
     private static FlyingHelper getHelper(@NonNull Object obj) {
         return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(obj, FIELD_FLYING_HELPER);
+    }
+
+    private static void modifySoftwareKey(ClassLoader classLoader) {
+        final Class<?> classPhoneStatusBar = XposedHelpers.findClass(CLASS_PHONE_STATUS_BAR, classLoader);
+        XposedBridge.hookAllMethods(classPhoneStatusBar, "prepareNavigationBarView",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        logD("prepareNavigationBarView");
+                        try {
+                            Object phoneStatusBar = param.thisObject;
+                            final View navigationBarView = (View) XposedHelpers.getObjectField(
+                                    phoneStatusBar, "mNavigationBarView");
+                            modifyRecentsKey(phoneStatusBar, navigationBarView);
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                    }
+
+                    private void modifyRecentsKey(final Object phoneStatusBar, View navigationBarView) {
+                        final View recentsButton = (View) XposedHelpers.callMethod(
+                                navigationBarView, "getRecentsButton");
+                        final View.OnClickListener clickListener
+                                = (View.OnClickListener) XposedHelpers.getObjectField(
+                                phoneStatusBar, "mRecentsClickListener");
+                        final View.OnTouchListener touchListener
+                                = (View.OnTouchListener) XposedHelpers.getObjectField(
+                                phoneStatusBar, "mRecentsPreloadOnTouchListener");
+                        View.OnLongClickListener localLCL = null;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            localLCL = (View.OnLongClickListener) XposedHelpers.getObjectField(
+                                    phoneStatusBar, "mLongPressBackRecentsListener");
+                        }
+                        final View.OnLongClickListener longClickListener = localLCL;
+                        recentsButton.setLongClickable(false);
+                        recentsButton.setOnLongClickListener(null);
+                        recentsButton.setOnClickListener(null);
+                        final GestureDetector gestureDetector = new GestureDetector(
+                                navigationBarView.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                            @Override
+                            public boolean onSingleTapConfirmed(MotionEvent e) {
+                                try {
+                                    NFW.Settings settings = mHelper.getSettings();
+                                    if (settings.extraActionOnRecents != NFW.TAP_ON_RECENTS) {
+                                        clickListener.onClick(recentsButton);
+                                    } else {
+                                        NFW.performAction(recentsButton.getContext(),
+                                                settings.extraAction);
+                                    }
+                                } catch (Throwable t) {
+                                    logE(t);
+                                }
+                                return true;
+                            }
+
+                            @Override
+                            public void onLongPress(MotionEvent e) {
+                                try {
+                                    NFW.Settings settings = mHelper.getSettings();
+                                    if (settings.extraActionOnRecents != NFW.LONG_PRESS_ON_RECENTS) {
+                                        if (longClickListener != null) {
+                                            longClickListener.onLongClick(recentsButton);
+                                        } else {
+                                            clickListener.onClick(recentsButton);
+                                        }
+                                    } else {
+                                        NFW.performAction(recentsButton.getContext(),
+                                                settings.extraAction);
+                                    }
+                                    recentsButton.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                                } catch (Throwable t) {
+                                    logE(t);
+                                }
+                            }
+
+                            @Override
+                            public boolean onDoubleTap(MotionEvent e) {
+                                try {
+                                    NFW.Settings settings = mHelper.getSettings();
+                                    if (settings.extraActionOnRecents != NFW.DOUBLE_TAP_ON_RECENTS) {
+                                        if (settings.extraActionOnRecents == NFW.TAP_ON_RECENTS) {
+                                            clickListener.onClick(recentsButton);
+                                        } else {
+                                            return false;
+                                        }
+                                    } else {
+                                        NFW.performAction(recentsButton.getContext(),
+                                                settings.extraAction);
+                                    }
+                                    recentsButton.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                                } catch (Throwable t) {
+                                    logE(t);
+                                }
+                                return true;
+                            }
+                        });
+                        recentsButton.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                try {
+                                    // original touchListener always return false.
+                                    touchListener.onTouch(v, event);
+                                } catch (Throwable t) {
+                                    logE(t);
+                                }
+                                return gestureDetector.onTouchEvent(event);
+                            }
+                        });
+                    }
+                });
     }
 }
