@@ -15,8 +15,6 @@ import android.util.LruCache;
  * Created by tkgktyk on 2015/06/06.
  */
 public class IconCache {
-    private static final String TAG = IconCache.class.getSimpleName();
-
     public static final String ACTION_ICON_CACHED = "iconChached";
 
     private final int mIconSize;
