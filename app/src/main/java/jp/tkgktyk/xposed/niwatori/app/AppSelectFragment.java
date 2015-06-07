@@ -1,12 +1,10 @@
 package jp.tkgktyk.xposed.niwatori.app;
 
 import android.app.ListFragment;
-import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,8 +37,7 @@ import jp.tkgktyk.xposed.niwatori.R;
 /**
  * Created by tkgktyk on 2015/02/13.
  */
-public class AppSelectFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<List<AppSelectFragment.Entry>> {
+public class AppSelectFragment extends ListFragment {
     private static final String TAG = AppSelectFragment.class.getSimpleName();
 
     private static final int MSG_ICON_CACHED = 1;
@@ -48,6 +47,7 @@ public class AppSelectFragment extends ListFragment implements
     private String mPrefKey;
 
     private IconCache mIconCache;
+    private final ArrayList<Entry> mEntryList = Lists.newArrayList();
 
     private BroadcastReceiver mIconCachedReceiver = new BroadcastReceiver() {
         @Override
@@ -92,7 +92,39 @@ public class AppSelectFragment extends ListFragment implements
             mIconCache = new IconCache(view.getContext());
         }
 
-        getLoaderManager().initLoader(0, null, this);
+        Context context = view.getContext();
+        mEntryList.clear();
+
+        // get installed application's info
+        PackageManager pm = context.getPackageManager();
+        List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        Collections.sort(apps, new ApplicationInfo.DisplayNameComparator(pm));
+        for (ApplicationInfo info : apps) {
+            String appName = (String) pm.getApplicationLabel(info);
+            String packageName = info.packageName;
+            mEntryList.add(new Entry(appName, packageName));
+        }
+
+        updateListShown();
+    }
+
+    private void updateListShown() {
+        List<Entry> entries;
+        if (!mShowOnlySelected) {
+            entries = mEntryList;
+        } else {
+            List<Entry> filtered = new ArrayList<>();
+            Set<String> selectedSet = NFW.getSharedPreferences(getActivity())
+                    .getStringSet(mPrefKey, Collections.<String>emptySet());
+            for (Entry entry : mEntryList) {
+                entry.selected = selectedSet.contains(entry.packageName);
+                if (entry.selected) {
+                    filtered.add(entry);
+                }
+            }
+            entries = filtered;
+        }
+        setListAdapter(new Adapter(getActivity(), entries));
     }
 
     @Override
@@ -111,7 +143,7 @@ public class AppSelectFragment extends ListFragment implements
         if (only != mShowOnlySelected) {
             saveSelectedList();
             mShowOnlySelected = only;
-            getLoaderManager().initLoader(0, null, this);
+            updateListShown();
         }
     }
 
@@ -138,35 +170,8 @@ public class AppSelectFragment extends ListFragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getLoaderManager().destroyLoader(0);
+
         mIconCache.evict();
-    }
-
-    @Override
-    public Loader<List<Entry>> onCreateLoader(int id, Bundle bundle) {
-        setListShown(false);
-        return new SelectedListLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Entry>> loader, List<Entry> entries) {
-        List<Entry> deliverer = new ArrayList<>();
-
-        Set<String> selectedSet = NFW.getSharedPreferences(getActivity())
-                .getStringSet(mPrefKey, Collections.<String>emptySet());
-        for (Entry entry : entries) {
-            entry.selected = selectedSet.contains(entry.packageName);
-            if (!mShowOnlySelected || entry.selected) {
-                deliverer.add(entry);
-            }
-        }
-        setListAdapter(new Adapter(getActivity(), deliverer));
-        setListShown(true);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Entry>> loader) {
-        // TODO do nothing?
     }
 
     public void saveSelectedList() {
@@ -203,29 +208,6 @@ public class AppSelectFragment extends ListFragment implements
         public Entry(String appName, String packageName) {
             this.appName = appName;
             this.packageName = packageName;
-        }
-    }
-
-    public static class SelectedListLoader extends MyAsyncTaskLoader<List<Entry>> {
-        public SelectedListLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        public List<Entry> loadInBackground() {
-            List<Entry> ret = new ArrayList<>();
-            Context context = getContext();
-
-            // get installed application's info
-            PackageManager pm = context.getPackageManager();
-            List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-            Collections.sort(apps, new ApplicationInfo.DisplayNameComparator(pm));
-            for (ApplicationInfo info : apps) {
-                String appName = (String) pm.getApplicationLabel(info);
-                String packageName = info.packageName;
-                ret.add(new Entry(appName, packageName));
-            }
-            return ret;
         }
     }
 
