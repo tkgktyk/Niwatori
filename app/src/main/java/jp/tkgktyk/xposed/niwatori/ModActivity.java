@@ -156,7 +156,7 @@ public class ModActivity extends XposedModule {
                                 final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
                                 final MotionEvent event = (MotionEvent) methodHookParam.args[0];
                                 final FlyingHelper helper = getHelper(decorView);
-                                if (helper.onInterceptTouchEvent(event)) {
+                                if (helper != null && helper.onInterceptTouchEvent(event)) {
                                     return true;
                                 }
                             } catch (Throwable t) {
@@ -173,7 +173,7 @@ public class ModActivity extends XposedModule {
                                 final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
                                 final MotionEvent event = (MotionEvent) methodHookParam.args[0];
                                 final FlyingHelper helper = getHelper(decorView);
-                                if (helper.onTouchEvent(event)) {
+                                if (helper != null && helper.onTouchEvent(event)) {
                                     return true;
                                 }
                             } catch (Throwable t) {
@@ -190,7 +190,9 @@ public class ModActivity extends XposedModule {
                                 final FrameLayout decorView = (FrameLayout) param.thisObject;
                                 final Canvas canvas = (Canvas) param.args[0];
                                 final FlyingHelper helper = getHelper(decorView);
-                                helper.draw(canvas);
+                                if (helper != null) {
+                                    helper.draw(canvas);
+                                }
                             } catch (Throwable t) {
                                 logE(t);
                             }
@@ -250,8 +252,11 @@ public class ModActivity extends XposedModule {
                             public void onReceive(Context context, Intent intent) {
                                 logD(decorView.getContext().getPackageName() + ": reload settings");
                                 // need to reload on each package?
-                                NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
-                                getHelper(decorView).onSettingsLoaded(settings);
+                                final FlyingHelper helper = getHelper(decorView);
+                                if (helper != null) {
+                                    NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+                                    getHelper(decorView).onSettingsLoaded(settings);
+                                }
                             }
                         };
                         XposedHelpers.setAdditionalInstanceField(decorView,
