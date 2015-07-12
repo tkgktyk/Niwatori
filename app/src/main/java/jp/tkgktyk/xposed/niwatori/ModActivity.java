@@ -2,6 +2,7 @@ package jp.tkgktyk.xposed.niwatori;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -104,9 +105,20 @@ public class ModActivity extends XposedModule {
                     } catch (Throwable t) {
                         logE(t);
                     }
-                    return invokeOriginalMethod(methodHookParam);
+                    // When an exception occurs in original method, the exception is transformed
+                    // into InvocationTargetException.
+                    try {
+                        return invokeOriginalMethod(methodHookParam);
+                    } catch (Throwable t) {
+                        logE(t);
+                        throw new ActivityNotFoundException(t.toString());
+                    }
                 }
             };
+            /**
+             * General Activity
+             */
+            XposedBridge.hookAllMethods(Activity.class, "startActivity", startActivity);
             /**
              * LMT Launcher (Pie)
              */
