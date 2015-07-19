@@ -33,4 +33,7 @@
 
     <!-- About -->
     <string name="about_activity_name">О приложении</string>
+
+    <!-- Persistent Service -->
+    <string name="state_persistent_small_screen">Persistent Small Screen</string>
 </resources>
