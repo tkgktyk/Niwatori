@@ -35,6 +35,8 @@
     <string name="key_small_screen_pivot_y" translatable="false">key_small_screen_pivot_y</string>
     <!-- Another Resize Method -->
     <string name="key_another_resize_method_targets" translatable="false">key_another_resize_method_targets</string>
+    <!-- Persistent -->
+    <string name="key_small_screen_persistent" translatable="false">key_small_screen_persistent</string>
 
     <!-- Log Actions -->
     <string name="key_log_actions" translatable="false">key_log_actions</string>

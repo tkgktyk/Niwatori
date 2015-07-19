@@ -88,6 +88,8 @@
     <!-- Another Resize Method -->
     <string name="title_another_resize_method">Another Resize Method</string>
     <string name="summary_another_resize_method">Apply another method to specified apps</string>
+    <!-- Persistent -->
+    <string name="title_small_screen_persistent">Persistent</string>
 
     <!-- Other -->
     <string name="category_other">Other</string>

@@ -170,8 +170,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
             forcePinOrReset();
             updateBoundary();
         } else if (action.equals(NFW.ACTION_SMALL_SCREEN)) {
-            forceResize();
-            updateBoundaryOnResize();
+            if (!isResized()) {
+                resize(true);
+            }
         }
     }
 
@@ -191,6 +192,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
             pinOrReset();
         } else if (action.equals(NFW.ACTION_SMALL_SCREEN)) {
             resize();
+        } else if (action.equals(NFW.ACTION_FORCE_SMALL_SCREEN)) {
+            if (!isResized()) {
+                resize(true);
+            }
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
@@ -247,19 +252,26 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void resize() {
-        if (isResized()) {
+        resize(!isResized());
+    }
+
+    public void resize(boolean force) {
+        if (mSettings.smallScreenPersistent) {
+            NFW.setResizedGlobal(getAttachedView().getContext(), force);
+        }
+        if (force) {
+            forceResize();
+            updateBoundaryOnResize();
+        } else {
 //            if (getPivotX() == getSettings().smallScreenPivotX
 //                    && getPivotY() == getSettings().smallScreenPivotY) {
-                super.resize(FlyingLayout.DEFAULT_SCALE, getSettings().animation);
-                updateBoundaryOnUnresize();
+            super.resize(FlyingLayout.DEFAULT_SCALE, getSettings().animation);
+            updateBoundaryOnUnresize();
 //            } else {
 //                setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
 //                performLayoutAdjustment(getSettings().animation);
 //                updateBoundaryOnResize();
 //            }
-        } else {
-            forceResize();
-            updateBoundaryOnResize();
         }
     }
 
@@ -299,8 +311,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             handled = true;
         }
         if ((force || !handled) && isResized()) {
-            super.resize(FlyingLayout.DEFAULT_SCALE, getSettings().animation);
-            updateBoundaryOnUnresize();
+            resize(false);
         }
     }
 

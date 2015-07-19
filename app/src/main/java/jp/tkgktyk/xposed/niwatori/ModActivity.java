@@ -409,6 +409,11 @@ public class ModActivity extends XposedModule {
                     final boolean hasFocus = activity.hasWindowFocus();
                     logD(activity + "#onResume: hasFocus=" + hasFocus);
                     registerReceiver(activity, hasFocus);
+
+                    final FlyingHelper helper = getHelper(activity);
+                    if (helper != null && helper.getSettings().smallScreenPersistent) {
+                        NFW.requestResizedGlobal(activity);
+                    }
                 } catch (Throwable t) {
                     logE(t);
                 }

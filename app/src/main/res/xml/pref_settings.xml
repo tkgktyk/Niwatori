@@ -125,6 +125,12 @@
                 android:key="@string/key_another_resize_method_targets"
                 android:summary="@string/summary_another_resize_method"
                 android:title="@string/title_another_resize_method"/>
+            <!-- Persistent -->
+            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+                android:defaultValue="false"
+                android:icon="@null"
+                android:key="@string/key_small_screen_persistent"
+                android:title="@string/title_small_screen_persistent"/>
         </PreferenceCategory>
 
         <!-- Other -->

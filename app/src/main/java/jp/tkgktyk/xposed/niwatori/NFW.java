@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import jp.tkgktyk.flyinglayout.FlyingLayout;
+import jp.tkgktyk.xposed.niwatori.app.PersistentService;
 
 /**
  * Created by tkgktyk on 2015/02/12.
@@ -36,6 +37,7 @@ public class NFW {
     public static final String ACTION_PIN = PREFIX_ACTION + "PIN";
     public static final String ACTION_PIN_OR_RESET = PREFIX_ACTION + "PIN_OR_RESET";
     public static final String ACTION_SMALL_SCREEN = PREFIX_ACTION + "SMALL_SCREEN";
+    public static final String ACTION_FORCE_SMALL_SCREEN = PREFIX_ACTION + "FORCE_SMALL_SCREEN";
     public static final String ACTION_EXTRA_ACTION = PREFIX_ACTION + "EXTRA_ACTION";
     public static final String ACTION_RESET = PREFIX_ACTION + "RESET";
     public static final String ACTION_SOFT_RESET = PREFIX_ACTION + "SOFT_RESET";
@@ -79,6 +81,7 @@ public class NFW {
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_PIN_OR_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SMALL_SCREEN);
+        STATUS_BAR_FILTER.addAction(NFW.ACTION_FORCE_SMALL_SCREEN);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_EXTRA_ACTION);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_RESET);
         STATUS_BAR_FILTER.addAction(NFW.ACTION_SOFT_RESET);
@@ -146,7 +149,18 @@ public class NFW {
         return drawable;
     }
 
+    public static void requestResizedGlobal(Context context) {
+        context.sendBroadcast(new Intent(PersistentService.ACTION_REQUEST_RESIZE));
+    }
+
+    public static void setResizedGlobal(Context context, boolean resized) {
+        context.sendBroadcast(new Intent(resized ?
+                PersistentService.ACTION_SET_RESIZED : PersistentService.ACTION_UNSET_RESIZED));
+    }
+
     public static class Settings implements Serializable {
+        static final long serialVersionUID = 1L;
+
         public Set<String> blackList;
         public boolean animation;
         public boolean autoReset;
@@ -165,6 +179,7 @@ public class NFW {
         public float smallScreenPivotX;
         public float smallScreenPivotY;
         public Set<String> anotherResizeMethodTargets;
+        public boolean smallScreenPersistent;
 
         public boolean logActions;
 
@@ -196,6 +211,7 @@ public class NFW {
                     Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;
             anotherResizeMethodTargets = prefs.getStringSet("key_another_resize_method_targets",
                     Collections.<String>emptySet());
+            smallScreenPersistent = prefs.getBoolean("key_small_screen_persistent", false);
 
             extraActionOnRecents = Integer.parseInt(
                     prefs.getString("key_extra_action_on_recents", "0"));

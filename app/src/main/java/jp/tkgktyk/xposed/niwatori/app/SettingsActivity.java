@@ -197,6 +197,23 @@ public class SettingsActivity extends InAppBillingActivity {
         protected interface ExtendsPutter {
             void putExtends(Intent activityIntent);
         }
+
+        protected void setUpSwitch(@StringRes int id, final OnSwitchChangeListener listener) {
+            SwitchPreference sw = (SwitchPreference) findPreference(id);
+            sw.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean enabled = (Boolean) newValue;
+                    listener.onChange((SwitchPreference) preference, enabled);
+                    return true;
+                }
+            });
+            sw.getOnPreferenceChangeListener().onPreferenceChange(sw, sw.isChecked());
+        }
+
+        protected interface OnSwitchChangeListener {
+            void onChange(SwitchPreference sw, boolean enabled);
+        }
     }
 
     public static class SettingsFragment extends BaseFragment
@@ -347,6 +364,18 @@ public class SettingsActivity extends InAppBillingActivity {
                                     R.string.another_resize_method_targets_activity_name);
                         }
                     });
+            setUpSwitch(R.string.key_small_screen_persistent, new OnSwitchChangeListener() {
+                @Override
+                public void onChange(SwitchPreference sw, boolean enabled) {
+                    Context context = sw.getContext();
+                    Intent service = new Intent(context, PersistentService.class);
+                    if (enabled) {
+                        context.startService(service);
+                    } else {
+                        context.stopService(service);
+                    }
+                }
+            });
             // Other
             showListSummary(R.string.key_extra_action_on_recents);
             // About
