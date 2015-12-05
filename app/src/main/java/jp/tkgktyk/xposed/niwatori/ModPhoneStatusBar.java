@@ -143,7 +143,11 @@ public class ModPhoneStatusBar extends XposedModule {
                     }
                 });
         final Class<?> classFrameLayout = classPanelHolder.getSuperclass();
-        XposedHelpers.findAndHookMethod(classFrameLayout, "draw", Canvas.class,
+        final Class<?> classViewGroup = classFrameLayout.getSuperclass();
+        final Class<?> classView = classViewGroup.getSuperclass();
+        XposedHelpers.findAndHookMethod(
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                        classView : classFrameLayout, "draw", Canvas.class,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -179,7 +183,6 @@ public class ModPhoneStatusBar extends XposedModule {
                         return invokeOriginalMethod(methodHookParam);
                     }
                 });
-        final Class<?> classViewGroup = classFrameLayout.getSuperclass();
         XposedHelpers.findAndHookMethod(classViewGroup, "onInterceptTouchEvent", MotionEvent.class,
                 new XC_MethodReplacement() {
                     @Override
@@ -222,7 +225,7 @@ public class ModPhoneStatusBar extends XposedModule {
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             try {
 //                                if (mHelper.getSettings().autoReset) {
-                                    mHelper.resetState(true);
+                                mHelper.resetState(true);
 //                                }
                             } catch (Throwable t) {
                                 logE(t);

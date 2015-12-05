@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
@@ -35,6 +36,7 @@ import de.robv.android.xposed.XposedHelpers;
  */
 public class ModActivity extends XposedModule {
     private static final String CLASS_DECOR_VIEW = "com.android.internal.policy.impl.PhoneWindow$DecorView";
+    private static final String CLASS_DECOR_VIEW_M = "com.android.internal.policy.PhoneWindow$DecorView";
     private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
     private static final String CLASS_CONTEXT_IMPL = "android.app.ContextImpl";
 
@@ -135,7 +137,9 @@ public class ModActivity extends XposedModule {
 
     private static void installToDecorView() {
         try {
-            final Class<?> classDecorView = XposedHelpers.findClass(CLASS_DECOR_VIEW, null);
+            final Class<?> classDecorView = XposedHelpers.findClass(
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M?
+                            CLASS_DECOR_VIEW_M: CLASS_DECOR_VIEW, null);
             XposedBridge.hookAllConstructors(classDecorView, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {

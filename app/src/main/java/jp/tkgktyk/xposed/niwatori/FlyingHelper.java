@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -322,7 +323,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        XposedHelpers.setBooleanField(getAttachedView(), "mForegroundBoundsChanged", true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Object mForegroundInfo = XposedHelpers.getObjectField(getAttachedView(), "mForegroundInfo");
+            if (mForegroundInfo != null) {
+                XposedHelpers.setBooleanField(mForegroundInfo, "mBoundsChanged", true);
+            }
+        } else {
+            XposedHelpers.setBooleanField(getAttachedView(), "mForegroundBoundsChanged", true);
+        }
     }
 
     public void draw(Canvas canvas) {

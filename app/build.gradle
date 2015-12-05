@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "jp.tkgktyk.xposed.niwatori"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 27
         versionName '0.4.5'
     }
@@ -23,10 +23,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    provided fileTree(include: ['*.jar'], dir: 'provided_libs')
-    compile 'com.google.guava:guava:18.0'
-    compile 'com.android.support:support-annotations:21.0.3'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    provided fileTree(dir: 'provided_libs', include: ['*.jar'])
     compile project(':flyinglayout')
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
 }
