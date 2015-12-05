@@ -2,7 +2,7 @@
 <resources>
     <!-- Displayed in launcher -->
     <string name="settings_activity_name">@string/app_name</string>
-    
+
     <!-- Instructions -->
     <string name="title_instructions">Инструкция</string>
     <string name="summary_instructions">Этот мод предназначен для удобного использования приложений одной рукой:\n- Передвигаемый экран\n- Cкользить вниз\n- Уменьшенный экран\nВы можете использовать эти режимы ярлыками.</string>
@@ -12,11 +12,11 @@
     <!-- Note -->
     <string name="title_notes">Примечания</string>
     <string name="summary_notes">Примечания отсутствуют.</string>
-    
+
     <!-- Settings -->
     <string name="title_settings">Настройки</string>
     <string name="current_s1">Состояние: %1$s</string>
-    
+
     <!-- General -->
     <string name="category_general">Основное</string>
     <!-- Blacklist -->
@@ -33,7 +33,7 @@
     <!-- Actions -->
     <string name="title_action_when_tap_outside">Нажатие мимо</string>
     <string name="title_action_when_double_tap_outside">Двойное нажатие мимо</string>
-    
+
     <!-- Movable Screen -->
     <string name="category_movable_screen">Передвигаемый экран</string>
     <!-- Speed -->
@@ -70,7 +70,7 @@
     <string name="init_x">X</string>
     <string name="init_y">Y</string>
     <string name="unit_percent">%</string>
-    
+
     <!-- Small Screen -->
     <string name="category_small_screen">Уменьшенный экран</string>
     <!-- Auto Pin -->
@@ -88,15 +88,15 @@
     <!-- Another Resize Method -->
     <string name="title_another_resize_method">Другой метод изменения размера</string>
     <string name="summary_another_resize_method">Применить другой метод для указанных приложений</string>
-    <!-- Persistent -->
+	<!-- Persistent -->
     <string name="title_small_screen_persistent">Уведомление для быстрого доступа</string>
-    
+
     <!-- Other -->
     <string name="category_other">Другое</string>
     <!-- Log Actions -->
     <string name="title_log_actions">Вести журнал</string>
     <string name="summary_log_actions">История работы</string>
-    
+
     <!-- Purchases -->
     <!-- Premium Settings -->
     <string name="title_purchase_premium_settings">Премиум настройки</string>
@@ -107,17 +107,17 @@
     <string name="already_donated">Уже пожертвовано</string>
     <string name="thank_you_very_much">Спасибо!</string>
     <string name="back">Назад</string>
-    
+
     <!-- Links -->
     <string name="title_google_play">Получить Google Play версию</string>
     <string name="summary_google_play">Нажмите, чтобы перейти в Google Play</string>
-    
+
     <!-- Extra Action on Recents -->
     <string name="title_extra_action_on_recents">Основное действие на Недавние</string>
     <string name="tap_on_recens">Нажатие</string>
     <string name="double_tap_on_recens">Двойное нажатие</string>
     <string name="long_press_on_recens">Долгое нажатие</string>
-    
+
     <!-- About -->
     <string name="title_about">О приложении</string>
 </resources>
